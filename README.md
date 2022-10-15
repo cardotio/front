@@ -24,4 +24,5 @@ React / Springboot
 
 ## 해야할 것
 
-1. 회원가입 로그인
+1. html head (favicon, title)
+2. login, signup API sync
