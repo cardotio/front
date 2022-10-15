@@ -1,4 +1,6 @@
-import React from 'react';
+import { API_URL } from 'api';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
@@ -99,6 +101,8 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<TypeLoginForm>();
+  const [isFetching, setIsFetching] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
 
   //   useEffect(() => {
   //     // if token exist
@@ -108,29 +112,27 @@ function Login() {
   //     isLogin && navigate("/");
   //   });
 
-  const onValid = async (data: TypeLoginForm) => {
-    console.log(data);
-    //     setIsFetching(true);
-    //     axios
-    //       .post(API_URL + "/auth", { ...data })
-    //       .then((response: AxiosResponse) => {
-    //         // console.log(response);
-    //         setIsFetching(false);
-    //         localStorage.setItem(
-    //           "token",
-    //           JSON.stringify({ token: response.data.token })
-    //         );
-    //         setIsLogin(true);
-    //         navigate("/");
-    //       })
-    //       .catch((error: AxiosError) => {
-    //         console.log("error", error);
-    //         setIsFetching(false);
-    //         // Case 1. Unauthorized
-    //         error.request.status === 401 && setIsAuthorized(false);
-    //         //Case 2. Internal server error
-    //         error.code === "ERR_NETWORK" && console.log("Internal Server");
-    //       });
+  const onValid = async (loginData: TypeLoginForm) => {
+    console.log('LOGIN: /auth');
+    setIsFetching(true);
+    axios
+      .post(API_URL + '/auth', { ...loginData })
+      .then((response: AxiosResponse) => {
+        console.log(response);
+        localStorage.setItem(
+          'token',
+          JSON.stringify({ token: response.data.token }),
+        );
+        navigate('/');
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+        // Unauthorized
+        error.request.status === 401 && setIsAuth(false);
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
   };
 
   return (
@@ -161,7 +163,7 @@ function Login() {
             placeholder="비밀번호를 입력하세요"
           />
           <LoginBtn type="submit">
-            {false ? (
+            {isFetching ? (
               <Spinner radius={20} color={'#fff'} stroke={1} visible={true} />
             ) : (
               '로그인'
@@ -175,7 +177,7 @@ function Login() {
           ) : errors.password ? (
             <ErrorMessageArea>비밀번호를 입력해 주세요.</ErrorMessageArea>
           ) : (
-            false && (
+            !isAuth && (
               <ErrorMessageArea>
                 아이디(로그인 전용 아이디) 또는 비밀번호를 잘못 입력했습니다.
                 입력하신 내용을 다시 확인해주세요.
