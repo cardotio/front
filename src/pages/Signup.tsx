@@ -1,6 +1,10 @@
+import { API_URL } from 'api';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useQuery } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
+import Spinner from 'react-spinner-material';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { TypeSignupForm } from 'types';
@@ -34,19 +38,6 @@ const Input = styled.input`
   font-size: 0.9rem;
   border: none;
   outline: none;
-`;
-const RadioContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 20px;
-  margin: 10px;
-`;
-const Radio = styled.input``;
-const GenderLabel = styled.div`
-  color: ${(props) => props.theme.textColor};
-  font-size: 0.9rem;
-  margin-right: 10px;
-  margin-left: 5px;
 `;
 const Label = styled.label`
   color: ${(props) => props.theme.subTextColor};
@@ -89,9 +80,23 @@ function Join() {
     formState: { errors },
   } = useForm<TypeSignupForm>();
   const [alreadyExist, setAlreadyExist] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const navigate = useNavigate();
 
-  const onValid = (data: any) => {
-    console.log(data);
+  const onValid = (signUpData: TypeSignupForm) => {
+    setIsFetching(true);
+    axios
+      .post(API_URL + '/users', signUpData)
+      .then((response: AxiosResponse) => {
+        console.log(response);
+        navigate('/login');
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsFetching(true);
+      });
   };
 
   return (
@@ -135,7 +140,13 @@ function Join() {
           placeholder="비밀번호를 입력하세요."
         />
 
-        <SignUpBtn>가입하기</SignUpBtn>
+        <SignUpBtn>
+          {isFetching ? (
+            <Spinner radius={20} color={'#fff'} stroke={1} visible={true} />
+          ) : (
+            '가입하기'
+          )}
+        </SignUpBtn>
         {errors.username ? (
           <ErrorMessageArea>{errors.username.message}</ErrorMessageArea>
         ) : errors.displayname ? (
