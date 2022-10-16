@@ -24,5 +24,6 @@ React / Springboot
 
 ## 해야할 것
 
-1. html head (favicon, title)
-2. login, signup API sync
+1. ~~html head (favicon, title)~~
+2. ~~login, signup API sync~~
+3. login, signup design
