@@ -12,5 +12,11 @@ declare module 'styled-components' {
     navBarBtnhoverColor: string;
     mainColor: string;
     inputColor: string;
+
+    loginLeftContainer: string;
+    loginRightContainer: string;
+    loginBtnColor: string;
+    loginBtnHoverColor: string;
+    loginLabelColor: string;
   }
 }
