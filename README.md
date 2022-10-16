@@ -2,7 +2,7 @@
 
 ## 데모
 
-https://cardio.run.goorm.io/team/me
+https://cardio.run.goorm.io/
 
 ## 목적
 
