@@ -74,8 +74,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: "Noto Sans KR",sans-serif;
     letter-spacing: 0.3px;
     font-family: 'Gothic A1', sans-serif;
-  font-family: 'Nanum Gothic Coding', monospace;
-  font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Gothic Coding', monospace;
+    font-family: 'Noto Sans KR', sans-serif;
   }
   body {
     display: "flex"; 
