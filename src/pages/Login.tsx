@@ -1,15 +1,13 @@
-import { API_URL } from 'api';
-import { userTokenAtom } from 'atoms';
+import { API_URL, getUserInfo } from 'api';
+import { userInfoAtom, userTokenAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import Card from 'components/Card';
-import Cards from 'components/Cards';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { TypeLoginForm, TypeSignupForm } from 'types';
+import { TypeLoginForm, TypeSignupForm, TypeUserInfo } from 'types';
 import { ReactComponent as Logo } from '../images/logo.svg';
 import { ReactComponent as Logo_cardio } from '../images/logo_cardio.svg';
 
@@ -165,6 +163,7 @@ function Login() {
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
   const [token, setToken] = useRecoilState(userTokenAtom);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
 
   useEffect(() => {
     if (token && token !== '') navigate('/team/me');
@@ -177,6 +176,7 @@ function Login() {
       .post(API_URL + '/auth', { ...loginData })
       .then((response: AxiosResponse) => {
         console.log(response);
+        console.log(`USERINFO: /users/${loginData.username}`);
         localStorage.setItem('token', response.data.token);
         setToken(response.data.token);
       })

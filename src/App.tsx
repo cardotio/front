@@ -1,9 +1,23 @@
 import { isDarkAtom } from 'atoms';
 import { useRecoilValue } from 'recoil';
 import Router from 'Router';
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal';
 import { darkTheme, lightTheme } from 'Theme';
+
+const modalBgStyle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background-color: #00000080;
+  overflow-y: scroll;
+`;
 
 function App() {
   const isDark = useRecoilValue(isDarkAtom);
@@ -11,7 +25,7 @@ function App() {
   return (
     <>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        <ModalProvider>
+        <ModalProvider backgroundComponent={modalBgStyle}>
           <GlobalStyle />
           <Router />
         </ModalProvider>

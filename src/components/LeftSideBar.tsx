@@ -1,4 +1,9 @@
-import React from 'react';
+import { API_URL } from 'api';
+import { addTeamModalOpenAtom, userInfoAtom } from 'atoms';
+import axios from 'axios';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 const Wrapper = styled.aside`
@@ -12,12 +17,23 @@ const Wrapper = styled.aside`
   cursor: pointer;
 `;
 const Header = styled.div`
-  padding: 10px;
-  border-radius: 0.125rem;
-  color: ${(props) => props.theme.textColor};
-  cursor: pointer;
-  &:hover {
-    background: #e7e7e7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  div {
+    padding: 10px 15px;
+    border-radius: 0.125rem;
+    font-size: 14px;
+    font-family: 'Noto sans KR';
+    color: ${(props) => props.theme.textColor};
+    cursor: pointer;
+    &:hover {
+      background: #e7e7e7;
+    }
+  }
+
+  button {
   }
 `;
 const Teams = styled.div`
@@ -57,9 +73,26 @@ const Member = styled.div`
 `;
 
 function LeftSideBar() {
+  const navigate = useNavigate();
+  const [addTeamModalOpen, setAddTeamModalOpen] =
+    useRecoilState(addTeamModalOpenAtom);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+
+  const onAddTeam = () => {
+    setAddTeamModalOpen(true);
+    // UPDATE MY TEAM INFO
+  };
+
+  useEffect(() => {}, []);
+
   return (
     <Wrapper>
-      <Header>노준석님의 workspace</Header>
+      <Header>
+        <div
+          onClick={() => navigate('/team/me')}
+        >{`${userInfo.displayname}님의 workspace`}</div>
+        <button onClick={onAddTeam}>+</button>
+      </Header>
       <Teams>
         <Team>
           <TeamName>Team1</TeamName>

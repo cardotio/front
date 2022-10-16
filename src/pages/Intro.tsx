@@ -55,7 +55,7 @@ function Intro() {
 
   return (
     <Wrapper>
-      <ToLoginBtn onClick={toLogin}>Log In</ToLoginBtn>
+      <ToLoginBtn onClick={toLogin}>Get Started</ToLoginBtn>
     </Wrapper>
   );
 }

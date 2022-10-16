@@ -13,6 +13,8 @@ const Wrapper = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 30px;
+  height: 280px;
 `;
 const Title = styled(motion.div)`
   width: 180px;
@@ -26,7 +28,7 @@ const Title = styled(motion.div)`
   font-weight: 700;
   font-size: 0.9rem;
   line-height: 36px;
-  z-index: 100;
+  z-index: 300;
 `;
 const CardContainer = styled(motion.div)`
   display: flex;
@@ -35,21 +37,6 @@ const CardContainer = styled(motion.div)`
   position: relative;
   width: 100%;
 `;
-// const Card = styled(motion.div)`
-//   position: absolute;
-//   width: 180px;
-//   height: 120px;
-//   margin-bottom: 14px;
-//   background: #f7f6e7;
-//   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-//   border-radius: 10px;
-//   transform: rotate(45deg);
-//   transition: 0.2s background;
-//   cursor: pointer;
-//   &:hover {
-//     background: #deb887;
-//   }
-// `;
 
 const vCards: Variants = {
   initial: {},
@@ -86,7 +73,7 @@ function Cards(props: CardsProps) {
     >
       <Title variants={title}>{props.title}</Title>
       <CardContainer>
-        {props.data.map((card, i) => (
+        {props.data.slice(0, 8).map((card, i) => (
           <Card key={i} id={i} total={props.data.length} />
         ))}
       </CardContainer>
