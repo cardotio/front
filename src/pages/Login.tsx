@@ -257,7 +257,7 @@ function Login() {
                   }}
                 >
                   Don{"'"}t have an acount?{' '}
-                  <a onClick={() => setShowLogin(false)}>Sign In</a>
+                  <a onClick={() => setShowLogin(false)}>Sign Up</a>
                 </Label>
                 {errors.username ? (
                   <ErrorMessageArea>Please enter username</ErrorMessageArea>
@@ -284,7 +284,7 @@ function Login() {
                     minLength: { value: 5, message: '아이디가 너무 짧습니다' },
                     maxLength: { value: 20, message: '아이디가 너무 깁니다' },
                     pattern: {
-                      value: /^[A-Za-z0-9].{5,20}$/,
+                      value: /^[A-Za-z0-9]*.{5,20}$/,
                       message:
                         '아이디는 5~20자의 영문 소문자, 숫자만 사용 가능합니다.',
                     },
