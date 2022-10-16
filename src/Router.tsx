@@ -9,10 +9,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 function Router() {
   return (
     <BrowserRouter>
-      <Navbar />
       <Routes>
         <Route path="/" element={<Intro />} />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/team/:id" element={<Main />} />
       </Routes>

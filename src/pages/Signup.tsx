@@ -81,87 +81,110 @@ function Join() {
   } = useForm<TypeSignupForm>();
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [successSignup, setSuccessSignup] = useState(false);
   const navigate = useNavigate();
 
   const onValid = (signUpData: TypeSignupForm) => {
     setIsFetching(true);
+    console.log('SIGNUP: /users');
     axios
       .post(API_URL + '/users', signUpData)
       .then((response: AxiosResponse) => {
         console.log(response);
-        navigate('/login');
+        setSuccessSignup(true);
       })
       .catch((error: AxiosError) => {
         console.log(error);
+        error.response?.status == 409 && setAlreadyExist(true);
       })
       .finally(() => {
-        setIsFetching(true);
+        setIsFetching(false);
       });
   };
 
   return (
     <Wrapper>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <Label>Username</Label>
-        <Input
-          {...register('username', {
-            required: '아이디를 입력해주세요.',
-            minLength: { value: 5, message: '아이디가 너무 짧습니다' },
-            maxLength: { value: 20, message: '아이디가 너무 깁니다' },
-            pattern: {
-              value: /^[A-Za-z0-9].{5,20}$/,
-              message: '아이디는 5~20자의 영문 소문자, 숫자만 사용 가능합니다.',
-            },
-          })}
-          placeholder="아이디를 입력하세요."
-        />
-        <Label>Display Name</Label>
-        <Input
-          {...register('displayname', {
-            required: '이름을 입력해주세요.',
-            minLength: { value: 5, message: '이름을 너무 짧습니다' },
-            maxLength: { value: 20, message: '이름을 너무 깁니다' },
-          })}
-          placeholder="아이디를 입력하세요."
-        />
-        <Label>Password</Label>
-        <Input
-          {...register('password', {
-            required: '비밀번호를 입력해주세요.',
-            minLength: { value: 8, message: '비밀번호가 너무 짧습니다' },
-            maxLength: { value: 20, message: '비밀번호가 너무 깁니다' },
-            pattern: {
-              value: /^[A-Za-z0-9].{8,20}$/,
-              message:
-                '비밀번호는 8~20자 영문 대 소문자, 숫자, 특수문자를 사용하세요.',
-            },
-          })}
-          type="password"
-          placeholder="비밀번호를 입력하세요."
-        />
+      {successSignup ? (
+        <div>굿</div>
+      ) : (
+        <Form onSubmit={handleSubmit(onValid)}>
+          <Label>Username</Label>
+          <Input
+            {...register('username', {
+              required: '아이디를 입력해주세요.',
+              minLength: { value: 5, message: '아이디가 너무 짧습니다' },
+              maxLength: { value: 20, message: '아이디가 너무 깁니다' },
+              pattern: {
+                value: /^[A-Za-z0-9].{5,20}$/,
+                message:
+                  '아이디는 5~20자의 영문 소문자, 숫자만 사용 가능합니다.',
+              },
+            })}
+            placeholder="아이디를 입력하세요."
+          />
+          <Label>Display Name</Label>
+          <Input
+            {...register('displayname', {
+              required: '이름을 입력해주세요.',
+              minLength: { value: 3, message: '이름을 너무 짧습니다' },
+              maxLength: { value: 20, message: '이름을 너무 깁니다' },
+            })}
+            placeholder="아이디를 입력하세요."
+          />
+          <Label>Email</Label>
+          <Input
+            {...register('email', {
+              required: '이메일를 입력해주세요.',
+              minLength: { value: 5, message: '이메일 너무 짧습니다' },
+              maxLength: { value: 20, message: '이메일 너무 깁니다' },
+              pattern: {
+                value: /^[A-Za-z0-9].{5,20}$/,
+                message: '이메일 형식에 맞지 않습니다.',
+              },
+            })}
+            placeholder="이메일을 입력하세요."
+          />
+          <Label>Password</Label>
+          <Input
+            {...register('password', {
+              required: '비밀번호를 입력해주세요.',
+              minLength: { value: 8, message: '비밀번호가 너무 짧습니다' },
+              maxLength: { value: 20, message: '비밀번호가 너무 깁니다' },
+              pattern: {
+                value: /^[A-Za-z0-9].{8,20}$/,
+                message:
+                  '비밀번호는 8~20자 영문 대 소문자, 숫자, 특수문자를 사용하세요.',
+              },
+            })}
+            type="password"
+            placeholder="비밀번호를 입력하세요."
+          />
 
-        <SignUpBtn>
-          {isFetching ? (
-            <Spinner radius={20} color={'#fff'} stroke={1} visible={true} />
+          <SignUpBtn>
+            {isFetching ? (
+              <Spinner radius={20} color={'#fff'} stroke={1} visible={true} />
+            ) : (
+              '가입하기'
+            )}
+          </SignUpBtn>
+          {errors.username ? (
+            <ErrorMessageArea>{errors.username.message}</ErrorMessageArea>
+          ) : errors.displayname ? (
+            <ErrorMessageArea>{errors.displayname.message}</ErrorMessageArea>
+          ) : errors.password ? (
+            <ErrorMessageArea>{errors.password.message}</ErrorMessageArea>
+          ) : errors.email ? (
+            <ErrorMessageArea>{errors.email.message}</ErrorMessageArea>
           ) : (
-            '가입하기'
+            alreadyExist && (
+              <ErrorMessageArea>
+                이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를
+                입력해주세요.
+              </ErrorMessageArea>
+            )
           )}
-        </SignUpBtn>
-        {errors.username ? (
-          <ErrorMessageArea>{errors.username.message}</ErrorMessageArea>
-        ) : errors.displayname ? (
-          <ErrorMessageArea>{errors.displayname.message}</ErrorMessageArea>
-        ) : errors.password ? (
-          <ErrorMessageArea>{errors.password.message}</ErrorMessageArea>
-        ) : errors.email ? (
-          <ErrorMessageArea>{errors.email.message}</ErrorMessageArea>
-        ) : alreadyExist ? (
-          <ErrorMessageArea>
-            이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를
-            입력해주세요.
-          </ErrorMessageArea>
-        ) : null}
-      </Form>
+        </Form>
+      )}
     </Wrapper>
   );
 }
