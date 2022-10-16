@@ -26,4 +26,5 @@ React / Springboot
 
 1. ~~html head (favicon, title)~~
 2. ~~login, signup API sync~~
-3. login, signup design
+3. ~~login, signup design~~
+4. Add features: create team, invite member and display
