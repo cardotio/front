@@ -1,30 +1,52 @@
 # Card.io
 
-## 데모
+<br />
+
+## Demo
 
 https://cardio.run.goorm.io/
 
-## 목적
+## Purpose
 
-팀 단위 효율적인 워크스페이스 개발
-
-<br />
-
-## 개발 인원 및 기간
-
-4명 (frontend 2명 / backend 2명)
+Develop Workspace application in the unit of card
 
 <br />
 
-## 프레임워크
+## Dev members
+
+4developers (2 frontend / 2 backend)
+
+<br />
+
+## Framework we used
 
 React / Springboot
 
 <br />
 
-## 해야할 것
+## To Do list
 
-1. ~~html head (favicon, title)~~
-2. ~~login, signup API sync~~
-3. ~~login, signup design~~
-4. Add features: create team, invite member and display
+- ~~html head (favicon, title)~~
+
+### Login
+
+- ~~login, signup API sync~~
+- ~~login, signup design~~
+- ~~request server to sign up or sign in~~
+
+### Left Sidebar
+
+- api: fetch my user info to dispaly teams and members
+- feature: create team, invite member
+- style: show members button
+
+### Main
+
+- api: fetch cards info
+- feature: create tag, card
+- style: card container layout
+- style: drag and drop
+
+### Right Sidebar
+
+- feature: chat
