@@ -40,7 +40,7 @@ React / Springboot
 
 - api: fetch my user info to dispaly teams and members
 - feature: create team, invite member
-- style: show members button
+- ~~style: show members button~~
 
 ### Main
 
