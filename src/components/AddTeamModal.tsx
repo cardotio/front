@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { addTeamModalOpenAtom, userTokenAtom } from 'atoms';
+import { addTeamModalOpenAtom, myTeamsAtom, userInfoAtom, userTokenAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
@@ -89,6 +89,7 @@ function AddTeamModal({ isOpen }: IModal) {
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
+  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [isFetching, setIsFetching] = useState(false);
   const {
     register,
@@ -99,22 +100,19 @@ function AddTeamModal({ isOpen }: IModal) {
   const onSubmit = ({ teamname }: any) => {
     console.log('ADD TEAM: /teams');
     setIsFetching(true);
-    console.log({
-      Authorization: `Bearer ${token}`,
-    });
-    console.log({ teamname });
     axios
       .post(
-        API_URL + '/auth',
+        API_URL + '/teams',
         { teamname },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
         },
       )
       .then((response: AxiosResponse) => {
         console.log(response);
+        setMyTeams(prev => [...prev, response.data.teamname]);
       })
       .catch((error: AxiosError) => {
         console.log(error);
