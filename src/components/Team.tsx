@@ -1,7 +1,12 @@
-import React from 'react';
+import { API_URL } from 'api';
+import { currentCardsAtom, currentUsersAtom, userTokenAtom } from 'atoms';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import React, { useState } from 'react';
 import useCollapse from 'react-collapsed';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { TypeUserInfo } from 'types';
 import { ReactComponent as Arrow } from '../images/arrow.svg';
 
 const Wrapper = styled.div`
@@ -54,21 +59,38 @@ const Member = styled.div`
 `;
 
 interface TeamProps {
-  teamId: number;
   teamname: string;
-  members: {
-    username: string;
-    displayname: string;
-    email: string;
-  }[];
 }
 
-function Team(team: TeamProps) {
-  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
+function Team({teamname}: TeamProps) {
+  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse();
+  const [token, setToken] = useRecoilState(userTokenAtom);
+  const [cards, setCards] = useRecoilState(currentCardsAtom);
+  const [users, setUsers] = useState<TypeUserInfo[] | null>(null);
   const navigate = useNavigate();
+
+  const handleSelectTeam = () => {
+    console.log(`GET TEAM INFO: /teams/${teamname}`);
+    axios
+        .get(API_URL + `/teams/${teamname}`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        })
+        .then((response: AxiosResponse) => {
+          console.log(response);
+          setUsers(response.data.users);
+          setCards(response.data.cards)
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+        });
+    navigate(`/team/${teamname}`);
+  }
+  
   return (
     <Wrapper>
-      <TeamHeading onClick={() => navigate(`/team/${team.teamId}`)}>
+      <TeamHeading onClick={handleSelectTeam}>
         <div {...getToggleProps()}>
           {isExpanded ? (
             <Arrow
@@ -80,10 +102,10 @@ function Team(team: TeamProps) {
             <Arrow />
           )}
         </div>
-        {team.teamname}
+        <span>{teamname}</span>
       </TeamHeading>
       <Members {...getCollapseProps()}>
-        {team.members.map((member, i) => (
+        {users?.map((member, i) => (
           <Member key={i}>{member.displayname}</Member>
         ))}
       </Members>

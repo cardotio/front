@@ -16,6 +16,12 @@ export type TypeSignupForm = {
   password: string;
 };
 
+export type TypeTeam = {
+  teamname: string;
+  members: TypeUserInfo[] | null;
+  cards: TypeCards[] | null;
+}
+
 export type TypeCards = {
   cardId: number;
   content: string;

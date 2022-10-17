@@ -1,8 +1,9 @@
-import { addTeamModalOpenAtom, userInfoAtom } from 'atoms';
+import { addTeamModalOpenAtom, myTeamsAtom, userInfoAtom } from 'atoms';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { TypeTeam } from 'types';
 import Team from './Team';
 
 const Wrapper = styled.aside`
@@ -38,61 +39,17 @@ const Teams = styled.div`
   cursor: pointer;
 `;
 
-const myTeamExample = [
-  {
-    teamId: 1,
-    teamname: 'team1',
-    members: [
-      {
-        username: 'ditmdh',
-        displayname: '티모',
-        email: 'teemo@lol',
-      },
-      {
-        username: 'ditmdh',
-        displayname: '야스오',
-        email: 'yasuo@lol',
-      },
-      {
-        username: 'ditmdh',
-        displayname: '티모',
-        email: 'teemo@lol',
-      },
-      {
-        username: 'ditmdh',
-        displayname: '야스오',
-        email: 'yasuo@lol',
-      },
-      {
-        username: 'ditmdh',
-        displayname: '티모',
-        email: 'teemo@lol',
-      },
-      {
-        username: 'ditmdh',
-        displayname: '야스오',
-        email: 'yasuo@lol',
-      },
-    ],
-  },
-  {
-    teamId: 2,
-    teamname: 'team2',
-    members: [],
-  },
-];
-
 function LeftSideBar() {
   const navigate = useNavigate();
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
 
   const onAddTeam = () => {
     setAddTeamModalOpen(true);
-    // UPDATE MY TEAM INFO
   };
-
+  
   return (
     <Wrapper>
       <Header>
@@ -102,8 +59,8 @@ function LeftSideBar() {
         <button onClick={onAddTeam}>+</button>
       </Header>
       <Teams>
-        {myTeamExample.map((team, i) => (
-          <Team key={i} {...team} />
+        {myTeams.map((teamname, i) => (
+          <Team key={i} teamname={teamname} />
         ))}
       </Teams>
     </Wrapper>
