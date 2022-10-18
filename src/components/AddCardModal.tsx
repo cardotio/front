@@ -95,7 +95,8 @@ function AddCardModal({ isOpen }: IModal) {
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [isFetching, setIsFetching] = useState(false);
-  const {teamname} = useLocation().state;
+  const location = useLocation();
+  const teamname = location.pathname.split("/")[2];
   const {
     register,
     handleSubmit,
@@ -103,7 +104,7 @@ function AddCardModal({ isOpen }: IModal) {
   } = useForm();
 
   const onSubmit = ({ cardname }: any) => {
-    console.log('ADD Card: /teams/${teamname}/cards');
+    console.log(`ADD Card: /teams/${teamname}/cards`);
     setIsFetching(true);
     axios
       .post(
