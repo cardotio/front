@@ -149,49 +149,51 @@ const ErrorMessageArea = styled.div`
 function Login() {
   const navigate = useNavigate();
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register: registerLogin,
+    handleSubmit: handleSubmitLogin,
+    formState: { errors: errorsLogin },
   } = useForm<TypeLoginForm>();
   const {
-    register: register2,
-    handleSubmit: handleSubmit2,
-    formState: { errors: errors2 },
+    register: registerSignup,
+    handleSubmit: handleSubmitSignup,
+    formState: { errors: errorsSignup },
   } = useForm<TypeSignupForm>();
   const [isFetching, setIsFetching] = useState(false);
   const [isAuth, setIsAuth] = useState(true);
-  const [alreadyExist, setAlreadyExist] = useState(false);
+  const [serverError, setServerError] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
   const [token, setToken] = useRecoilState(userTokenAtom);
+  const [serverErrorMessage, setServerErrorMessage] = useState('');
 
-  useEffect(() => {
-    if (token && token !== '') navigate('/team/me');
-  }, [token]);
-
-  const onLogin = (loginData: TypeLoginForm) => {
+  /* Log in */
+  const handleLogin = (loginData: TypeLoginForm) => {
     console.log('LOGIN: /auth');
     setIsFetching(true);
+    setIsAuth(false);
     axios
       .post(API_URL + '/auth', { ...loginData })
       .then((response: AxiosResponse) => {
         console.log(response);
-        console.log(`USERINFO: /users/${loginData.username}`);
         localStorage.setItem('token', response.data.token);
         setToken(response.data.token);
       })
       .catch((error: AxiosError) => {
         console.log(error);
-        // Unauthorized
-        error.request.status === 401 && setIsAuth(false);
+        error.response?.status == 401 &&
+          setServerErrorMessage(' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.');
+        error.code === "ERR_NETWORK" &&
+          setServerErrorMessage('일시적인 오류로 서비스에 접속할 수 없습니다.');
       })
       .finally(() => {
         setIsFetching(false);
       });
   };
 
-  const onSignup = (signUpData: TypeSignupForm) => {
+  /* Sign up */
+  const handleSignup = (signUpData: TypeSignupForm, e: any) => {
     console.log('SIGNUP: /users');
     setIsFetching(true);
+    setServerError(false);
     axios
       .post(API_URL + '/users', signUpData)
       .then((response: AxiosResponse) => {
@@ -200,12 +202,20 @@ function Login() {
       })
       .catch((error: AxiosError) => {
         console.log(error);
-        error.response?.status == 409 && setAlreadyExist(true);
+        setServerError(true);
+        error.response?.status === 409 &&
+          setServerErrorMessage(' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.');
+        error.code === "ERR_NETWORK" &&
+          setServerErrorMessage('일시적인 오류로 서비스에 접속할 수 없습니다.');
       })
       .finally(() => {
         setIsFetching(false);
       });
   };
+
+  useEffect(() => {
+    if (token && token !== '') navigate('/team/me');
+  }, [token]);
 
   return (
     <Wrapper>
@@ -221,17 +231,17 @@ function Login() {
           {showLogin ? (
             <>
               <span>Sign In</span>
-              <Form onSubmit={handleSubmit(onLogin)}>
+              <Form key={1} onSubmit={handleSubmitLogin(handleLogin)}>
                 <Label>Username</Label>
                 <Input
-                  {...register('username', {
+                  {...registerLogin('username', {
                     required: 'This is Required',
                   })}
                   placeholder="Your Username"
                 />
                 <Label>Password</Label>
                 <Input
-                  {...register('password', {
+                  {...registerLogin('password', {
                     required: 'This is Required',
                   })}
                   type="password"
@@ -258,16 +268,13 @@ function Login() {
                   Don{"'"}t have an acount?{' '}
                   <a onClick={() => setShowLogin(false)}>Sign Up</a>
                 </Label>
-                {errors.username ? (
+                {errorsLogin.username ? (
                   <ErrorMessageArea>Please enter username</ErrorMessageArea>
-                ) : errors.password ? (
+                ) : errorsLogin.password ? (
                   <ErrorMessageArea>Please enter password</ErrorMessageArea>
                 ) : (
                   !isAuth && (
-                    <ErrorMessageArea>
-                      아이디(로그인 전용 아이디) 또는 비밀번호를 잘못
-                      입력했습니다. 입력하신 내용을 다시 확인해주세요.
-                    </ErrorMessageArea>
+                    <ErrorMessageArea>{serverErrorMessage}</ErrorMessageArea>
                   )
                 )}
               </Form>
@@ -275,10 +282,10 @@ function Login() {
           ) : (
             <>
               <span>Sign Up</span>
-              <Form onSubmit={handleSubmit2(onSignup)}>
+              <Form key={2} onSubmit={handleSubmitSignup(handleSignup)}>
                 <Label>Username</Label>
                 <Input
-                  {...register2('username', {
+                  {...registerSignup('username', {
                     required: '아이디를 입력해주세요.',
                     minLength: { value: 5, message: '아이디가 너무 짧습니다' },
                     maxLength: { value: 20, message: '아이디가 너무 깁니다' },
@@ -290,31 +297,9 @@ function Login() {
                   })}
                   placeholder="Your Username"
                 />
-                <Label>Display Name</Label>
-                <Input
-                  {...register2('displayname', {
-                    required: '이름을 입력해주세요.',
-                    minLength: { value: 3, message: '이름을 너무 짧습니다' },
-                    maxLength: { value: 20, message: '이름을 너무 깁니다' },
-                  })}
-                  placeholder="Your Display Name"
-                />
-                <Label>Email</Label>
-                <Input
-                  {...register2('email', {
-                    required: '이메일를 입력해주세요.',
-                    minLength: { value: 5, message: '이메일 너무 짧습니다' },
-                    maxLength: { value: 20, message: '이메일 너무 깁니다' },
-                    pattern: {
-                      value: /^[A-Za-z0-9].{5,20}$/,
-                      message: '이메일 형식에 맞지 않습니다.',
-                    },
-                  })}
-                  placeholder="Your Email"
-                />
                 <Label>Password</Label>
                 <Input
-                  {...register2('password', {
+                  {...registerSignup('password', {
                     required: '비밀번호를 입력해주세요.',
                     minLength: {
                       value: 8,
@@ -330,7 +315,37 @@ function Login() {
                   type="password"
                   placeholder="Your password"
                 />
-
+                <Label>Display Name</Label>
+                <Input
+                  {...registerSignup('displayname', {
+                    required: '이름을 입력해주세요.',
+                    minLength: { value: 3, message: '이름을 너무 짧습니다' },
+                    maxLength: { value: 20, message: '이름을 너무 깁니다' },
+                  })}
+                  placeholder="Your Display Name"
+                />
+                <Label>Email</Label>
+                <Input
+                  {...registerSignup('email', {
+                    required: '이메일를 입력해주세요.',
+                    minLength: { value: 5, message: '이메일이 너무 짧습니다' },
+                    maxLength: { value: 20, message: '이메일이 너무 깁니다' },
+                    pattern: {
+                      value: /^[A-Za-z0-9].{5,20}$/,
+                      message: '이메일 형식에 맞지 않습니다.',
+                    },
+                  })}
+                  placeholder="Your Email"
+                />
+                <Label>Role</Label>
+                <Input
+                  {...registerSignup('role', {
+                    required: '역할을 입력해주세요.',
+                    minLength: { value: 1, message: '역할이 너무 짧습니다' },
+                    maxLength: { value: 20, message: '역할이 너무 깁니다' },
+                  })}
+                  placeholder="Your Role"
+                />
                 <SubmitBtn>
                   {isFetching ? (
                     <Spinner
@@ -352,26 +367,25 @@ function Login() {
                   Already have an acount?{' '}
                   <a onClick={() => setShowLogin(true)}>Sign In</a>
                 </Label>
-                {errors2.username ? (
+                {errorsSignup.username ? (
                   <ErrorMessageArea>
-                    {errors2.username.message}
+                    {errorsSignup.username.message}
                   </ErrorMessageArea>
-                ) : errors2.displayname ? (
+                ) : errorsSignup.displayname ? (
                   <ErrorMessageArea>
-                    {errors2.displayname.message}
+                    {errorsSignup.displayname.message}
                   </ErrorMessageArea>
-                ) : errors2.password ? (
+                ) : errorsSignup.password ? (
                   <ErrorMessageArea>
-                    {errors2.password.message}
+                    {errorsSignup.password.message}
                   </ErrorMessageArea>
-                ) : errors2.email ? (
-                  <ErrorMessageArea>{errors2.email.message}</ErrorMessageArea>
+                ) : errorsSignup.email ? (
+                  <ErrorMessageArea>{errorsSignup.email.message}</ErrorMessageArea>
+                ) : errorsSignup.role ? (
+                  <ErrorMessageArea>{errorsSignup.role.message}</ErrorMessageArea>
                 ) : (
-                  alreadyExist && (
-                    <ErrorMessageArea>
-                      이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른
-                      아이디를 입력해주세요.
-                    </ErrorMessageArea>
+                  serverError && (
+                    <ErrorMessageArea>{serverErrorMessage}</ErrorMessageArea>
                   )
                 )}
               </Form>

@@ -16,6 +16,7 @@ export type TypeSignupForm = {
   displayname: string;
   email: string;
   password: string;
+  role: string;
 };
 
 export type TypeTeam = {
