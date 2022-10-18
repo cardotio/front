@@ -11,6 +11,7 @@ import {
   userInfoAtom,
   myTeamsAtom,
   addCardModalOpenAtom,
+  currentCardsAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -52,8 +53,10 @@ function Main() {
   const [isMainFetching, setIsMainFetching] = useState(false);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
-    const [addCardModalOpen, setAddCardModalOpen] =
-      useRecoilState(addCardModalOpenAtom);
+  const [addCardModalOpen, setAddCardModalOpen] =
+    useRecoilState(addCardModalOpenAtom);
+  const [cards, setCards] =
+    useRecoilState(currentCardsAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const { pathname } = useLocation();
 
@@ -78,24 +81,6 @@ function Main() {
         .catch((error: AxiosError) => {
           console.log(error);
         });
-
-      // GET Teamnames of the user
-      // console.log('GET Teamnames: /users/teams');
-      // await axios
-      //   .get(API_URL + '/users/teams', {
-      //     headers: {
-      //       Authorization: `${token}`,
-      //     },
-      //   })
-      //   .then((response: AxiosResponse) => {
-      //     console.log(response);
-      //     response.data.map((team: any) => {
-      //       setMyTeams((prev) => [...prev, team.teamname]);
-      //     });
-      //   })
-      //   .catch((error: AxiosError) => {
-      //     console.log(error);
-      //   });
       setIsMainFetching(false);
     }
     fetchMainData();
@@ -117,12 +102,10 @@ function Main() {
       ) : (
         <>
         <button onClick={onAddCard}>Add Card</button>
-          <Container>
-            <Cards title={'하반기 결산 준비 🏝'} data={[1, 2, 3, 4, 5]} />
-            <Cards title={'충돌 발생! 🚨'} data={[1, 2, 3]} />
-            <Cards title={'요호'} data={[1, 2, 3, 4, 5, 6, 7]} />
-            <Cards title={'요호'} data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} />
-          </Container>
+        <Container>
+          {cards.map((card, i) => 
+            <div key={i} style={{background:"#fff", padding: "5px"}}>{card.cardname}</div>)}
+        </Container>
         </>
       )}
       <RightSideBar />

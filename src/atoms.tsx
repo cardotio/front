@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { TypeCards, TypeTeam, TypeUserInfo } from 'types';
+import { TypeCard, TypeTeam, TypeUserInfo } from 'types';
 
 export const isDarkAtom = atom({ key: 'isDark', default: false });
 
@@ -24,5 +24,5 @@ export const addCardModalOpenAtom = atom({
 
 export const myTeamsAtom = atom<TypeTeam[]>({ key: "myTeams", default: [] });
 
-export const currentCardsAtom = atom<TypeCards[]>({key: 'currentCards', default: []});
+export const currentCardsAtom = atom<TypeCard[]>({key: 'currentCards', default: []});
 export const currentUsersAtom = atom<TypeUserInfo[] | null>({key: 'currentUsers', default: []});

@@ -1,6 +1,7 @@
 import { motion, Variants } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
+import { TypeCard } from 'types';
 import Card from './Card';
 
 const Wrapper = styled(motion.div)`
@@ -54,7 +55,7 @@ const title: Variants = {
 
 interface CardsProps {
   title: string;
-  data: number[];
+  data: TypeCard[];
 }
 
 function Cards(props: CardsProps) {

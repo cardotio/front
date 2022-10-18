@@ -7,7 +7,7 @@ import { addCardModalOpenAtom, currentCardsAtom, currentUsersAtom, myTeamsAtom, 
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
-import { TypeCards } from 'types';
+import { TypeCard } from 'types';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
@@ -103,7 +103,7 @@ function AddCardModal({ isOpen }: IModal) {
   } = useForm();
 
   const onSubmit = ({ cardname }: any) => {
-    console.log('ADD Card: /teams');
+    console.log('ADD Card: /teams/${teamname}/cards');
     setIsFetching(true);
     axios
       .post(
@@ -120,10 +120,10 @@ function AddCardModal({ isOpen }: IModal) {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        const newCard: TypeCards = {
+        const newCard: TypeCard = {
             cardname,
             content: "Card Created",
-            cardType: 'private',
+            type: 'private',
             user: {
                 username: response.data.user.username,
                 displayname: response.data.user.displayname,

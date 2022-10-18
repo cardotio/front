@@ -30,10 +30,10 @@ export type TypeMember = {
   username: string;
 }
 
-export type TypeCards = {
+export type TypeCard = {
   cardname: string;
   content: string;
-  cardType: 'private' | 'public';
+  type: 'private' | 'public';
   user: {
       username?: string;
       displayname?: string;

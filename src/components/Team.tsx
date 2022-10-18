@@ -73,30 +73,27 @@ interface TeamProps {
 }
 
 function Team({ team }: TeamProps) {
-  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
+  const { getCollapseProps, getToggleProps, isExpanded } =
     useCollapse();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
-  const [users, setUsers] = useState<TypeUserInfo[] | null>(null);
-  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
   const navigate = useNavigate();
 
   const handleSelectTeam = () => {
-    // console.log(`GET TEAM INFO: /teams/${teamname}`);
-    // axios
-    //   .get(API_URL + `/teams/${teamname}`, {
-    //     headers: {
-    //       Authorization: `${token}`,
-    //     },
-    //   })
-    //   .then((response: AxiosResponse) => {
-    //     console.log(response);
-    //     setUsers(response.data.users);
-    //     setCards(response.data.cards);
-    //   })
-    //   .catch((error: AxiosError) => {
-    //     console.log(error);
-    //   });
+    console.log(`GET TEAM INFO: /teams/${team.teamname}/cards`);
+    axios
+      .get(API_URL + `/teams/${team.teamname}/cards`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+      .then((response: AxiosResponse) => {
+        console.log(response);
+        setCards(response.data);
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
     navigate(`/team/${team.teamname}`);
   };
 
@@ -115,7 +112,7 @@ function Team({ team }: TeamProps) {
           )}
         </CollapseMember>
         {/* <span onClick={handleSelectTeam}>{team.teamname}</span> */}
-        <Link to={`/team/${team.teamname}`} state={team}>{team.teamname}</Link>
+        <Link to={`/team/${team.teamname}`} state={team} onClick={handleSelectTeam}>{team.teamname}</Link>
         <CollapseMember style={{position: "absolute", right: 0}}>
         <FaBeer />
         </CollapseMember>
