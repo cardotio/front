@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { addTeamModalOpenAtom, myTeamsAtom, userInfoAtom, userTokenAtom } from 'atoms';
+import { addCardModalOpenAtom, currentCardsAtom, currentUsersAtom, myTeamsAtom, userInfoAtom, userTokenAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
+import { TypeCards } from 'types';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   width: 450px;
@@ -85,26 +87,31 @@ interface IModal {
   isOpen: boolean;
 }
 
-function AddTeamModal({ isOpen }: IModal) {
-  const [addTeamModalOpen, setAddTeamModalOpen] =
-    useRecoilState(addTeamModalOpenAtom);
+function AddCardModal({ isOpen }: IModal) {
+  const [addCardModalOpen, setAddCardModalOpen] =
+    useRecoilState(addCardModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
+  const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [isFetching, setIsFetching] = useState(false);
+  const {teamname} = useLocation().state;
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = ({ teamname }: any) => {
-    console.log('ADD TEAM: /teams');
+  const onSubmit = ({ cardname }: any) => {
+    console.log('ADD Card: /teams');
     setIsFetching(true);
     axios
       .post(
-        API_URL + '/teams',
-        { teamname },
+        API_URL + `/teams/${teamname}/cards`, {
+            cardname: cardname,
+            content: "",
+            type: "private",
+        },
         {
           headers: {
             Authorization: `${token}`,
@@ -113,13 +120,20 @@ function AddTeamModal({ isOpen }: IModal) {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        myInfo && 
-        setMyTeams(prev => [...prev, {teamname, users: [{
-          displayname: myInfo?.displayname,
-          email: myInfo?.email,
-          role: "",
-          username: myInfo?.username,}
-        ]}]);
+        const newCard: TypeCards = {
+            cardname,
+            content: "Card Created",
+            cardType: 'private',
+            user: {
+                username: response.data.user.username,
+                displayname: response.data.user.displayname,
+                email: response.data.user.email,
+            },
+            team: {
+                teamname: response.data.team.teamname
+            }
+        }
+        setCards(prev => [...prev, newCard])
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -128,12 +142,12 @@ function AddTeamModal({ isOpen }: IModal) {
       })
       .finally(() => {
         setIsFetching(false);
-        setAddTeamModalOpen(false);
+        setAddCardModalOpen(false);
       });
   };
 
   const handleClose = () => {
-    setAddTeamModalOpen(false);
+    setAddCardModalOpen(false);
   };
 
   return (
@@ -143,11 +157,11 @@ function AddTeamModal({ isOpen }: IModal) {
       onEscapeKeydown={handleClose}
     >
       <Container>
-        <Header>Create New Team</Header>
+        <Header>Create New Card</Header>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input
-            placeholder="Enter Team Name"
-            {...register('teamname', {
+            placeholder="Enter Card Name"
+            {...register('cardname', {
               required: true,
               maxLength: 20,
               minLength: 5,
@@ -161,12 +175,12 @@ function AddTeamModal({ isOpen }: IModal) {
             )}
           </Btn>
         </Form>
-        {errors.teamname && (
-          <ErrorMessageArea>채팅방 이름은 5 ~ 20자 입니다.</ErrorMessageArea>
+        {errors.cardname && (
+          <ErrorMessageArea>카드 이름은 5 ~ 20자 입니다.</ErrorMessageArea>
         )}
       </Container>
     </Modal>
   );
 }
 
-export default React.memo(AddTeamModal);
+export default React.memo(AddCardModal);

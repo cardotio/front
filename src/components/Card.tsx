@@ -34,7 +34,7 @@ function Card(props: CardProps) {
     },
     animate: {},
     hover: {
-      y: 50 * props.id,
+      y: (200 / props.total) * props.id,
       rotate: 0,
       transition: {
         type: 'tween',
@@ -44,26 +44,7 @@ function Card(props: CardProps) {
     },
   };
 
-  const grid: Variants = {
-    initial: {
-      x: 0,
-      y: 0,
-      rotate: (20 / props.total) * props.id,
-    },
-    animate: {},
-    hover: {
-      x: 50 * props.id,
-      y: 50 * props.id,
-      rotate: 0,
-      transition: {
-        type: 'tween',
-        duration: 0.5,
-        ease: 'easeInOut',
-      },
-    },
-  };
-
-  return <Wrapper variants={props.total < 5 ? card : grid}></Wrapper>;
+  return <Wrapper variants={card}></Wrapper>;
 }
 
 export default React.memo(Card);

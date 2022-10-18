@@ -10,7 +10,7 @@ const Wrapper = styled.aside`
   min-width: 240px;
   height: 100vh;
   background: #f7f7f7;
-  padding: 15px;
+  padding: 15px 5px; 
   border-right: 1px solid lightgray;
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
@@ -54,13 +54,13 @@ function LeftSideBar() {
     <Wrapper>
       <Header>
         <div onClick={() => navigate('/team/me')}>
-          {`${userInfo.displayname}님의 workspace`}
+          {`${userInfo?.displayname}님의 workspace`}
         </div>
         <button onClick={onAddTeam}>+</button>
       </Header>
       <Teams>
-        {myTeams.map((teamname, i) => (
-          <Team key={i} teamname={teamname} />
+        {myTeams.map((team, i) => (
+          <Team key={i} team={team} />
         ))}
       </Teams>
     </Wrapper>

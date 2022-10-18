@@ -1,5 +1,5 @@
-import { API_URL, getUserInfo } from 'api';
-import { userInfoAtom, userTokenAtom } from 'atoms';
+import { API_URL } from 'api';
+import { userTokenAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { TypeLoginForm, TypeSignupForm, TypeUserInfo } from 'types';
+import { TypeLoginForm, TypeSignupForm } from 'types';
 import { ReactComponent as Logo } from '../images/logo.svg';
 import { ReactComponent as Logo_cardio } from '../images/logo_cardio.svg';
 
@@ -163,7 +163,6 @@ function Login() {
   const [alreadyExist, setAlreadyExist] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
   const [token, setToken] = useRecoilState(userTokenAtom);
-  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
 
   useEffect(() => {
     if (token && token !== '') navigate('/team/me');

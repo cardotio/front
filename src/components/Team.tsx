@@ -1,13 +1,16 @@
 import { API_URL } from 'api';
-import { currentCardsAtom, currentUsersAtom, userTokenAtom } from 'atoms';
+import { currentCardsAtom, currentUsersAtom, userInfoAtom, userTokenAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import Dropdown from 'rc-dropdown';
+import Menu, { MenuItem } from 'rc-menu';
 import React, { useState } from 'react';
 import useCollapse from 'react-collapsed';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { TypeUserInfo } from 'types';
+import { TypeTeam, TypeUserInfo } from 'types';
 import { ReactComponent as Arrow } from '../images/arrow.svg';
+import { FaBeer } from 'react-icons/fa';
 
 const Wrapper = styled.div`
   padding: 5px 0;
@@ -16,33 +19,40 @@ const Wrapper = styled.div`
   cursor: pointer;
 `;
 const TeamHeading = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  padding: 5px 10px;
+  padding: 5px 0px;
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
   cursor: pointer;
 
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 4px;
-    margin-right: 8px;
-    transition: all 0.2s linear;
-    svg {
-      scale: 0.8;
-      fill: #6c6c6c;
-      transition: transform 0.2s linear;
-    }
-    &:hover {
-      background: #e5e5e5;
-    }
+  &:hover {
+    background: #eeeeee;
   }
+
   span {
     font-weight: 600;
   }
 `;
+
+const CollapseMember = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  margin-right: 8px;
+  transition: all 0.2s linear;
+  svg {
+    scale: 0.8;
+    fill: #6c6c6c;
+    transition: transform 0.2s linear;
+  }
+  &:hover {
+    background: #e5e5e5;
+  }
+`;
+
 const Members = styled.div`
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
@@ -59,39 +69,41 @@ const Member = styled.div`
 `;
 
 interface TeamProps {
-  teamname: string;
+  team: TypeTeam;
 }
 
-function Team({teamname}: TeamProps) {
-  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } = useCollapse();
+function Team({ team }: TeamProps) {
+  const { getCollapseProps, getToggleProps, isExpanded, setExpanded } =
+    useCollapse();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [users, setUsers] = useState<TypeUserInfo[] | null>(null);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
   const navigate = useNavigate();
 
   const handleSelectTeam = () => {
-    console.log(`GET TEAM INFO: /teams/${teamname}`);
-    axios
-        .get(API_URL + `/teams/${teamname}`, {
-          headers: {
-            Authorization: `${token}`,
-          },
-        })
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          setUsers(response.data.users);
-          setCards(response.data.cards)
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-        });
-    navigate(`/team/${teamname}`);
-  }
-  
+    // console.log(`GET TEAM INFO: /teams/${teamname}`);
+    // axios
+    //   .get(API_URL + `/teams/${teamname}`, {
+    //     headers: {
+    //       Authorization: `${token}`,
+    //     },
+    //   })
+    //   .then((response: AxiosResponse) => {
+    //     console.log(response);
+    //     setUsers(response.data.users);
+    //     setCards(response.data.cards);
+    //   })
+    //   .catch((error: AxiosError) => {
+    //     console.log(error);
+    //   });
+    navigate(`/team/${team.teamname}`);
+  };
+
   return (
     <Wrapper>
-      <TeamHeading onClick={handleSelectTeam}>
-        <div {...getToggleProps()}>
+      <TeamHeading>
+        <CollapseMember {...getToggleProps()}>
           {isExpanded ? (
             <Arrow
               style={{
@@ -101,12 +113,16 @@ function Team({teamname}: TeamProps) {
           ) : (
             <Arrow />
           )}
-        </div>
-        <span>{teamname}</span>
+        </CollapseMember>
+        {/* <span onClick={handleSelectTeam}>{team.teamname}</span> */}
+        <Link to={`/team/${team.teamname}`} state={team}>{team.teamname}</Link>
+        <CollapseMember style={{position: "absolute", right: 0}}>
+        <FaBeer />
+        </CollapseMember>
       </TeamHeading>
       <Members {...getCollapseProps()}>
-        {users?.map((member, i) => (
-          <Member key={i}>{member.displayname}</Member>
+        {team.users?.map((user, i) => (
+          <Member key={i}>{user.displayname}</Member>
         ))}
       </Members>
     </Wrapper>

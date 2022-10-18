@@ -7,6 +7,8 @@ export type TypeUserInfo = {
   username: string;
   displayname: string;
   email: string;
+  invitations: string[];
+  teams: TypeTeam[]
 };
 
 export type TypeSignupForm = {
@@ -18,12 +20,26 @@ export type TypeSignupForm = {
 
 export type TypeTeam = {
   teamname: string;
-  members: TypeUserInfo[] | null;
-  cards: TypeCards[] | null;
+  users: TypeMember[];
+}
+
+export type TypeMember = {
+  displayname: string;
+  email: string;
+  role: string;
+  username: string;
 }
 
 export type TypeCards = {
-  cardId: number;
+  cardname: string;
   content: string;
-  cardType: number;
+  cardType: 'private' | 'public';
+  user: {
+      username?: string;
+      displayname?: string;
+      email?: string;
+  },
+  team: {
+      teamname: string;
+  }
 };

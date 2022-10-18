@@ -1,10 +1,4 @@
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useViewportScroll,
-  Variants,
-} from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 import Card from './Card';
@@ -14,7 +8,7 @@ const Wrapper = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   margin: 0 30px;
-  height: 280px;
+  height: 300px;
 `;
 const Title = styled(motion.div)`
   width: 180px;
@@ -73,7 +67,7 @@ function Cards(props: CardsProps) {
     >
       <Title variants={title}>{props.title}</Title>
       <CardContainer>
-        {props.data.slice(0, 8).map((card, i) => (
+        {props.data.slice(0, 5).map((card, i) => (
           <Card key={i} id={i} total={props.data.length} />
         ))}
       </CardContainer>
