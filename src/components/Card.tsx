@@ -26,8 +26,14 @@ interface CardProps {
   card: TypeCard;
 }
 
-function Card(props: CardProps) {
-  return <Wrapper>{props.card.cardname}</Wrapper>;
+
+function Card({card}: CardProps) {
+
+  const cardClick = () => {
+    console.log(card) 
+  }
+
+  return <Wrapper onClick={cardClick}>{card.cardname}</Wrapper>;
 }
 
 export default React.memo(Card);
