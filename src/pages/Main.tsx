@@ -66,6 +66,7 @@ function Main() {
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
+    pathname === '/team/me' && setAddTeamModalOpen(true);
 
     // GET USER INFO BY TOKEN
     setIsFetching(true);
