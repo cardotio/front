@@ -129,7 +129,7 @@ function Team({ team }: TeamProps) {
           {team.teamname}
         </Link>
         <CollapseMember style={{ position: 'absolute', right: 0 }}>
-          <FaBeer />
+          <FaBeer onClick={() => navigate(`/invite/${team.teamname}`)} />
         </CollapseMember>
       </TeamHeading>
       <Members {...getCollapseProps()}>

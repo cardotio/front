@@ -68,26 +68,43 @@ function Main() {
     if (!token || token === '') navigate('/login');
 
     // GET USER INFO BY TOKEN
-    async function fetchMainData() {
-      setIsFetching(true);
-      console.log('GET MY INFO: /users/me');
-      await axios
-        .get(API_URL + '/users/me', {
-          headers: {
-            Authorization: `${token}`,
-          },
-        })
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          setUserInfo(response.data);
-          setMyTeams(response.data.teams);
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-        });
-      setIsFetching(false);
-    }
-    fetchMainData();
+    setIsFetching(true);
+    console.log('GET MY INFO: /users/me');
+    axios
+      .get(API_URL + '/users/me', {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+      .then((response: AxiosResponse) => {
+        console.log(response);
+        setUserInfo(response.data);
+        setMyTeams(response.data.teams);
+
+        console.log(
+          `GET TEAM INFO: /teams/${response.data.teams[0].teamname}/cards`,
+        );
+        setTeamInfoFetching(true);
+        axios
+          .get(API_URL + `/teams/${response.data.teams[0].teamname}/cards`, {
+            headers: {
+              Authorization: `${token}`,
+            },
+          })
+          .then((response: AxiosResponse) => {
+            console.log(response);
+            setCards(response.data);
+          })
+          .catch((error: AxiosError) => {
+            console.log(error);
+          })
+          .finally(() => setTeamInfoFetching(false));
+        navigate(`/team/${response.data.teams[0].teamname}`);
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
+    setIsFetching(false);
   }, []);
 
   const handleAddCard = () => {
@@ -99,12 +116,8 @@ function Main() {
       <LeftSideBar isFetching={isFetching} />
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
-      {pathname.includes('/team/me') ? (
-        <Container>
-          <div>me</div>
-        </Container>
-      ) : teamInfoFetching ? (
-        <div style={{ color: 'white' }}>Loading</div>
+      {teamInfoFetching ? (
+        <div style={{ color: 'white' }}>Loading...</div>
       ) : (
         <Container>
           {cards.map((card, i) => (
