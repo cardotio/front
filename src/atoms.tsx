@@ -23,7 +23,10 @@ export const addCardModalOpenAtom = atom({
   key: 'addCardModalOpen',
   default: false,
 });
-
+export const settingModalOpenAtom = atom({
+  key: 'settingModalOpen',
+  default: false,
+});
 export const myTeamsAtom = atom<TypeTeam[]>({ key: 'myTeams', default: [] });
 
 export const currentCardsAtom = atom<TypeCard[]>({

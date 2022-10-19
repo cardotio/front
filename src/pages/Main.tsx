@@ -13,6 +13,7 @@ import {
   addCardModalOpenAtom,
   currentCardsAtom,
   teamInfoFetchingAtom,
+  settingModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -20,6 +21,7 @@ import { API_URL } from 'api';
 import AddCardModal from 'components/AddCardModal';
 import Card from 'components/Card';
 import AddCard from 'components/AddCard';
+import TeamSettings from 'components/TeamSettings';
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,6 +60,8 @@ function Main() {
     useRecoilState(addTeamModalOpenAtom);
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
+  const [settomgModalOpen, setSettomgModalOpen] =
+    useRecoilState(settingModalOpenAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
@@ -117,6 +121,7 @@ function Main() {
       <LeftSideBar isFetching={isFetching} />
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
+      <TeamSettings isOpen={settomgModalOpen} />
       {teamInfoFetching ? (
         <div style={{ color: 'white' }}>Loading...</div>
       ) : (

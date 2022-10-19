@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { IoSettingsOutline, IoCalendarNumberOutline } from 'react-icons/io5';
+import { useRecoilState } from 'recoil';
+import { settingModalOpenAtom } from 'atoms';
 
 const Header = styled.div`
   display: flex;
@@ -86,6 +88,8 @@ interface Props {
 }
 
 function Teams({ teamname }: Props) {
+  const [settingModalOpen, setSettingModalOpen] =
+    useRecoilState(settingModalOpenAtom);
   return (
     <Header>
       <HeaderLeft>
@@ -94,14 +98,14 @@ function Teams({ teamname }: Props) {
       <HeaderRight>
         <HeaderTeamname>{teamname}</HeaderTeamname>
         <HeaderTeamSet>
-          <Link to="/team/me">
+          <a onClick={() => setSettingModalOpen(true)}>
             <IoSettingsOutline />
             Team Settings
-          </Link>
-          <Link to="/team/me">
+          </a>
+          <a>
             <IoCalendarNumberOutline />
             Team Plan
-          </Link>
+          </a>
         </HeaderTeamSet>
         <HeaderTeamPub>2022/1/17 published</HeaderTeamPub>
       </HeaderRight>
