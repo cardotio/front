@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { TypeLoginForm, TypeSignupForm } from 'types';
 import { ReactComponent as Logo } from '../images/logo.svg';
@@ -170,6 +170,7 @@ function Login() {
     console.log('LOGIN: /auth');
     setIsFetching(true);
     setIsAuth(false);
+
     axios
       .post(API_URL + '/auth', { ...loginData })
       .then((response: AxiosResponse) => {
@@ -180,8 +181,10 @@ function Login() {
       .catch((error: AxiosError) => {
         console.log(error);
         error.response?.status == 401 &&
-          setServerErrorMessage(' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.');
-        error.code === "ERR_NETWORK" &&
+          setServerErrorMessage(
+            ' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.',
+          );
+        error.code === 'ERR_NETWORK' &&
           setServerErrorMessage('일시적인 오류로 서비스에 접속할 수 없습니다.');
       })
       .finally(() => {
@@ -204,8 +207,10 @@ function Login() {
         console.log(error);
         setServerError(true);
         error.response?.status === 409 &&
-          setServerErrorMessage(' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.');
-        error.code === "ERR_NETWORK" &&
+          setServerErrorMessage(
+            ' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.',
+          );
+        error.code === 'ERR_NETWORK' &&
           setServerErrorMessage('일시적인 오류로 서비스에 접속할 수 없습니다.');
       })
       .finally(() => {
@@ -380,9 +385,13 @@ function Login() {
                     {errorsSignup.password.message}
                   </ErrorMessageArea>
                 ) : errorsSignup.email ? (
-                  <ErrorMessageArea>{errorsSignup.email.message}</ErrorMessageArea>
+                  <ErrorMessageArea>
+                    {errorsSignup.email.message}
+                  </ErrorMessageArea>
                 ) : errorsSignup.role ? (
-                  <ErrorMessageArea>{errorsSignup.role.message}</ErrorMessageArea>
+                  <ErrorMessageArea>
+                    {errorsSignup.role.message}
+                  </ErrorMessageArea>
                 ) : (
                   serverError && (
                     <ErrorMessageArea>{serverErrorMessage}</ErrorMessageArea>

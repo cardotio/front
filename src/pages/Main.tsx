@@ -1,7 +1,7 @@
 import Cards from 'components/Cards';
 import LeftSideBar from 'components/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -12,11 +12,14 @@ import {
   myTeamsAtom,
   addCardModalOpenAtom,
   currentCardsAtom,
+  teamInfoFetchingAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import AddCardModal from 'components/AddCardModal';
+import Card from 'components/Card';
+import AddCard from 'components/AddCard';
 
 const Wrapper = styled.div`
   display: flex;
@@ -50,14 +53,15 @@ function Main() {
   const navigate = useNavigate();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
-  const [isMainFetching, setIsMainFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
-  const [cards, setCards] =
-    useRecoilState(currentCardsAtom);
+  const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
+  const [teamInfoFetching, setTeamInfoFetching] =
+    useRecoilState(teamInfoFetchingAtom);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -65,7 +69,7 @@ function Main() {
 
     // GET USER INFO BY TOKEN
     async function fetchMainData() {
-      setIsMainFetching(true);
+      setIsFetching(true);
       console.log('GET MY INFO: /users/me');
       await axios
         .get(API_URL + '/users/me', {
@@ -81,32 +85,33 @@ function Main() {
         .catch((error: AxiosError) => {
           console.log(error);
         });
-      setIsMainFetching(false);
+      setIsFetching(false);
     }
     fetchMainData();
   }, []);
 
-  const onAddCard = () => {
+  const handleAddCard = () => {
     setAddCardModalOpen(true);
-  }
+  };
 
   return (
     <Wrapper>
-      {!isMainFetching && <LeftSideBar />}
+      <LeftSideBar isFetching={isFetching} />
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
       {pathname.includes('/team/me') ? (
         <Container>
           <div>me</div>
         </Container>
+      ) : teamInfoFetching ? (
+        <div style={{ color: 'white' }}>Loading</div>
       ) : (
-        <>
-        <button onClick={onAddCard}>Add Card</button>
         <Container>
-          {cards.map((card, i) => 
-            <div key={i} style={{background:"#fff", padding: "5px"}}>{card.cardname}</div>)}
+          {cards.map((card, i) => (
+            <Card key={i} card={card} />
+          ))}
+          <AddCard onClick={handleAddCard} />
         </Container>
-        </>
       )}
       <RightSideBar />
     </Wrapper>

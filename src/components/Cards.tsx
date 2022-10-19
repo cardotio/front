@@ -68,9 +68,9 @@ function Cards(props: CardsProps) {
     >
       <Title variants={title}>{props.title}</Title>
       <CardContainer>
-        {props.data.slice(0, 5).map((card, i) => (
+        {/* {props.data.slice(0, 5).map((card, i) => (
           <Card key={i} id={i} total={props.data.length} />
-        ))}
+        ))} */}
       </CardContainer>
     </Wrapper>
   );

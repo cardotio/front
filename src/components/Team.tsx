@@ -1,5 +1,11 @@
 import { API_URL } from 'api';
-import { currentCardsAtom, currentUsersAtom, userInfoAtom, userTokenAtom } from 'atoms';
+import {
+  currentCardsAtom,
+  currentUsersAtom,
+  userInfoAtom,
+  userTokenAtom,
+  teamInfoFetchingAtom,
+} from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import Dropdown from 'rc-dropdown';
 import Menu, { MenuItem } from 'rc-menu';
@@ -73,14 +79,16 @@ interface TeamProps {
 }
 
 function Team({ team }: TeamProps) {
-  const { getCollapseProps, getToggleProps, isExpanded } =
-    useCollapse();
+  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
+  const [teamInfoFetching, setTeamInfoFetching] =
+    useRecoilState(teamInfoFetchingAtom);
   const navigate = useNavigate();
 
   const handleSelectTeam = () => {
     console.log(`GET TEAM INFO: /teams/${team.teamname}/cards`);
+    setTeamInfoFetching(true);
     axios
       .get(API_URL + `/teams/${team.teamname}/cards`, {
         headers: {
@@ -93,7 +101,8 @@ function Team({ team }: TeamProps) {
       })
       .catch((error: AxiosError) => {
         console.log(error);
-      });
+      })
+      .finally(() => setTeamInfoFetching(false));
     navigate(`/team/${team.teamname}`);
   };
 
@@ -112,9 +121,15 @@ function Team({ team }: TeamProps) {
           )}
         </CollapseMember>
         {/* <span onClick={handleSelectTeam}>{team.teamname}</span> */}
-        <Link to={`/team/${team.teamname}`} state={team} onClick={handleSelectTeam}>{team.teamname}</Link>
-        <CollapseMember style={{position: "absolute", right: 0}}>
-        <FaBeer />
+        <Link
+          to={`/team/${team.teamname}`}
+          state={team}
+          onClick={handleSelectTeam}
+        >
+          {team.teamname}
+        </Link>
+        <CollapseMember style={{ position: 'absolute', right: 0 }}>
+          <FaBeer />
         </CollapseMember>
       </TeamHeading>
       <Members {...getCollapseProps()}>

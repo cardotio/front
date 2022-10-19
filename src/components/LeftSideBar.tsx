@@ -10,7 +10,7 @@ const Wrapper = styled.aside`
   min-width: 240px;
   height: 100vh;
   background: #f7f7f7;
-  padding: 15px 5px; 
+  padding: 15px 5px;
   border-right: 1px solid lightgray;
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
@@ -39,7 +39,11 @@ const Teams = styled.div`
   cursor: pointer;
 `;
 
-function LeftSideBar() {
+interface LeftBarProps {
+  isFetching: boolean;
+}
+
+function LeftSideBar({ isFetching }: LeftBarProps) {
   const navigate = useNavigate();
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
@@ -49,20 +53,26 @@ function LeftSideBar() {
   const onAddTeam = () => {
     setAddTeamModalOpen(true);
   };
-  
+
   return (
     <Wrapper>
-      <Header>
-        <div onClick={() => navigate('/team/me')}>
-          {`${userInfo?.displayname}님의 workspace`}
-        </div>
-        <button onClick={onAddTeam}>+</button>
-      </Header>
-      <Teams>
-        {myTeams.map((team, i) => (
-          <Team key={i} team={team} />
-        ))}
-      </Teams>
+      {isFetching ? (
+        <div>Loading</div>
+      ) : (
+        <>
+          <Header>
+            <div onClick={() => navigate('/team/me')}>
+              {`${userInfo?.displayname}님의 workspace`}
+            </div>
+            <button onClick={onAddTeam}>+</button>
+          </Header>
+          <Teams>
+            {myTeams.map((team, i) => (
+              <Team key={i} team={team} />
+            ))}
+          </Teams>
+        </>
+      )}
     </Wrapper>
   );
 }
