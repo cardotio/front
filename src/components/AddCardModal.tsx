@@ -3,7 +3,13 @@ import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { addCardModalOpenAtom, currentCardsAtom, currentUsersAtom, myTeamsAtom, userInfoAtom, userTokenAtom } from 'atoms';
+import {
+  addCardModalOpenAtom,
+  currentCardsAtom,
+  myTeamsAtom,
+  userInfoAtom,
+  userTokenAtom,
+} from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
@@ -96,7 +102,7 @@ function AddCardModal({ isOpen }: IModal) {
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [isFetching, setIsFetching] = useState(false);
   const location = useLocation();
-  const teamname = location.pathname.split("/")[2];
+  const teamname = location.pathname.split('/')[2];
   const {
     register,
     handleSubmit,
@@ -108,10 +114,11 @@ function AddCardModal({ isOpen }: IModal) {
     setIsFetching(true);
     axios
       .post(
-        API_URL + `/teams/${teamname}/cards`, {
-            cardname: cardname,
-            content: "",
-            type: "private",
+        API_URL + `/teams/${teamname}/cards`,
+        {
+          cardname: cardname,
+          content: '',
+          type: 'private',
         },
         {
           headers: {
@@ -122,19 +129,19 @@ function AddCardModal({ isOpen }: IModal) {
       .then((response: AxiosResponse) => {
         console.log(response);
         const newCard: TypeCard = {
-            cardname,
-            content: "Card Created",
-            type: 'private',
-            user: {
-                username: response.data.user.username,
-                displayname: response.data.user.displayname,
-                email: response.data.user.email,
-            },
-            team: {
-                teamname: response.data.team.teamname
-            }
-        }
-        setCards(prev => [...prev, newCard])
+          cardname,
+          content: 'Card Created',
+          type: 'private',
+          user: {
+            username: response.data.user.username,
+            displayname: response.data.user.displayname,
+            email: response.data.user.email,
+          },
+          team: {
+            teamname: response.data.team.teamname,
+          },
+        };
+        setCards((prev) => [...prev, newCard]);
       })
       .catch((error: AxiosError) => {
         console.log(error);

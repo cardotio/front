@@ -30,11 +30,6 @@ export const currentCardsAtom = atom<TypeCard[]>({
   key: 'currentCards',
   default: [],
 });
-export const currentUsersAtom = atom<TypeUserInfo[] | null>({
-  key: 'currentUsers',
-  default: [],
-});
-
 export const teamInfoFetchingAtom = atom({
   key: 'teamInfoFetching',
   default: false,

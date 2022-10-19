@@ -1,7 +1,6 @@
 import { API_URL } from 'api';
 import {
   currentCardsAtom,
-  currentUsersAtom,
   userInfoAtom,
   userTokenAtom,
   teamInfoFetchingAtom,
