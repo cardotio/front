@@ -1,19 +1,12 @@
 import { API_URL } from 'api';
-import {
-  currentCardsAtom,
-  userInfoAtom,
-  userTokenAtom,
-  teamInfoFetchingAtom,
-} from 'atoms';
+import { currentCardsAtom, userTokenAtom, teamInfoFetchingAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import Dropdown from 'rc-dropdown';
-import Menu, { MenuItem } from 'rc-menu';
-import React, { useState } from 'react';
+import React from 'react';
 import useCollapse from 'react-collapsed';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { TypeTeam, TypeUserInfo } from 'types';
+import { TypeTeam } from 'types';
 import { ReactComponent as Arrow } from '../images/arrow.svg';
 import { FaBeer } from 'react-icons/fa';
 
@@ -27,7 +20,7 @@ const TeamHeading = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  padding: 5px 0px;
+  padding: 5px;
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
   cursor: pointer;
@@ -41,13 +34,17 @@ const TeamHeading = styled.div`
   }
 `;
 
-const CollapseMember = styled.div`
+const CollapseMember = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 4px;
   margin-right: 8px;
   transition: all 0.2s linear;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
   svg {
     scale: 0.8;
     fill: #6c6c6c;
@@ -85,28 +82,32 @@ function Team({ team }: TeamProps) {
     useRecoilState(teamInfoFetchingAtom);
   const navigate = useNavigate();
 
-  const handleSelectTeam = () => {
-    console.log(`GET TEAM INFO: /teams/${team.teamname}/cards`);
-    setTeamInfoFetching(true);
-    axios
-      .get(API_URL + `/teams/${team.teamname}/cards`, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      })
-      .then((response: AxiosResponse) => {
-        console.log(response);
-        setCards(response.data);
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-      })
-      .finally(() => setTeamInfoFetching(false));
-    navigate(`/team/${team.teamname}`);
+  const handleSelectTeam = (e: any) => {
+    function fetchData() {
+      console.log(`GET TEAM INFO: /teams/${team.teamname}/cards`);
+      setTeamInfoFetching(true);
+      axios
+        .get(API_URL + `/teams/${team.teamname}/cards`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        })
+        .then((response: AxiosResponse) => {
+          console.log(response);
+          setCards(response.data);
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+        })
+        .finally(() => setTeamInfoFetching(false));
+      navigate(`/team/${team.teamname}`);
+    }
+
+    e.target.tagName !== 'svg' && e.target.tagName !== 'path' && fetchData();
   };
 
   return (
-    <Wrapper>
+    <Wrapper onClick={handleSelectTeam}>
       <TeamHeading>
         <CollapseMember {...getToggleProps()}>
           {isExpanded ? (
@@ -119,16 +120,9 @@ function Team({ team }: TeamProps) {
             <Arrow />
           )}
         </CollapseMember>
-        {/* <span onClick={handleSelectTeam}>{team.teamname}</span> */}
-        <Link
-          to={`/team/${team.teamname}`}
-          state={team}
-          onClick={handleSelectTeam}
-        >
-          {team.teamname}
-        </Link>
+        <span>{team.teamname}</span>
         <CollapseMember style={{ position: 'absolute', right: 0 }}>
-          <FaBeer onClick={() => navigate(`/invite/${team.teamname}`)} />
+          <FaBeer />
         </CollapseMember>
       </TeamHeading>
       <Members {...getCollapseProps()}>

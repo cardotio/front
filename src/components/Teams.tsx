@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { IoSettingsOutline, IoCalendarNumberOutline } from 'react-icons/io5';
 import { useRecoilState } from 'recoil';
-import { settingModalOpenAtom } from 'atoms';
+import { settingModalOpenAtom, showDropDownAtom } from 'atoms';
 
 const Header = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
   height: 84px;
   padding: 7px 10px;
   margin-bottom: 14px;
@@ -18,6 +18,12 @@ const Header = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   cursor: pointer;
+  &:hover {
+    background: #e7e7e7;
+  }
+  &:active {
+    background: #d8d8d8;
+  }
 `;
 const HeaderLeft = styled.div`
   display: flex;
@@ -85,20 +91,33 @@ const HeaderTeamPub = styled.div`
 
 interface Props {
   teamname: string;
+  isFetching: boolean;
 }
 
-function Teams({ teamname }: Props) {
+function Teams({ teamname, isFetching }: Props) {
   const [settingModalOpen, setSettingModalOpen] =
     useRecoilState(settingModalOpenAtom);
-  return (
-    <Header>
+  const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
+
+  const handleShowTeamSetting = () => {
+    setSettingModalOpen(true);
+  };
+
+  const handleShowDropDown = (e: any) => {
+    e.target.tagName !== 'A' && setShowDropDown((prev) => !prev);
+  };
+
+  return isFetching ? (
+    <div>is loading...</div>
+  ) : (
+    <Header onClick={handleShowDropDown}>
       <HeaderLeft>
         <HeaderImg />
       </HeaderLeft>
       <HeaderRight>
         <HeaderTeamname>{teamname}</HeaderTeamname>
         <HeaderTeamSet>
-          <a onClick={() => setSettingModalOpen(true)}>
+          <a onClick={handleShowTeamSetting}>
             <IoSettingsOutline />
             Team Settings
           </a>

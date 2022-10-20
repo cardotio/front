@@ -1,7 +1,5 @@
-import { API_URL } from 'api';
-import axios from 'axios';
-import { atom, selector, selectorFamily } from 'recoil';
-import { TypeCard, TypeLoginForm, TypeTeam, TypeUserInfo } from 'types';
+import { atom } from 'recoil';
+import { TypeCard, TypeTeam, TypeUserInfo } from 'types';
 
 export const isDarkAtom = atom({ key: 'isDark', default: false });
 
@@ -27,6 +25,11 @@ export const settingModalOpenAtom = atom({
   key: 'settingModalOpen',
   default: false,
 });
+export const showDropDownAtom = atom({
+  key: 'showDropDown',
+  default: false,
+});
+
 export const myTeamsAtom = atom<TypeTeam[]>({ key: 'myTeams', default: [] });
 
 export const currentCardsAtom = atom<TypeCard[]>({
