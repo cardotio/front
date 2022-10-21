@@ -2,6 +2,8 @@ import { motion, Variants } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 import { TypeCard } from 'types';
+import { Draggable } from 'react-beautiful-dnd';
+import { isPropertySignature } from 'typescript';
 
 const Wrapper = styled(motion.div)`
   width: 180px;
@@ -23,17 +25,35 @@ const Wrapper = styled(motion.div)`
 `;
 
 interface CardProps {
+  index: number;
   card: TypeCard;
+  id: string;
 }
 
 
-function Card({card}: CardProps) {
+function Card({index, card, id}: CardProps) {
 
   const cardClick = () => {
     console.log(card) 
   }
 
-  return <Wrapper onClick={cardClick}>{card.cardname}</Wrapper>;
+  return (
+    <Draggable draggableId={id} index={index}>
+      {provided=> (
+        <div
+        ref={provided.innerRef}
+        {...provided.dragHandleProps}
+        {...provided.draggableProps}
+        >
+          <Wrapper 
+            onClick={cardClick}
+          >
+            {card.cardname}
+          </Wrapper>
+        </div>
+      )}
+    </Draggable>
+  )
 }
 
 export default React.memo(Card);

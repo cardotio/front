@@ -1,7 +1,8 @@
-import Cards from 'components/Cards';
+import Deck from 'components/Deck';
 import LeftSideBar from 'components/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
 import React, { Suspense, useEffect, useState } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd'; 
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -22,6 +23,7 @@ import AddCardModal from 'components/AddCardModal';
 import Card from 'components/Card';
 import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
+import { TypeCard } from 'types';
 
 const Wrapper = styled.div`
   display: flex;
@@ -116,6 +118,37 @@ function Main() {
     setAddCardModalOpen(true);
   };
 
+  const test: TypeCard[] = [{
+    cardname: "cardcard",
+    content: "test",
+    type: 'public',
+    user: {
+        username: "han",
+        displayname: "han",
+        email: "akjfdsklaj@akj.com",
+    },
+    team: {
+        teamname: "cardio",
+    }
+  },
+  {
+    cardname: "cardcard2",
+    content: "test",
+    type: 'public',
+    user: {
+        username: "han",
+        displayname: "han",
+        email: "akjfdsklaj@akj.com",
+    },
+    team: {
+        teamname: "cardio",
+    }
+  }]
+
+  const OnDragEnd = () => {
+
+  }
+
   return (
     <Wrapper>
       <LeftSideBar isFetching={isFetching} />
@@ -125,12 +158,16 @@ function Main() {
       {teamInfoFetching ? (
         <div style={{ color: 'white' }}>Loading...</div>
       ) : (
-        <Container>
-          {cards.map((card, i) => (
-            <Card key={i} card={card} />
-          ))}
-          <AddCard onClick={handleAddCard} />
-        </Container>
+        <DragDropContext onDragEnd={OnDragEnd}>
+          <Container>
+            <AddCard onClick={handleAddCard} />
+            <Deck title={"deck1"} data={test} index={1}></Deck>
+            <Deck title={"deck2"} data={test} index={2}></Deck>
+            {/* {cards.map((card, i) => (
+                <Card key={i} index={i} card={card} />
+              ))} */}
+          </Container>
+        </DragDropContext>
       )}
       <RightSideBar />
     </Wrapper>
