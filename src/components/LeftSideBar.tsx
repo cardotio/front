@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Members from './Members';
 import Team from './Team';
 import Teams from './Teams';
+import { IoClose } from 'react-icons/io5';
 
 const Wrapper = styled.aside`
   position: relative;
@@ -62,9 +63,25 @@ function LeftSideBar({ isFetching }: LeftBarProps) {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
           >
-            {myTeams.map((team, i) => (
-              <Team key={i} team={team} />
-            ))}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  background: '#eeeeee',
+                }}
+                onClick={() => setShowDropDown(false)}
+              >
+                <IoClose />
+              </div>
+            </div>
+            <div>
+              {myTeams.map((team, i) => (
+                <Team key={i} team={team} />
+              ))}
+            </div>
           </DropDown>
         )}
       </AnimatePresence>
