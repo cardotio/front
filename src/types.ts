@@ -44,3 +44,8 @@ export type TypeCard = {
       teamname: string;
   }
 };
+
+export type TypeDeck = {
+  deckname: string;
+  deckid: string;
+};
