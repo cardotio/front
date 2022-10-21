@@ -4,6 +4,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
+import Members from './Members';
 import Team from './Team';
 import Teams from './Teams';
 
@@ -72,6 +73,7 @@ function LeftSideBar({ isFetching }: LeftBarProps) {
       ) : (
         <>
           <Teams teamname={teamname} isFetching={isFetching} />
+          <Members teamname={teamname} />
         </>
       )}
       <button onClick={onAddTeam}>+</button>
