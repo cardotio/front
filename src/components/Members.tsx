@@ -100,7 +100,7 @@ function Members({ teamname }: props) {
           </ImageContainer>
           <MemberInfo>
             <Header>
-              <DisplayName>{user.username}</DisplayName>
+              <DisplayName>{user.displayname}</DisplayName>
               <Role>{user.role}</Role>
             </Header>
             <Description>{user.email}</Description>

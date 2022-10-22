@@ -1,8 +1,8 @@
 import Deck from 'components/Deck';
 import LeftSideBar from 'components/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
-import React, { Suspense, useEffect, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd'; 
+import React, { useEffect, useState } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -20,7 +20,6 @@ import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import AddCardModal from 'components/AddCardModal';
-import Card from 'components/Card';
 import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
 import { TypeCard } from 'types';
@@ -42,15 +41,6 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   padding: 36px 50px;
-`;
-
-const CardsGrid = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background: #00000050;
 `;
 
 function Main() {
@@ -118,36 +108,36 @@ function Main() {
     setAddCardModalOpen(true);
   };
 
-  const test: TypeCard[] = [{
-    cardname: "cardcard",
-    content: "test",
-    type: 'public',
-    user: {
-        username: "han",
-        displayname: "han",
-        email: "akjfdsklaj@akj.com",
+  const test: TypeCard[] = [
+    {
+      cardname: 'cardcard',
+      content: 'test',
+      type: 'public',
+      user: {
+        username: 'han',
+        displayname: 'han',
+        email: 'akjfdsklaj@akj.com',
+      },
+      team: {
+        teamname: 'cardio',
+      },
     },
-    team: {
-        teamname: "cardio",
-    }
-  },
-  {
-    cardname: "cardcard2",
-    content: "test",
-    type: 'public',
-    user: {
-        username: "han",
-        displayname: "han",
-        email: "akjfdsklaj@akj.com",
+    {
+      cardname: 'cardcard2',
+      content: 'test',
+      type: 'public',
+      user: {
+        username: 'han',
+        displayname: 'han',
+        email: 'akjfdsklaj@akj.com',
+      },
+      team: {
+        teamname: 'cardio',
+      },
     },
-    team: {
-        teamname: "cardio",
-    }
-  }]
+  ];
 
-  const OnDragEnd = () => {
-
-  }
+  const OnDragEnd = () => {};
 
   return (
     <Wrapper>
@@ -161,8 +151,8 @@ function Main() {
         <DragDropContext onDragEnd={OnDragEnd}>
           <Container>
             <AddCard onClick={handleAddCard} />
-            <Deck title={"deck1"} data={test} index={1}></Deck>
-            <Deck title={"deck2"} data={test} index={2}></Deck>
+            <Deck title={'deck1'} data={test} index={1}></Deck>
+            <Deck title={'deck2'} data={test} index={2}></Deck>
             {/* {cards.map((card, i) => (
                 <Card key={i} index={i} card={card} />
               ))} */}
