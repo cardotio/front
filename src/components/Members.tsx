@@ -1,4 +1,4 @@
-import { myTeamsAtom } from 'atoms';
+import { myTeamsAtom, selectedUserAtom } from 'atoms';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -36,6 +36,8 @@ function Members({ teamname }: props) {
 
   console.log(myTeams.filter((team) => team.teamname === teamname));
 
+  const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
+
   useEffect(() => {
     myTeams.filter((team) => team.teamname === teamname).length > 0 &&
       setUsers(myTeams.filter((team) => team.teamname === teamname)[0].users);
@@ -44,7 +46,9 @@ function Members({ teamname }: props) {
   return (
     <Wrapper>
       {users?.map((user, i) => (
-        <MemberContainer key={i}>
+        <MemberContainer 
+          onClick={() => setSelectedUser(user)}
+          key={i}>
           <div>{user.displayname}</div>
           <div>{user.role}</div>
         </MemberContainer>

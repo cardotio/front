@@ -16,34 +16,7 @@ const Wrapper = styled.aside`
 	background: #ffffff;
 `;
 
-const MessageBox = styled.div`
-	display: flex;
-	width: 100%;
-	position: relative;
-`
 
-const MyBox = styled.div`
-	width: 70%;
-	display: flex;
-	position: relative;
-	right: 0;
-	flex-direction: column;
-	background-color: #cfcfcf;  
-	padding: 5px;
-`
-
-const Opponent = styled.div`
-	display: flex;
-	width: 70%;
-	flex-direction: column;
-	position: relative;
-	text-align: left; 
-	left: 0;
-`
-const OpponentBox = styled.div`
-	background-color: #cfcfcf;  
-	padding: 5px;
-`
 const Input = styled.input`
 	width: 80%;
 	margin: 10px auto;
@@ -96,14 +69,14 @@ function RightSideBar() {
 			content: messageData.message,
 			receiver: selectedUser?.username,
 			type: INDIVISUAL,
-			teamname: selectedTeam
+			teamname: selectedTeam?.teamname
 		}));
 		
 	}
 
 	/** 팀이 가지고 있는 모든 메세지들을 가져옴 */
 	function loadTeamMessages() {
-		axios.get(API_URL + '/teams/' + selectedTeam + '/messages', {
+		axios.get(API_URL + '/teams/' + selectedTeam?.teamname + '/messages', {
 			headers: { Authorization: `${token}` },
 		}).then((response: AxiosResponse) => {
 			setMessages(response.data);
@@ -156,7 +129,7 @@ function RightSideBar() {
 					: <div className="message message-opponent">
 
 						<div className="message-sender-name">{message.senderDisplayname}</div>
-						<div className="message-box message-box-opponent">
+						<div className="message-box message-box -opponent">
 							<div>{message.content}</div>
 							<div className='created-date'>{message.createdDate.replaceAll("T", " ")}</div>
 						</div>

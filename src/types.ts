@@ -7,8 +7,10 @@ export type TypeUserInfo = {
   username: string;
   displayname: string;
   email: string;
-  invitations: string[];
-  teams: TypeTeam[]
+  role?: string;
+  description?: string;
+  invitations?: string[];
+  teams?: TypeTeam[]
 };
 
 export type TypeSignupForm = {
@@ -49,3 +51,12 @@ export type TypeDeck = {
   deckname: string;
   deckid: string;
 };
+
+export type TypeMessageInfo = {
+  content: string;
+  sender: string;
+  senderDisplayname: string;
+  receiver: string;
+  createdDate: string;
+  type: boolean;
+}

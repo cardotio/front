@@ -1,5 +1,5 @@
 import { API_URL } from 'api';
-import { currentCardsAtom, userTokenAtom, teamInfoFetchingAtom } from 'atoms';
+import { currentCardsAtom, userTokenAtom, teamInfoFetchingAtom, selectedTeamAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import React from 'react';
 import useCollapse from 'react-collapsed';
@@ -80,6 +80,7 @@ function Team({ team }: TeamProps) {
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const navigate = useNavigate();
 
   const handleSelectTeam = (e: any) => {
@@ -102,7 +103,7 @@ function Team({ team }: TeamProps) {
         .finally(() => setTeamInfoFetching(false));
       navigate(`/team/${team.teamname}`);
     }
-
+    setSelectedTeam(team);
     e.target.tagName !== 'svg' && e.target.tagName !== 'path' && fetchData();
   };
 
