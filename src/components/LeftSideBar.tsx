@@ -1,4 +1,4 @@
-import { addTeamModalOpenAtom, myTeamsAtom, showDropDownAtom } from 'atoms';
+import { addTeamModalOpenAtom, myTeamsAtom, selectedTeamAtom, showDropDownAtom } from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
@@ -50,6 +50,8 @@ function LeftSideBar({ isFetching }: LeftBarProps) {
     useRecoilState(addTeamModalOpenAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
+  
+  
 
   const onAddTeam = () => {
     setAddTeamModalOpen(true);

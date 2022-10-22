@@ -1,0 +1,23 @@
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 700px;
+    overflow-y: scroll;
+}
+
+.message {
+    width: 100%;
+}
+
+.message-box{
+    background-color: #bfbfbf;
+    padding: 5px;
+}
+
+.message-box-my {
+    text-align: right;
+}
+.created-date {
+    font-size: 12px;
+}

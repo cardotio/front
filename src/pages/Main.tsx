@@ -15,6 +15,7 @@ import {
   currentCardsAtom,
   teamInfoFetchingAtom,
   settingModalOpenAtom,
+  selectedTeamAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -47,6 +48,8 @@ function Main() {
   const navigate = useNavigate();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+  
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [isFetching, setIsFetching] = useState(false);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
@@ -96,6 +99,8 @@ function Main() {
             console.log(error);
           })
           .finally(() => setTeamInfoFetching(false));
+        
+        setSelectedTeam(response.data.teams[0]);
         navigate(`/team/${response.data.teams[0].teamname}`);
       })
       .catch((error: AxiosError) => {
