@@ -16,7 +16,7 @@ const modalBgStyle = styled.div`
   height: 100vh;
   z-index: 1000;
   background-color: #00000080;
-  overflow-y: scroll;
+  overflow: scroll;
 `;
 
 function App() {
@@ -97,7 +97,7 @@ const GlobalStyle = createGlobalStyle`
     background-color:${(props) => props.theme.bgColor};
     color:${(props) => props.theme.textColor};
     transition: 0.2s background-color, 0.2s color;
-    overflow-y: scroll;
+    overflow-y: hidden;
   }
   a {
     text-decoration:none;

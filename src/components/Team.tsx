@@ -1,26 +1,28 @@
 import { API_URL } from 'api';
-import { currentCardsAtom, userTokenAtom, teamInfoFetchingAtom, selectedTeamAtom } from 'atoms';
+import {
+  currentCardsAtom,
+  userTokenAtom,
+  teamInfoFetchingAtom,
+  selectedTeamAtom,
+} from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import React from 'react';
-import useCollapse from 'react-collapsed';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { TypeTeam } from 'types';
-import { ReactComponent as Arrow } from '../images/arrow.svg';
-import { FaBeer } from 'react-icons/fa';
+import { BsThreeDots } from 'react-icons/bs';
 
 const Wrapper = styled.div`
-  padding: 5px 0;
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
   cursor: pointer;
 `;
 const TeamHeading = styled.div`
-  position: relative;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 5px;
+  padding: 10px 5px;
   border-radius: 0.125rem;
   color: ${(props) => props.theme.textColor};
   cursor: pointer;
@@ -34,39 +36,17 @@ const TeamHeading = styled.div`
   }
 `;
 
-const CollapseMember = styled.button`
+const SettingIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
-  margin-right: 8px;
-  transition: all 0.2s linear;
-  border: none;
-  outline: none;
-  padding: 0;
-  cursor: pointer;
+  border-radius: 0.125rem;
+  &:hover {
+    background: #cfcfcf;
+  }
   svg {
     scale: 0.8;
     fill: #6c6c6c;
-    transition: transform 0.2s linear;
-  }
-  &:hover {
-    background: #e5e5e5;
-  }
-`;
-
-const Members = styled.div`
-  border-radius: 0.125rem;
-  color: ${(props) => props.theme.textColor};
-  cursor: pointer;
-`;
-const Member = styled.div`
-  padding: 5px 10px;
-  border-radius: 0.125rem;
-  color: ${(props) => props.theme.textColor};
-  cursor: pointer;
-  &:hover {
-    background: #e7e7e7;
   }
 `;
 
@@ -75,7 +55,6 @@ interface TeamProps {
 }
 
 function Team({ team }: TeamProps) {
-  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
@@ -110,27 +89,11 @@ function Team({ team }: TeamProps) {
   return (
     <Wrapper onClick={handleSelectTeam}>
       <TeamHeading>
-        <CollapseMember {...getToggleProps()}>
-          {isExpanded ? (
-            <Arrow
-              style={{
-                transform: 'rotate(90deg)',
-              }}
-            />
-          ) : (
-            <Arrow />
-          )}
-        </CollapseMember>
         <span>{team.teamname}</span>
-        <CollapseMember style={{ position: 'absolute', right: 0 }}>
-          <FaBeer />
-        </CollapseMember>
+        <SettingIcon>
+          <BsThreeDots />
+        </SettingIcon>
       </TeamHeading>
-      <Members {...getCollapseProps()}>
-        {team.users?.map((user, i) => (
-          <Member key={i}>{user.displayname}</Member>
-        ))}
-      </Members>
     </Wrapper>
   );
 }

@@ -1,23 +1,28 @@
 .messages {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    height: 700px;
-    overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 700px;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.messages::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
 }
 
 .message {
-    width: 100%;
+  width: 100%;
 }
 
-.message-box{
-    background-color: #bfbfbf;
-    padding: 5px;
+.message-box {
+  background-color: #bfbfbf;
+  padding: 5px;
 }
 
 .message-box-my {
-    text-align: right;
+  text-align: right;
 }
 .created-date {
-    font-size: 12px;
+  font-size: 12px;
 }

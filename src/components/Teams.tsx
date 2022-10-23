@@ -91,10 +91,9 @@ const HeaderTeamPub = styled.div`
 
 interface Props {
   teamname: string;
-  isFetching: boolean;
 }
 
-function Teams({ teamname, isFetching }: Props) {
+function Teams({ teamname }: Props) {
   const [settingModalOpen, setSettingModalOpen] =
     useRecoilState(settingModalOpenAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
@@ -107,9 +106,7 @@ function Teams({ teamname, isFetching }: Props) {
     e.target.tagName !== 'A' && setShowDropDown((prev) => !prev);
   };
 
-  return isFetching ? (
-    <div>is loading...</div>
-  ) : (
+  return (
     <Header onClick={handleShowDropDown}>
       <HeaderLeft>
         <HeaderImg />

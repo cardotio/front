@@ -65,7 +65,8 @@ function Main() {
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
-    pathname === '/team/me' && setAddTeamModalOpen(true);
+
+    myTeams.length !== 0 && setAddTeamModalOpen(true);
 
     // GET USER INFO BY TOKEN
     setIsFetching(true);
@@ -105,8 +106,8 @@ function Main() {
       })
       .catch((error: AxiosError) => {
         console.log(error);
-      });
-    setIsFetching(false);
+      })
+      .finally(() => setIsFetching(false));
   }, []);
 
   const handleAddCard = () => {
@@ -146,7 +147,7 @@ function Main() {
 
   return (
     <Wrapper>
-      <LeftSideBar isFetching={isFetching} />
+      <LeftSideBar />
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />

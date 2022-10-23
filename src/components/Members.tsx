@@ -1,4 +1,9 @@
-import { myTeamsAtom, selectedUserAtom } from 'atoms';
+import {
+  myTeamsAtom,
+  selectedTeamAtom,
+  selectedUserAtom,
+  userInfoAtom,
+} from 'atoms';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -83,17 +88,20 @@ interface props {
 }
 
 function Members({ teamname }: props) {
+  const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [users, setUsers] = useState<TypeMember[]>([]);
-
-  console.log(myTeams.filter((team) => team.teamname === teamname));
-
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
 
   useEffect(() => {
     myTeams.filter((team) => team.teamname === teamname).length > 0 &&
-      setUsers(myTeams.filter((team) => team.teamname === teamname)[0].users);
-  });
+      setUsers(
+        myTeams
+          .filter((team) => team.teamname === teamname)[0]
+          .users.filter((user) => user.username !== myInfo?.username),
+      );
+  }, [selectedTeam]);
 
   return (
     <Wrapper>

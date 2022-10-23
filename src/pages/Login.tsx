@@ -164,6 +164,7 @@ function Login() {
   const [showLogin, setShowLogin] = useState(true);
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [serverErrorMessage, setServerErrorMessage] = useState('');
+  const [loginErrorMessage, setLoginErrorMessage] = useState('');
 
   /* Log in */
   const handleLogin = (loginData: TypeLoginForm) => {
@@ -181,11 +182,11 @@ function Login() {
       .catch((error: AxiosError) => {
         console.log(error);
         error.response?.status == 401 &&
-          setServerErrorMessage(
-            ' 이미 존재하는 아이디(로그인 전용 아이디)입니다. 다른 아이디를 입력해주세요.',
+          setLoginErrorMessage(
+            '아이디(로그인 전용) 또는 비밀번호가 일치하지 않습니다. 확인 후에 재시도해주세요.',
           );
         error.code === 'ERR_NETWORK' &&
-          setServerErrorMessage('일시적인 오류로 서비스에 접속할 수 없습니다.');
+          setLoginErrorMessage('일시적인 오류로 서비스에 접속할 수 없습니다.');
       })
       .finally(() => {
         setIsFetching(false);
@@ -279,7 +280,7 @@ function Login() {
                   <ErrorMessageArea>Please enter password</ErrorMessageArea>
                 ) : (
                   !isAuth && (
-                    <ErrorMessageArea>{serverErrorMessage}</ErrorMessageArea>
+                    <ErrorMessageArea>{loginErrorMessage}</ErrorMessageArea>
                   )
                 )}
               </Form>

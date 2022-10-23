@@ -1,4 +1,9 @@
-import { addTeamModalOpenAtom, myTeamsAtom, selectedTeamAtom, showDropDownAtom } from 'atoms';
+import {
+  addTeamModalOpenAtom,
+  myTeamsAtom,
+  selectedTeamAtom,
+  showDropDownAtom,
+} from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
@@ -25,11 +30,10 @@ const DropDown = styled(motion.div)`
   left: 250px;
   display: flex;
   flex-direction: column;
-  min-width: 250px;
+  min-width: 220px;
   max-width: 360px;
   min-height: 60px;
   max-height: 270px;
-  max-height: 70vh;
   padding: 10px;
   border-radius: 4px;
   background: white;
@@ -39,19 +43,22 @@ const DropDown = styled(motion.div)`
   overflow-y: auto;
   z-index: 10;
 `;
+const CloseContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    background: #eeeeee;
+  }
+`;
 
-interface LeftBarProps {
-  isFetching: boolean;
-}
-
-function LeftSideBar({ isFetching }: LeftBarProps) {
+function LeftSideBar() {
   const teamname = useLocation().pathname.split('/')[2];
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
-  
-  
 
   const onAddTeam = () => {
     setAddTeamModalOpen(true);
@@ -67,18 +74,9 @@ function LeftSideBar({ isFetching }: LeftBarProps) {
             exit={{ scale: 0 }}
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  background: '#eeeeee',
-                }}
-                onClick={() => setShowDropDown(false)}
-              >
+              <CloseContainer onClick={() => setShowDropDown(false)}>
                 <IoClose />
-              </div>
+              </CloseContainer>
             </div>
             <div>
               {myTeams.map((team, i) => (
@@ -88,14 +86,8 @@ function LeftSideBar({ isFetching }: LeftBarProps) {
           </DropDown>
         )}
       </AnimatePresence>
-      {isFetching ? (
-        <div>Loading</div>
-      ) : (
-        <>
-          <Teams teamname={teamname} isFetching={isFetching} />
-          <Members teamname={teamname} />
-        </>
-      )}
+      <Teams teamname={teamname} />
+      <Members teamname={teamname} />
       <button onClick={onAddTeam}>+</button>
     </Wrapper>
   );
