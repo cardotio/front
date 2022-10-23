@@ -34,7 +34,7 @@ interface CardProps {
 function Card({index, card, id}: CardProps) {
 
   const cardClick = () => {
-    console.log(card) 
+    console.log(card, index, id)
   }
 
   return (

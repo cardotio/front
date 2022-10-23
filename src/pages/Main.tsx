@@ -23,7 +23,8 @@ import { API_URL } from 'api';
 import AddCardModal from 'components/AddCardModal';
 import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
-import { TypeCard } from 'types';
+import { TypeCard, TypeDeck } from 'types';
+import { AnyNsRecord } from 'dns';
 
 const Wrapper = styled.div`
   display: flex;
@@ -113,36 +114,92 @@ function Main() {
     setAddCardModalOpen(true);
   };
 
-  const test: TypeCard[] = [
-    {
-      cardname: 'cardcard',
-      content: 'test',
-      type: 'public',
-      user: {
-        username: 'han',
-        displayname: 'han',
-        email: 'akjfdsklaj@akj.com',
-      },
-      team: {
-        teamname: 'cardio',
-      },
-    },
-    {
-      cardname: 'cardcard2',
-      content: 'test',
-      type: 'public',
-      user: {
-        username: 'han',
-        displayname: 'han',
-        email: 'akjfdsklaj@akj.com',
-      },
-      team: {
-        teamname: 'cardio',
-      },
-    },
-  ];
 
-  const OnDragEnd = () => {};
+
+  // const test: TypeCard[] = [
+  //   {
+  //     cardname: 'cardcard',
+  //     content: 'test',
+  //     type: 'public',
+  //     user: {
+  //       username: 'han',
+  //       displayname: 'han',
+  //       email: 'akjfdsklaj@akj.com',
+  //     },
+  //     team: {
+  //       teamname: 'cardio',
+  //     },
+  //   },
+  //   {
+  //     cardname: 'cardcard2',
+  //     content: 'test',
+  //     type: 'public',
+  //     user: {
+  //       username: 'han',
+  //       displayname: 'han',
+  //       email: 'akjfdsklaj@akj.com',
+  //     },
+  //     team: {
+  //       teamname: 'cardio',
+  //     },
+  //   },
+  // ];
+
+  const deckTest: TypeDeck[] = [
+    {
+      deckname: "deck1",
+      deckid: "deck1",
+      cards: cards
+    },
+    {
+      deckname: "deck2",
+      deckid: "deck2",
+      cards: cards
+    }
+  ]
+
+  // const result = {
+  //   draggableId: 'task-1',
+  //   type: "TYPE",
+  //   reason: "DROP",
+  //   source: {
+  //     droppableId: 'column-1',
+  //     index: 0,
+  //   },
+  //   destination: {
+  //     droppableId: 'column-1',
+  //     index: 1,
+  //   },
+  // };
+
+  const OnDragEnd = (result: any) => {
+    const {destination, source, draggableId} = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    
+    const deck: any = deckTest.find(e => e.deckname === source.droppableId);
+    const draggingCard: any = deck.cards.find(e => e.cardname === draggableId.replace(deck.deckname, ""))
+    // const cardIds = deck.cards.map((card) => {
+    //   return card.cardname + deck.deckname
+    // })
+    const newCards = Array.from(deck.cards);
+    newCards.splice(source.index, 1);
+    newCards.splice(destination.index, 0, draggingCard);
+    console.log(deck, draggingCard)
+    const newDeck = {
+      ...deck,
+      cards: newCards,
+    };
+  };
 
   return (
     <Wrapper>
@@ -156,11 +213,9 @@ function Main() {
         <DragDropContext onDragEnd={OnDragEnd}>
           <Container>
             <AddCard onClick={handleAddCard} />
-            <Deck title={'deck1'} data={test} index={1}></Deck>
-            <Deck title={'deck2'} data={test} index={2}></Deck>
-            {/* {cards.map((card, i) => (
-                <Card key={i} index={i} card={card} />
-              ))} */}
+            {deckTest.slice(0, deckTest.length).map((deck, i) => (
+                  <Deck key={i} title={deck.deckname} data={deck.cards} index={i}></Deck>
+                ))}
           </Container>
         </DragDropContext>
       )}

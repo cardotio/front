@@ -77,7 +77,7 @@ function Deck(props: DeckProps) {
               <Title>{props.title}</Title>
               <CardContainer>
                 {props.data.slice(0, 5).map((card, i) => (
-                  <Card key={i} index={i} card={card} id={props.title + i} />
+                  <Card key={i} index={i} card={card} id={props.title + "-" + i} />
                 ))}
               </CardContainer>
               {provided.placeholder}

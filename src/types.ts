@@ -50,6 +50,7 @@ export type TypeCard = {
 export type TypeDeck = {
   deckname: string;
   deckid: string;
+  cards: TypeCard[];
 };
 
 export type TypeMessageInfo = {
