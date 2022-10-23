@@ -1,4 +1,5 @@
 import {
+  addMemberModalOpenAtom,
   myTeamsAtom,
   selectedTeamAtom,
   selectedUserAtom,
@@ -9,6 +10,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { TypeMember } from 'types';
 import { FcBusinessman } from 'react-icons/fc';
+import { RiAddCircleFill } from 'react-icons/ri';
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,6 +34,14 @@ const MemberContainer = styled.div`
   }
   &:active {
     background: #d8d8d8;
+  }
+  span {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 17px;
+    margin-left: 7px;
   }
 `;
 const ImageContainer = styled.div`
@@ -82,6 +92,16 @@ const Role = styled.div`
   font-size: 7px;
   line-height: 9px;
 `;
+const AddIconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  svg {
+    scale: 3;
+    fill: #a80038;
+  }
+`;
 
 interface props {
   teamname: string;
@@ -93,6 +113,9 @@ function Members({ teamname }: props) {
   const [users, setUsers] = useState<TypeMember[]>([]);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
+  const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
+    addMemberModalOpenAtom,
+  );
 
   useEffect(() => {
     myTeams.filter((team) => team.teamname === teamname).length > 0 &&
@@ -119,6 +142,12 @@ function Members({ teamname }: props) {
           </MemberInfo>
         </MemberContainer>
       ))}
+      <MemberContainer onClick={() => setAddMemberModalOpen(true)}>
+        <AddIconContainer>
+          <RiAddCircleFill />
+        </AddIconContainer>
+        <span>Click to add new member</span>
+      </MemberContainer>
     </Wrapper>
   );
 }

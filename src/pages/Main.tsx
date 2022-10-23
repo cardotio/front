@@ -16,6 +16,7 @@ import {
   teamInfoFetchingAtom,
   settingModalOpenAtom,
   selectedTeamAtom,
+  addMemberModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -24,6 +25,7 @@ import AddCardModal from 'components/AddCardModal';
 import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
 import { TypeCard } from 'types';
+import AddMemberModal from 'components/AddMemberModal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,6 +55,9 @@ function Main() {
   const [isFetching, setIsFetching] = useState(false);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
+  const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
+    addMemberModalOpenAtom,
+  );
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
   const [settomgModalOpen, setSettomgModalOpen] =
@@ -150,6 +155,7 @@ function Main() {
       <LeftSideBar />
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
+      <AddMemberModal isOpen={addMemberModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       {teamInfoFetching ? (
         <div style={{ color: 'white' }}>Loading...</div>

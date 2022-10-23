@@ -16,7 +16,7 @@ const modalBgStyle = styled.div`
   height: 100vh;
   z-index: 1000;
   background-color: #00000080;
-  overflow: scroll;
+  overflow: hidden;
 `;
 
 function App() {

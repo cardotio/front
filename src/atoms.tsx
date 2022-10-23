@@ -1,5 +1,11 @@
 import { atom } from 'recoil';
-import { TypeCard, TypeMember, TypeMessageInfo, TypeTeam, TypeUserInfo } from 'types';
+import {
+  TypeCard,
+  TypeMember,
+  TypeMessageInfo,
+  TypeTeam,
+  TypeUserInfo,
+} from 'types';
 
 export const isDarkAtom = atom({ key: 'isDark', default: false });
 
@@ -15,6 +21,10 @@ export const userInfoAtom = atom<TypeUserInfo | null>({
 
 export const addTeamModalOpenAtom = atom({
   key: 'addTeamModalOpen',
+  default: false,
+});
+export const addMemberModalOpenAtom = atom({
+  key: 'addMemberModalOpen',
   default: false,
 });
 export const addCardModalOpenAtom = atom({
@@ -46,16 +56,16 @@ export const teamInfoFetchingAtom = atom({
 });
 
 export const messagesAtom = atom<TypeMessageInfo[]>({
-  key: "messages",
-  default: []
-})
+  key: 'messages',
+  default: [],
+});
 
 export const selectedTeamAtom = atom<TypeTeam | null>({
-  key: "selectedTeam",
-  default: null
-})
+  key: 'selectedTeam',
+  default: null,
+});
 
 export const selectedUserAtom = atom<TypeUserInfo | null>({
-  key: "selectedUser",
-  default: null
-})
+  key: 'selectedUser',
+  default: null,
+});
