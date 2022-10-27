@@ -103,14 +103,10 @@ const AddIconContainer = styled.div`
   }
 `;
 
-interface props {
-  teamname: string;
-}
-
-function Members({ teamname }: props) {
+function Members() {
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
-  const [users, setUsers] = useState<TypeMember[]>([]);
+  const [members, setMembers] = useState<TypeMember[]>([]);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
@@ -118,17 +114,18 @@ function Members({ teamname }: props) {
   );
 
   useEffect(() => {
-    myTeams.filter((team) => team.teamname === teamname).length > 0 &&
-      setUsers(
+    if (selectedTeam) {
+      setMembers(
         myTeams
-          .filter((team) => team.teamname === teamname)[0]
+          .filter((team) => team.teamId === selectedTeam?.teamId)[0]
           .users.filter((user) => user.username !== myInfo?.username),
       );
+    }
   }, [selectedTeam]);
 
   return (
     <Wrapper>
-      {users?.map((user, i) => (
+      {members?.map((user, i) => (
         <MemberContainer key={i} onClick={() => setSelectedUser(user)}>
           <ImageContainer>
             <FcBusinessman />

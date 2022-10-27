@@ -1,7 +1,5 @@
 import {
-  currentUsersAtom,
   messagesAtom,
-  myTeamsAtom,
   selectedTeamAtom,
   selectedUserAtom,
   userInfoAtom,
@@ -44,11 +42,9 @@ function RightSideBar() {
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [currentUser, setCurrentUser] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
 
   const [messages, setMessages] = useRecoilState(messagesAtom);
   const [currentMessages, setCurrentMessages] = useState<TypeMessageInfo[]>([]);
-  const [tempDate, setTempDate] = useState('');
 
   const scrollRef = useRef<null | HTMLDivElement>(null);
 
@@ -82,18 +78,20 @@ function RightSideBar() {
         content: messageData.message,
         receiver: selectedUser?.username,
         type: INDIVISUAL,
-        teamname: selectedTeam?.teamname,
+        teamId: selectedTeam?.teamId,
       }),
     );
   };
 
   /** 팀이 가지고 있는 모든 메세지들을 가져옴 */
   function loadTeamMessages() {
+    console.log(`GET MESSAGES: /teams/${selectedTeam?.teamId}/messages`);
     axios
-      .get(API_URL + '/teams/' + selectedTeam?.teamname + '/messages', {
+      .get(API_URL + '/teams/' + selectedTeam?.teamId + '/messages', {
         headers: { Authorization: `${token}` },
       })
       .then((response: AxiosResponse) => {
+        console.log(response);
         setMessages(response.data);
       })
       .catch((error: AxiosError) => {
@@ -122,7 +120,7 @@ function RightSideBar() {
   }, [currentUser, selectedUser]);
 
   useEffect(() => {
-    loadTeamMessages();
+    selectedTeam && loadTeamMessages();
   }, [selectedTeam]);
 
   useEffect(() => {

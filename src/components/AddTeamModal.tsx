@@ -3,10 +3,16 @@ import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { addTeamModalOpenAtom, myTeamsAtom, userInfoAtom, userTokenAtom } from 'atoms';
+import {
+  addTeamModalOpenAtom,
+  myTeamsAtom,
+  userInfoAtom,
+  userTokenAtom,
+} from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   width: 450px;
@@ -86,6 +92,7 @@ interface IModal {
 }
 
 function AddTeamModal({ isOpen }: IModal) {
+  const navigate = useNavigate();
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
@@ -113,13 +120,23 @@ function AddTeamModal({ isOpen }: IModal) {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        myInfo && 
-        setMyTeams(prev => [...prev, {teamname, users: [{
-          displayname: myInfo?.displayname,
-          email: myInfo?.email,
-          role: "",
-          username: myInfo?.username,}
-        ]}]);
+        myInfo &&
+          setMyTeams((prev) => [
+            ...prev,
+            {
+              teamId: myTeams.length,
+              teamname,
+              users: [
+                {
+                  displayname: myInfo?.displayname,
+                  email: myInfo?.email,
+                  role: '',
+                  username: myInfo?.username,
+                },
+              ],
+            },
+          ]);
+        navigate(`/team/${teamname}`);
       })
       .catch((error: AxiosError) => {
         console.log(error);

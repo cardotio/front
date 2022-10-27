@@ -50,7 +50,6 @@ function Main() {
   const navigate = useNavigate();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
-
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [isFetching, setIsFetching] = useState(false);
   const [addTeamModalOpen, setAddTeamModalOpen] =
@@ -66,12 +65,9 @@ function Main() {
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
-  const { pathname } = useLocation();
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
-
-    myTeams.length !== 0 && setAddTeamModalOpen(true);
 
     // GET USER INFO BY TOKEN
     setIsFetching(true);
@@ -86,13 +82,14 @@ function Main() {
         console.log(response);
         setUserInfo(response.data);
         setMyTeams(response.data.teams);
+        response.data.teams.length === 0 && setAddTeamModalOpen(true);
 
         console.log(
-          `GET TEAM INFO: /teams/${response.data.teams[0].teamname}/cards`,
+          `GET TEAM INFO: /teams/${response.data.teams[0].teamId}/cards`,
         );
         setTeamInfoFetching(true);
         axios
-          .get(API_URL + `/teams/${response.data.teams[0].teamname}/cards`, {
+          .get(API_URL + `/teams/${response.data.teams[0].teamId}/cards`, {
             headers: {
               Authorization: `${token}`,
             },
@@ -100,14 +97,15 @@ function Main() {
           .then((response: AxiosResponse) => {
             console.log(response);
             setCards(response.data);
+            if (!selectedTeam) {
+              setSelectedTeam(response.data.teams[0]);
+              navigate(`/team/${response.data.teams[0].teamId}`);
+            }
           })
           .catch((error: AxiosError) => {
             console.log(error);
           })
           .finally(() => setTeamInfoFetching(false));
-
-        setSelectedTeam(response.data.teams[0]);
-        navigate(`/team/${response.data.teams[0].teamname}`);
       })
       .catch((error: AxiosError) => {
         console.log(error);

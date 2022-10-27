@@ -64,10 +64,10 @@ function Team({ team }: TeamProps) {
 
   const handleSelectTeam = (e: any) => {
     function fetchData() {
-      console.log(`GET TEAM INFO: /teams/${team.teamname}/cards`);
+      console.log(`GET TEAM INFO: /teams/${team.teamId}/cards`);
       setTeamInfoFetching(true);
       axios
-        .get(API_URL + `/teams/${team.teamname}/cards`, {
+        .get(API_URL + `/teams/${team.teamId}/cards`, {
           headers: {
             Authorization: `${token}`,
           },
@@ -80,7 +80,7 @@ function Team({ team }: TeamProps) {
           console.log(error);
         })
         .finally(() => setTeamInfoFetching(false));
-      navigate(`/team/${team.teamname}`);
+      navigate(`/team/${team.teamId}`);
     }
     setSelectedTeam(team);
     e.target.tagName !== 'svg' && e.target.tagName !== 'path' && fetchData();

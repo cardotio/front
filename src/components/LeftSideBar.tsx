@@ -86,8 +86,8 @@ function LeftSideBar() {
           </DropDown>
         )}
       </AnimatePresence>
-      <Teams teamname={teamname} />
-      <Members teamname={teamname} />
+      <Teams />
+      <Members />
       <button onClick={onAddTeam}>+</button>
     </Wrapper>
   );

@@ -10,7 +10,7 @@ export type TypeUserInfo = {
   role?: string;
   description?: string;
   invitations?: string[];
-  teams?: TypeTeam[]
+  teams?: TypeTeam[];
 };
 
 export type TypeSignupForm = {
@@ -22,29 +22,31 @@ export type TypeSignupForm = {
 };
 
 export type TypeTeam = {
+  teamId: number;
   teamname: string;
   users: TypeMember[];
-}
+};
 
 export type TypeMember = {
   displayname: string;
+  description?: string;
   email: string;
   role: string;
   username: string;
-}
+};
 
 export type TypeCard = {
   cardname: string;
   content: string;
   type: 'private' | 'public';
   user: {
-      username?: string;
-      displayname?: string;
-      email?: string;
-  },
+    username?: string;
+    displayname?: string;
+    email?: string;
+  };
   team: {
-      teamname: string;
-  }
+    teamname: string;
+  };
 };
 
 export type TypeDeck = {
@@ -59,4 +61,4 @@ export type TypeMessageInfo = {
   receiver: string;
   createdDate: string;
   type: boolean;
-}
+};

@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { IoSettingsOutline, IoCalendarNumberOutline } from 'react-icons/io5';
 import { useRecoilState } from 'recoil';
-import { settingModalOpenAtom, showDropDownAtom } from 'atoms';
+import {
+  selectedTeamAtom,
+  settingModalOpenAtom,
+  showDropDownAtom,
+} from 'atoms';
 
 const Header = styled.div`
   display: flex;
@@ -89,14 +93,11 @@ const HeaderTeamPub = styled.div`
   line-height: 10px;
 `;
 
-interface Props {
-  teamname: string;
-}
-
-function Teams({ teamname }: Props) {
+function Teams() {
   const [settingModalOpen, setSettingModalOpen] =
     useRecoilState(settingModalOpenAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
+  const [currentTeam, setCurrentTeam] = useRecoilState(selectedTeamAtom);
 
   const handleShowTeamSetting = () => {
     setSettingModalOpen(true);
@@ -112,7 +113,7 @@ function Teams({ teamname }: Props) {
         <HeaderImg />
       </HeaderLeft>
       <HeaderRight>
-        <HeaderTeamname>{teamname}</HeaderTeamname>
+        <HeaderTeamname>{currentTeam?.teamname}</HeaderTeamname>
         <HeaderTeamSet>
           <a onClick={handleShowTeamSetting}>
             <IoSettingsOutline />
