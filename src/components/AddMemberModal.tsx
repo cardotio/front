@@ -111,7 +111,7 @@ function AddMemberModal({ isOpen }: IModal) {
           from_name: myInfo?.displayname,
           team_name: teamname,
           to_email: email,
-          link: `https://cardio.run.goorm.io/invite?team=${teamname}`,
+          link: `https://cardio.run.goorm.io/invite/${teamname}`,
         },
         EMAIL_PUBLIC_KEY,
       )

@@ -3,7 +3,7 @@ import { userTokenAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
@@ -148,6 +148,7 @@ const ErrorMessageArea = styled.div`
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
@@ -220,7 +221,11 @@ function Login() {
   };
 
   useEffect(() => {
-    if (token && token !== '') navigate('/team/me');
+    if (token && token !== '') {
+      if (location.state === null) navigate('/team/me');
+      else if (location.state.fromInvite) navigate(-1);
+      else navigate('/team/me');
+    }
   }, [token]);
 
   return (
