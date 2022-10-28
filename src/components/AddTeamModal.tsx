@@ -126,6 +126,7 @@ function AddTeamModal({ isOpen }: IModal) {
             {
               teamId: myTeams.length,
               teamname,
+              teamCode: response.data.teamCode,
               users: [
                 {
                   displayname: myInfo?.displayname,

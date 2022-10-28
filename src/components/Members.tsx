@@ -98,7 +98,8 @@ const AddIconContainer = styled.div`
   align-items: center;
   width: 36px;
   svg {
-    scale: 3;
+    width: 40px;
+    height: 40px;
     fill: #a80038;
   }
 `;

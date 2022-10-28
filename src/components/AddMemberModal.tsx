@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { addMemberModalOpenAtom, userInfoAtom } from 'atoms';
+import { addMemberModalOpenAtom, selectedTeamAtom, userInfoAtom } from 'atoms';
 import Spinner from 'react-spinner-material';
 import { useLocation } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
@@ -93,8 +93,8 @@ function AddMemberModal({ isOpen }: IModal) {
   );
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [isFetching, setIsFetching] = useState(false);
-  const location = useLocation();
-  const teamname = location.pathname.split('/')[2];
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
+
   const {
     register,
     handleSubmit,
@@ -109,9 +109,9 @@ function AddMemberModal({ isOpen }: IModal) {
         EMAIL_TEMPLATE_ID,
         {
           from_name: myInfo?.displayname,
-          team_name: teamname,
+          team_name: selectedTeam?.teamname,
           to_email: email,
-          link: `https://cardio.run.goorm.io/invite/${teamname}`,
+          link: `https://cardio.run.goorm.io/invite/${selectedTeam?.teamId}/${selectedTeam?.teamCode}`,
         },
         EMAIL_PUBLIC_KEY,
       )

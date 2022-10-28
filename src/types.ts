@@ -24,6 +24,7 @@ export type TypeSignupForm = {
 export type TypeTeam = {
   teamId: number;
   teamname: string;
+  teamCode: string;
   users: TypeMember[];
 };
 
