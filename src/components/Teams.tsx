@@ -97,7 +97,7 @@ function Teams() {
   const [settingModalOpen, setSettingModalOpen] =
     useRecoilState(settingModalOpenAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
-  const [currentTeam, setCurrentTeam] = useRecoilState(selectedTeamAtom);
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
 
   const handleShowTeamSetting = () => {
     setSettingModalOpen(true);
@@ -107,13 +107,15 @@ function Teams() {
     e.target.tagName !== 'A' && setShowDropDown((prev) => !prev);
   };
 
+  console.log(selectedTeam);
+
   return (
     <Header onClick={handleShowDropDown}>
       <HeaderLeft>
         <HeaderImg />
       </HeaderLeft>
       <HeaderRight>
-        <HeaderTeamname>{currentTeam?.teamname}</HeaderTeamname>
+        <HeaderTeamname>{selectedTeam?.teamname}</HeaderTeamname>
         <HeaderTeamSet>
           <a onClick={handleShowTeamSetting}>
             <IoSettingsOutline />

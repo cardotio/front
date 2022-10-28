@@ -8,6 +8,7 @@ import {
   myTeamsAtom,
   userInfoAtom,
   userTokenAtom,
+  selectedTeamAtom,
 } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
@@ -99,6 +100,7 @@ function AddTeamModal({ isOpen }: IModal) {
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [isFetching, setIsFetching] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const {
     register,
     handleSubmit,
@@ -124,7 +126,7 @@ function AddTeamModal({ isOpen }: IModal) {
           setMyTeams((prev) => [
             ...prev,
             {
-              teamId: myTeams.length,
+              teamId: response.data.teamId,
               teamname,
               teamCode: response.data.teamCode,
               users: [
@@ -137,6 +139,19 @@ function AddTeamModal({ isOpen }: IModal) {
               ],
             },
           ]);
+        setSelectedTeam({
+          teamId: myTeams.length,
+          teamname,
+          teamCode: response.data.teamCode,
+          users: [
+            {
+              displayname: myInfo!.displayname,
+              email: myInfo!.email,
+              role: '',
+              username: myInfo!.username,
+            },
+          ],
+        });
         navigate(`/team/${teamname}`);
       })
       .catch((error: AxiosError) => {

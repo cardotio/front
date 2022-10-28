@@ -65,6 +65,7 @@ function Main() {
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
+  const teamId = useLocation().pathname.split('/')[2];
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
@@ -83,6 +84,16 @@ function Main() {
         setUserInfo(response.data);
         setMyTeams(response.data.teams);
         response.data.teams.length === 0 && setAddTeamModalOpen(true);
+        if (teamId === 'me') {
+          setSelectedTeam(response.data.teams[0]);
+          navigate(`/team/${response.data.teams[0].teamId}`);
+        } else {
+          setSelectedTeam(
+            response.data.teams.filter(
+              (team: any) => team.teamId + '' === teamId,
+            )[0],
+          );
+        }
 
         console.log(
           `GET TEAM INFO: /teams/${response.data.teams[0].teamId}/cards`,
@@ -97,10 +108,6 @@ function Main() {
           .then((response: AxiosResponse) => {
             console.log(response);
             setCards(response.data);
-            if (!selectedTeam) {
-              setSelectedTeam(response.data.teams[0]);
-              navigate(`/team/${response.data.teams[0].teamId}`);
-            }
           })
           .catch((error: AxiosError) => {
             console.log(error);

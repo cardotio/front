@@ -117,9 +117,7 @@ function Members() {
   useEffect(() => {
     if (selectedTeam) {
       setMembers(
-        myTeams
-          .filter((team) => team.teamId === selectedTeam?.teamId)[0]
-          .users.filter((user) => user.username !== myInfo?.username),
+        selectedTeam.users.filter((user) => user.username !== myInfo?.username),
       );
     }
   }, [selectedTeam]);
