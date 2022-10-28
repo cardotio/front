@@ -129,7 +129,7 @@ function RightSideBar() {
 					: <div className="message message-opponent">
 
 						<div className="message-sender-name">{message.senderDisplayname}</div>
-						<div className="message-box message-box -opponent">
+						<div className="message-box message-box-opponent">
 							<div>{message.content}</div>
 							<div className='created-date'>{message.createdDate.replaceAll("T", " ")}</div>
 						</div>

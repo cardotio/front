@@ -8,15 +8,28 @@
 
 .message {
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
-
+.message-my{
+    justify-content: right;
+}
 .message-box{
     background-color: #bfbfbf;
     padding: 5px;
+    width: 70%;
 }
+
 
 .message-box-my {
     text-align: right;
+    border-radius: 10px 0 0 10px;
+}
+.message-box-opponent {
+    border-radius: 0 10px 10px 0;
+}
+.message-sender-name {
+    font-weight: 700;
 }
 .created-date {
     font-size: 12px;
