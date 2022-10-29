@@ -63,6 +63,7 @@ function Main() {
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
   const { pathname } = useLocation();
+  const [decks, setDecks] = useState<TypeDeck[]>([])
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
@@ -110,6 +111,21 @@ function Main() {
     setIsFetching(false);
   }, []);
 
+  useEffect(() => {
+    setDecks([
+      {
+        deckname: "deck1",
+        deckid: "deck1",
+        cards: cards.slice(0, 2)
+      },
+      {
+        deckname: "deck2",
+        deckid: "deck2",
+        cards: cards.slice(2, cards.length)
+      }
+    ])
+  }, [cards])
+
   const handleAddCard = () => {
     setAddCardModalOpen(true);
   };
@@ -145,19 +161,6 @@ function Main() {
   //   },
   // ];
 
-  const deckTest: TypeDeck[] = [
-    {
-      deckname: "deck1",
-      deckid: "deck1",
-      cards: cards
-    },
-    {
-      deckname: "deck2",
-      deckid: "deck2",
-      cards: cards
-    }
-  ]
-
   // const result = {
   //   draggableId: 'task-1',
   //   type: "TYPE",
@@ -186,12 +189,12 @@ function Main() {
       return;
     }
     
-    const deck: any = deckTest.find(e => e.deckname === source.droppableId);
-    const draggingCard: any = deck.cards.find(e => e.cardname === draggableId.replace(deck.deckname, ""))
+    const deck: any = decks.find(e => e.deckname === source.droppableId);
+    const draggingCard: any = deck.cards.find((e: { cardname: any; }) => e.cardname === draggableId.replace(deck.deckname, " "))
     // const cardIds = deck.cards.map((card) => {
     //   return card.cardname + deck.deckname
     // })
-    const newCards = Array.from(deck.cards);
+    const newCards: TypeCard[] = Array.from(deck.cards);
     newCards.splice(source.index, 1);
     newCards.splice(destination.index, 0, draggingCard);
     console.log(deck, draggingCard)
@@ -199,8 +202,13 @@ function Main() {
       ...deck,
       cards: newCards,
     };
+    console.log(decks)
+    setDecks(decks.map((deck) => 
+      deck.deckname === destination.droppableId ? {...deck, cards: newCards} : deck
+    ))
+    
   };
-
+  console.log(decks, decks.length, cards)
   return (
     <Wrapper>
       <LeftSideBar isFetching={isFetching} />
@@ -213,7 +221,8 @@ function Main() {
         <DragDropContext onDragEnd={OnDragEnd}>
           <Container>
             <AddCard onClick={handleAddCard} />
-            {deckTest.slice(0, deckTest.length).map((deck, i) => (
+            
+            {decks.slice(0, decks.length).map((deck, i) => (
                   <Deck key={i} title={deck.deckname} data={deck.cards} index={i}></Deck>
                 ))}
           </Container>
