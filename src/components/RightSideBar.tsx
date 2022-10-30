@@ -14,10 +14,10 @@ import { Stomp } from '@stomp/stompjs';
 import { useForm } from 'react-hook-form';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { TypeMessageInfo } from 'types';
-
 import './style.css';
+
 const Wrapper = styled.aside`
-  min-width: 340px;
+  min-width: 270px;
   height: 100%;
   background: #ffffff;
 `;

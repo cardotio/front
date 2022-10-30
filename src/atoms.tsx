@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 import {
   TypeCard,
+  TypeDeck,
   TypeMember,
   TypeMessageInfo,
   TypeTeam,
@@ -27,6 +28,10 @@ export const addMemberModalOpenAtom = atom({
   key: 'addMemberModalOpen',
   default: false,
 });
+export const addDeckModalOpenAtom = atom({
+  key: 'addDeckModalOpen',
+  default: false,
+});
 export const addCardModalOpenAtom = atom({
   key: 'addCardModalOpen',
   default: false,
@@ -42,6 +47,10 @@ export const showDropDownAtom = atom({
 
 export const myTeamsAtom = atom<TypeTeam[]>({ key: 'myTeams', default: [] });
 
+export const deckListAtom = atom<TypeDeck[] | null>({
+  key: 'deckList',
+  default: null,
+});
 export const currentCardsAtom = atom<TypeCard[]>({
   key: 'currentCards',
   default: [],

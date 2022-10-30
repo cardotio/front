@@ -39,20 +39,17 @@ export type TypeMember = {
 export type TypeCard = {
   cardname: string;
   content: string;
-  type: 'private' | 'public';
-  user: {
-    username?: string;
-    displayname?: string;
-    email?: string;
-  };
+  creater: TypeMember;
+  deck?: TypeDeck;
   team: {
     teamname: string;
   };
+  type: 'private' | 'public';
 };
 
 export type TypeDeck = {
   deckname: string;
-  deckid: string;
+  deckId: string;
 };
 
 export type TypeMessageInfo = {

@@ -133,10 +133,11 @@ function TeamSettings({ isOpen }: IModal) {
           cardname,
           content: 'Card Created',
           type: 'private',
-          user: {
+          creater: {
             username: response.data.user.username,
             displayname: response.data.user.displayname,
             email: response.data.user.email,
+            role: response.data.user.role,
           },
           team: {
             teamname: response.data.team.teamname,

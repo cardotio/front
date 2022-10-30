@@ -4,6 +4,7 @@ import {
   userTokenAtom,
   teamInfoFetchingAtom,
   selectedTeamAtom,
+  showDropDownAtom,
 } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import React from 'react';
@@ -59,6 +60,7 @@ function Team({ team }: TeamProps) {
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
+  const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const navigate = useNavigate();
 
@@ -83,6 +85,7 @@ function Team({ team }: TeamProps) {
       navigate(`/team/${team.teamId}`);
     }
     setSelectedTeam(team);
+    setShowDropDown(false);
     e.target.tagName !== 'svg' && e.target.tagName !== 'path' && fetchData();
   };
 

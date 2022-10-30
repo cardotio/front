@@ -17,6 +17,8 @@ import {
   settingModalOpenAtom,
   selectedTeamAtom,
   addMemberModalOpenAtom,
+  deckListAtom,
+  addDeckModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -26,6 +28,8 @@ import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
 import { TypeCard } from 'types';
 import AddMemberModal from 'components/AddMemberModal';
+import AddDeck from 'components/AddDeck';
+import AddDeckModal from 'components/AddDeckModal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,9 +41,7 @@ const Wrapper = styled.div`
 `;
 const Container = styled.div`
   display: flex;
-  justify-content: space-between;
   align-content: flex-start;
-  flex-wrap: wrap;
   min-width: 520px;
   width: 100%;
   height: 100%;
@@ -59,8 +61,11 @@ function Main() {
   );
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
+  const [addDeckModalOpen, setAddDeckModalOpen] =
+    useRecoilState(addDeckModalOpenAtom);
   const [settomgModalOpen, setSettomgModalOpen] =
     useRecoilState(settingModalOpenAtom);
+  const [decks, setDecks] = useRecoilState(deckListAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
@@ -94,11 +99,11 @@ function Main() {
             )[0],
           );
         }
-
-        console.log(
-          `GET TEAM INFO: /teams/${response.data.teams[0].teamId}/cards`,
-        );
         setTeamInfoFetching(true);
+        // GET CARDS INFO
+        console.log(
+          `GET CARDS INFO: /teams/${response.data.teams[0].teamId}/cards`,
+        );
         axios
           .get(API_URL + `/teams/${response.data.teams[0].teamId}/cards`, {
             headers: {
@@ -111,8 +116,7 @@ function Main() {
           })
           .catch((error: AxiosError) => {
             console.log(error);
-          })
-          .finally(() => setTeamInfoFetching(false));
+          });
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -120,46 +124,45 @@ function Main() {
       .finally(() => setIsFetching(false));
   }, []);
 
+  useEffect(() => {
+    if (selectedTeam) {
+      // GET DECKS INFO
+      console.log(`GET DECKS INFO: /teams/${selectedTeam.teamId}/decks`);
+      axios
+        .get(API_URL + `/teams/${selectedTeam.teamId}/decks`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        })
+        .then((response: AxiosResponse) => {
+          console.log(response);
+          setDecks(response.data);
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+        });
+    }
+  }, [selectedTeam]);
+
   const handleAddCard = () => {
     setAddCardModalOpen(true);
   };
-
-  const test: TypeCard[] = [
-    {
-      cardname: 'cardcard',
-      content: 'test',
-      type: 'public',
-      user: {
-        username: 'han',
-        displayname: 'han',
-        email: 'akjfdsklaj@akj.com',
-      },
-      team: {
-        teamname: 'cardio',
-      },
-    },
-    {
-      cardname: 'cardcard2',
-      content: 'test',
-      type: 'public',
-      user: {
-        username: 'han',
-        displayname: 'han',
-        email: 'akjfdsklaj@akj.com',
-      },
-      team: {
-        teamname: 'cardio',
-      },
-    },
-  ];
+  const handleAddDeck = () => {
+    setAddDeckModalOpen(true);
+  };
 
   const OnDragEnd = () => {};
+
+  // decks?.map((deck) => {
+  //   console.log(cards.filter((card) => card.deck?.deckId === deck.deckId));
+  // });
 
   return (
     <Wrapper>
       <LeftSideBar />
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
+      <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       {teamInfoFetching ? (
@@ -167,12 +170,16 @@ function Main() {
       ) : (
         <DragDropContext onDragEnd={OnDragEnd}>
           <Container>
-            <AddCard onClick={handleAddCard} />
-            <Deck title={'deck1'} data={test} index={1}></Deck>
-            <Deck title={'deck2'} data={test} index={2}></Deck>
+            {/* <Deck title={'deck1'} data={null} index={1}></Deck>
+            <Deck title={'deck2'} data={test} index={2}></Deck> */}
             {/* {cards.map((card, i) => (
                 <Card key={i} index={i} card={card} />
               ))} */}
+            {/* <AddCard onClick={handleAddCard} /> */}
+            {decks?.map((deck, i) => (
+              <Deck key={i} deck={deck} />
+            ))}
+            <AddDeck onClick={handleAddDeck} />
           </Container>
         </DragDropContext>
       )}

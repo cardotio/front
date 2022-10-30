@@ -5,7 +5,9 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
   addCardModalOpenAtom,
+  addDeckModalOpenAtom,
   currentCardsAtom,
+  deckListAtom,
   myTeamsAtom,
   userInfoAtom,
   userTokenAtom,
@@ -93,32 +95,30 @@ interface IModal {
   isOpen: boolean;
 }
 
-function AddCardModal({ isOpen }: IModal) {
-  const [addCardModalOpen, setAddCardModalOpen] =
-    useRecoilState(addCardModalOpenAtom);
+function AddDeckModal({ isOpen }: IModal) {
+  const [addDeckModalOpen, setAddDeckModalOpen] =
+    useRecoilState(addDeckModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
-  const [cards, setCards] = useRecoilState(currentCardsAtom);
+  const [decks, setDecks] = useRecoilState(deckListAtom);
   const [isFetching, setIsFetching] = useState(false);
   const location = useLocation();
-  const teamname = location.pathname.split('/')[2];
+  const teamId = location.pathname.split('/')[2];
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = ({ cardname }: any) => {
-    console.log(`ADD Card: /teams/${teamname}/cards`);
+  const onSubmit = ({ deckname }: any) => {
+    console.log(`ADD DECK: /teams/${teamId}/decks`);
     setIsFetching(true);
     axios
       .post(
-        API_URL + `/teams/${teamname}/cards`,
+        API_URL + `/teams/${teamId}/decks`,
         {
-          cardname: cardname,
-          content: '',
-          type: 'private',
+          deckname: deckname,
         },
         {
           headers: {
@@ -128,21 +128,9 @@ function AddCardModal({ isOpen }: IModal) {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        const newCard: TypeCard = {
-          cardname,
-          content: 'Card Created',
-          type: 'private',
-          creater: {
-            username: response.data.user.username,
-            displayname: response.data.user.displayname,
-            email: response.data.user.email,
-            role: response.data.user.role,
-          },
-          team: {
-            teamname: response.data.team.teamname,
-          },
-        };
-        setCards((prev) => [...prev, newCard]);
+        setDecks((prev) => {
+          return prev ? [...prev, response.data] : [response.data];
+        });
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -151,12 +139,12 @@ function AddCardModal({ isOpen }: IModal) {
       })
       .finally(() => {
         setIsFetching(false);
-        setAddCardModalOpen(false);
+        setAddDeckModalOpen(false);
       });
   };
 
   const handleClose = () => {
-    setAddCardModalOpen(false);
+    setAddDeckModalOpen(false);
   };
 
   return (
@@ -166,11 +154,11 @@ function AddCardModal({ isOpen }: IModal) {
       onEscapeKeydown={handleClose}
     >
       <Container>
-        <Header>Create New Card</Header>
+        <Header>Create New Deck</Header>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input
-            placeholder="Enter Card Name"
-            {...register('cardname', {
+            placeholder="Enter Deck Name"
+            {...register('deckname', {
               required: true,
               maxLength: 20,
               minLength: 5,
@@ -184,7 +172,7 @@ function AddCardModal({ isOpen }: IModal) {
             )}
           </Btn>
         </Form>
-        {errors.cardname && (
+        {errors.deckname && (
           <ErrorMessageArea>카드 이름은 5 ~ 20자 입니다.</ErrorMessageArea>
         )}
       </Container>
@@ -192,4 +180,4 @@ function AddCardModal({ isOpen }: IModal) {
   );
 }
 
-export default React.memo(AddCardModal);
+export default React.memo(AddDeckModal);
