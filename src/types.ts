@@ -38,10 +38,13 @@ export type TypeMember = {
 
 export type TypeCard = {
   cardname: string;
+  cardId: number;
   content: string;
-  creater: TypeMember;
-  deck?: TypeDeck;
+  creator: TypeMember;
+  deck: TypeDeck | null;
   team: {
+    teamCode: string;
+    teamId: string;
     teamname: string;
   };
   type: 'private' | 'public';

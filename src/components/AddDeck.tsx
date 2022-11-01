@@ -6,10 +6,10 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 180px;
-  height: 120px;
+  width: 170px;
+  height: 300px;
   margin-bottom: 14px;
-  padding: 20px;
+  margin: 15px;
   background: #d5d5d521;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,

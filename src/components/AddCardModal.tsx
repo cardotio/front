@@ -9,6 +9,7 @@ import {
   myTeamsAtom,
   userInfoAtom,
   userTokenAtom,
+  addCardDeckAtom,
 } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
@@ -100,9 +101,10 @@ function AddCardModal({ isOpen }: IModal) {
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [cards, setCards] = useRecoilState(currentCardsAtom);
+  const [deck, setDeck] = useRecoilState(addCardDeckAtom);
   const [isFetching, setIsFetching] = useState(false);
   const location = useLocation();
-  const teamname = location.pathname.split('/')[2];
+  const teamId = location.pathname.split('/')[2];
   const {
     register,
     handleSubmit,
@@ -110,15 +112,16 @@ function AddCardModal({ isOpen }: IModal) {
   } = useForm();
 
   const onSubmit = ({ cardname }: any) => {
-    console.log(`ADD Card: /teams/${teamname}/cards`);
+    console.log(`ADD Card: /teams/${teamId}/cards`);
     setIsFetching(true);
     axios
       .post(
-        API_URL + `/teams/${teamname}/cards`,
+        API_URL + `/teams/${teamId}/cards`,
         {
           cardname: cardname,
           content: '',
           type: 'private',
+          deckId: deck?.deckId,
         },
         {
           headers: {
@@ -130,15 +133,19 @@ function AddCardModal({ isOpen }: IModal) {
         console.log(response);
         const newCard: TypeCard = {
           cardname,
+          cardId: response.data.cardId,
           content: 'Card Created',
           type: 'private',
-          creater: {
-            username: response.data.user.username,
-            displayname: response.data.user.displayname,
-            email: response.data.user.email,
-            role: response.data.user.role,
+          deck: deck,
+          creator: {
+            username: response.data.creator.username,
+            displayname: response.data.creator.displayname,
+            email: response.data.creator.email,
+            role: response.data.creator.role,
           },
           team: {
+            teamCode: response.data.team.teamCode,
+            teamId: response.data.team.teamId,
             teamname: response.data.team.teamname,
           },
         };
@@ -152,6 +159,7 @@ function AddCardModal({ isOpen }: IModal) {
       .finally(() => {
         setIsFetching(false);
         setAddCardModalOpen(false);
+        setDeck(null);
       });
   };
 

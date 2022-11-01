@@ -1,7 +1,7 @@
 // import { motion, Variants } from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
-import { TypeCard, TypeDeck } from 'types';
+import { TypeDeck } from 'types';
 import { Droppable } from 'react-beautiful-dnd';
 import Card from './Card';
 import { currentCardsAtom } from 'atoms';
@@ -12,14 +12,15 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 30px;
+  margin: 15px;
+  width: 170px;
   height: 300px;
-  background: gray;
+  background: #9b9b9b17;
+  border-radius: 12px;
 `;
 const Title = styled.div`
-  width: 180px;
+  width: 100%;
   height: 36px;
-  margin-bottom: 14px;
   border-radius: 12px;
   background: #dbe6ff;
   color: ${(props) => props.theme.textColor};
@@ -44,22 +45,24 @@ interface DeckProps {
 
 function Deck({ deck }: DeckProps) {
   const [cards, setCards] = useRecoilState(currentCardsAtom);
-
-  cards.map((card, i) => {
-    if (card.deck?.deckId === deck.deckId) console.log(card);
-  });
+  let cardIndex = 0;
 
   return (
     <Wrapper>
       <Droppable droppableId={deck.deckname}>
         {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            style={{ width: '100%' }}
+          >
             <Title>{deck.deckname}</Title>
             <CardContainer>
               {cards.map((card, i) => {
                 if (card.deck?.deckId === deck.deckId)
-                  return <Card key={i} index={i} card={card} id={'id'} />;
+                  return <Card key={i} index={cardIndex++} card={card} />;
               })}
+              <AddCard deck={deck} index={cardIndex++} />
             </CardContainer>
             {provided.placeholder}
           </div>

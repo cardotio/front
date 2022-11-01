@@ -5,16 +5,19 @@ import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
 import { isPropertySignature } from 'typescript';
 
-const Wrapper = styled(motion.div)`
-  width: 180px;
-  height: 120px;
+const Wrapper = styled(motion.div)<{ index: number }>`
+  position: absolute;
+  left: 10px;
+  top: ${(props) => props.index * 30 + 10 + 'px'};
+  width: 150px;
+  height: 90px;
   margin-bottom: 14px;
-  padding: 20px;
+  padding: 10px;
   background: #f7f6e7;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border: 1px lightgray solid;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   /* transform: rotate(45deg); */
   transition: 0.2s background, 0.4s z-index;
   cursor: pointer;
@@ -27,33 +30,28 @@ const Wrapper = styled(motion.div)`
 interface CardProps {
   index: number;
   card: TypeCard;
-  id: string;
 }
 
-
-function Card({index, card, id}: CardProps) {
-
+function Card({ index, card }: CardProps) {
   const cardClick = () => {
-    console.log(card) 
-  }
+    // console.log(card);
+  };
 
   return (
-    <Draggable draggableId={id} index={index}>
-      {provided=> (
+    <Draggable draggableId={index + ''} index={index}>
+      {(provided) => (
         <div
-        ref={provided.innerRef}
-        {...provided.dragHandleProps}
-        {...provided.draggableProps}
+          ref={provided.innerRef}
+          {...provided.dragHandleProps}
+          {...provided.draggableProps}
         >
-          <Wrapper 
-            onClick={cardClick}
-          >
+          <Wrapper onClick={cardClick} index={index}>
             {card.cardname}
           </Wrapper>
         </div>
       )}
     </Draggable>
-  )
+  );
 }
 
 export default React.memo(Card);

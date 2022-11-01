@@ -46,6 +46,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   padding: 36px 50px;
+  flex-wrap: wrap;
 `;
 
 function Main() {
@@ -53,7 +54,6 @@ function Main() {
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
-  const [isFetching, setIsFetching] = useState(false);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
@@ -76,7 +76,7 @@ function Main() {
     if (!token || token === '') navigate('/login');
 
     // GET USER INFO BY TOKEN
-    setIsFetching(true);
+    setTeamInfoFetching(true);
     console.log('GET MY INFO: /users/me');
     axios
       .get(API_URL + '/users/me', {
@@ -99,33 +99,15 @@ function Main() {
             )[0],
           );
         }
-        setTeamInfoFetching(true);
-        // GET CARDS INFO
-        console.log(
-          `GET CARDS INFO: /teams/${response.data.teams[0].teamId}/cards`,
-        );
-        axios
-          .get(API_URL + `/teams/${response.data.teams[0].teamId}/cards`, {
-            headers: {
-              Authorization: `${token}`,
-            },
-          })
-          .then((response: AxiosResponse) => {
-            console.log(response);
-            setCards(response.data);
-          })
-          .catch((error: AxiosError) => {
-            console.log(error);
-          });
       })
       .catch((error: AxiosError) => {
         console.log(error);
-      })
-      .finally(() => setIsFetching(false));
+      });
   }, []);
 
   useEffect(() => {
     if (selectedTeam) {
+      setTeamInfoFetching(true);
       // GET DECKS INFO
       console.log(`GET DECKS INFO: /teams/${selectedTeam.teamId}/decks`);
       axios
@@ -141,21 +123,30 @@ function Main() {
         .catch((error: AxiosError) => {
           console.log(error);
         });
+
+      console.log(`GET TEAM INFO: /teams/${selectedTeam.teamId}/cards`);
+      axios
+        .get(API_URL + `/teams/${selectedTeam.teamId}/cards`, {
+          headers: {
+            Authorization: `${token}`,
+          },
+        })
+        .then((response: AxiosResponse) => {
+          console.log(response);
+          setCards(response.data);
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+        })
+        .finally(() => setTeamInfoFetching(false));
     }
   }, [selectedTeam]);
 
-  const handleAddCard = () => {
-    setAddCardModalOpen(true);
-  };
   const handleAddDeck = () => {
     setAddDeckModalOpen(true);
   };
 
   const OnDragEnd = () => {};
-
-  // decks?.map((deck) => {
-  //   console.log(cards.filter((card) => card.deck?.deckId === deck.deckId));
-  // });
 
   return (
     <Wrapper>
@@ -170,12 +161,6 @@ function Main() {
       ) : (
         <DragDropContext onDragEnd={OnDragEnd}>
           <Container>
-            {/* <Deck title={'deck1'} data={null} index={1}></Deck>
-            <Deck title={'deck2'} data={test} index={2}></Deck> */}
-            {/* {cards.map((card, i) => (
-                <Card key={i} index={i} card={card} />
-              ))} */}
-            {/* <AddCard onClick={handleAddCard} /> */}
             {decks?.map((deck, i) => (
               <Deck key={i} deck={deck} />
             ))}

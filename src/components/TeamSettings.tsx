@@ -97,64 +97,8 @@ interface IModal {
 function TeamSettings({ isOpen }: IModal) {
   const [settingModalOpen, setSettingModalOpen] =
     useRecoilState(settingModalOpenAtom);
-  const [token, setToken] = useRecoilState(userTokenAtom);
-  const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
-  const [cards, setCards] = useRecoilState(currentCardsAtom);
-  const [isFetching, setIsFetching] = useState(false);
   const location = useLocation();
-  const teamname = location.pathname.split('/')[2];
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = ({ cardname }: any) => {
-    console.log(`ADD Card: /teams/${teamname}/cards`);
-    setIsFetching(true);
-    axios
-      .post(
-        API_URL + `/teams/${teamname}/cards`,
-        {
-          cardname: cardname,
-          content: '',
-          type: 'private',
-        },
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        },
-      )
-      .then((response: AxiosResponse) => {
-        console.log(response);
-        const newCard: TypeCard = {
-          cardname,
-          content: 'Card Created',
-          type: 'private',
-          creater: {
-            username: response.data.user.username,
-            displayname: response.data.user.displayname,
-            email: response.data.user.email,
-            role: response.data.user.role,
-          },
-          team: {
-            teamname: response.data.team.teamname,
-          },
-        };
-        setCards((prev) => [...prev, newCard]);
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-        // // Unauthorized
-        // error.request.status === 401 && setIsAuth(false);
-      })
-      .finally(() => {
-        setIsFetching(false);
-        setSettingModalOpen(false);
-      });
-  };
+  const teamId = location.pathname.split('/')[2];
 
   const handleClose = () => {
     setSettingModalOpen(false);

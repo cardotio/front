@@ -32,6 +32,10 @@ export const addDeckModalOpenAtom = atom({
   key: 'addDeckModalOpen',
   default: false,
 });
+export const addCardDeckAtom = atom<TypeDeck | null>({
+  key: 'addCardDeck',
+  default: null,
+});
 export const addCardModalOpenAtom = atom({
   key: 'addCardModalOpen',
   default: false,
@@ -61,7 +65,7 @@ export const currentUsersAtom = atom<TypeMember[]>({
 });
 export const teamInfoFetchingAtom = atom({
   key: 'teamInfoFetching',
-  default: false,
+  default: true,
 });
 
 export const messagesAtom = atom<TypeMessageInfo[]>({

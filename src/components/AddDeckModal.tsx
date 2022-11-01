@@ -108,6 +108,7 @@ function AddDeckModal({ isOpen }: IModal) {
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
   } = useForm();
 
@@ -134,12 +135,11 @@ function AddDeckModal({ isOpen }: IModal) {
       })
       .catch((error: AxiosError) => {
         console.log(error);
-        // // Unauthorized
-        // error.request.status === 401 && setIsAuth(false);
       })
       .finally(() => {
         setIsFetching(false);
         setAddDeckModalOpen(false);
+        resetField('deckname');
       });
   };
 
@@ -160,8 +160,6 @@ function AddDeckModal({ isOpen }: IModal) {
             placeholder="Enter Deck Name"
             {...register('deckname', {
               required: true,
-              maxLength: 20,
-              minLength: 5,
             })}
           />
           <Btn type="submit">
@@ -173,7 +171,7 @@ function AddDeckModal({ isOpen }: IModal) {
           </Btn>
         </Form>
         {errors.deckname && (
-          <ErrorMessageArea>카드 이름은 5 ~ 20자 입니다.</ErrorMessageArea>
+          <ErrorMessageArea>Please enter your new deck name</ErrorMessageArea>
         )}
       </Container>
     </Modal>

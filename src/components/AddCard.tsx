@@ -1,13 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { VscAdd } from 'react-icons/vsc';
+import { TypeDeck } from 'types';
+import { useRecoilState } from 'recoil';
+import { addCardDeckAtom, addCardModalOpenAtom } from 'atoms';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ index: number }>`
+  position: absolute;
+  left: 10px;
+  top: ${(props) => props.index * 30 + 80 + 'px'};
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 180px;
-  height: 120px;
+  width: 150px;
+  height: 90px;
   margin-bottom: 14px;
   padding: 20px;
   background: #d5d5d521;
@@ -33,12 +39,22 @@ const Wrapper = styled.div`
 `;
 
 interface Props {
-  onClick: React.MouseEventHandler<HTMLElement>;
+  deck: TypeDeck;
+  index: number;
 }
 
-function AddCard(props: Props) {
+function AddCard({ deck, index }: Props) {
+  const [addCardModalOpen, setAddCardModalOpen] =
+    useRecoilState(addCardModalOpenAtom);
+  const [addCardDeckId, setAddCardDeckId] = useRecoilState(addCardDeckAtom);
+
+  const handleAddCard = () => {
+    setAddCardModalOpen(true);
+    setAddCardDeckId(deck);
+  };
+
   return (
-    <Wrapper onClick={props.onClick}>
+    <Wrapper onClick={handleAddCard} index={index}>
       <VscAdd />
     </Wrapper>
   );

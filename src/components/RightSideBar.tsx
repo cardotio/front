@@ -17,6 +17,7 @@ import { TypeMessageInfo } from 'types';
 import './style.css';
 
 const Wrapper = styled.aside`
+  width: 10%;
   min-width: 270px;
   height: 100%;
   background: #ffffff;
