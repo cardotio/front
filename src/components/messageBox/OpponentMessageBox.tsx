@@ -3,26 +3,20 @@ import React from 'react';
 import { TypeMessageInfo } from 'types';
 
 interface MessageProps {
-    message: TypeMessageInfo;
+  message: TypeMessageInfo;
 }
 function MyMessageBox({ message }: MessageProps) {
-
-    return (
-        <div className="message message-opponent">
-            <div className="message-box message-box-opponent">
-                <div>{message.content}</div>
-            </div>
-            <div className='message-info'>
-                <div className="unread-number">
-                    {message.unread > 0 ? message.unread : ""}
-                </div>
-                <div className="created-date">
-                    {getOnlyTime(message.createdDate)}
-                </div>
-
-            </div>
+  return (
+    <div className="message message-opponent">
+      <div className="message-box message-box-opponent">{message.content}</div>
+      <div className="message-info">
+        <div className="unread-number">
+          {message.unread > 0 ? message.unread : ''}
         </div>
-    )
+        <div className="created-date">{getOnlyTime(message.createdDate)}</div>
+      </div>
+    </div>
+  );
 }
 
 export default React.memo(MyMessageBox);

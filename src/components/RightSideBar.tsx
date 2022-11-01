@@ -29,7 +29,7 @@ import OpponentMessageBox from './messageBox/OpponentMessageBox';
 import Member from './Member';
 
 const Wrapper = styled.aside`
-  width: 400px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   height: 100%;
