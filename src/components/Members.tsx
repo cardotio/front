@@ -68,12 +68,7 @@ const AddIconContainer = styled.div`
   width: 36px;
   margin-left: 10px;
   svg {
-<<<<<<< HEAD
-    width: 40px;
-    height: 40px;
-=======
     scale: 2;
->>>>>>> 41b5a3ca4503a930a5064b5fb072e5d29e33116a
     fill: #a80038;
   }
 `;
@@ -98,7 +93,7 @@ function Members() {
 
   return (
     <Wrapper>
-      {members.length != 0 ?
+      {members.length != 0 ? (
         <MemberList>
           {members?.map((user, i) => (
             <Member
@@ -106,10 +101,13 @@ function Members() {
               displayname={user.displayname}
               role={user.role}
               description={user?.description}
-              onClick={() => setSelectedUser(user)} />
+              onClick={() => setSelectedUser(user)}
+            />
           ))}
-        </MemberList> : ""}
-
+        </MemberList>
+      ) : (
+        ''
+      )}
 
       <AddMemberButton onClick={() => setAddMemberModalOpen(true)}>
         <AddIconContainer>
