@@ -11,23 +11,21 @@ import styled from 'styled-components';
 import { TypeMember } from 'types';
 import { FcBusinessman } from 'react-icons/fc';
 import { RiAddCircleFill } from 'react-icons/ri';
+import Member from './Member';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
 `;
-const MemberContainer = styled.div`
+const AddMemberButton = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
   height: 56px;
   margin-bottom: 10px;
-  padding: 7px;
-  background: #ffffff;
-  border: 0.1px solid black;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+  //background: #ffffff;
+  border-bottom: 1px solid lightgray;
   cursor: pointer;
   &:hover {
     background: #e7e7e7;
@@ -44,6 +42,10 @@ const MemberContainer = styled.div`
     margin-left: 7px;
   }
 `;
+
+const MemberList = styled.div`
+  border-bottom: 1px solid lightgray;
+`;
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -58,47 +60,15 @@ const ImageContainer = styled.div`
     height: 45px;
   }
 `;
-const MemberInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-  border-bottom: 1px solid black;
-`;
-const Description = styled.div`
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 13px;
-`;
-const DisplayName = styled.div`
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 17px;
-`;
-const Role = styled.div`
-  height: fit-content;
-  transform: translateY(6px);
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 7px;
-  line-height: 9px;
-`;
+
 const AddIconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 36px;
+  margin-left: 10px;
   svg {
-    scale: 3;
+    scale: 2;
     fill: #a80038;
   }
 `;
@@ -125,26 +95,25 @@ function Members() {
 
   return (
     <Wrapper>
-      {members?.map((user, i) => (
-        <MemberContainer key={i} onClick={() => setSelectedUser(user)}>
-          <ImageContainer>
-            <FcBusinessman />
-          </ImageContainer>
-          <MemberInfo>
-            <Header>
-              <DisplayName>{user.displayname}</DisplayName>
-              <Role>{user.role}</Role>
-            </Header>
-            <Description>{user.email}</Description>
-          </MemberInfo>
-        </MemberContainer>
-      ))}
-      <MemberContainer onClick={() => setAddMemberModalOpen(true)}>
+      {members.length != 0 ?
+        <MemberList>
+          {members?.map((user, i) => (
+            <Member
+              key={i}
+              displayname={user.displayname}
+              role={user.role}
+              description={user?.description}
+              onClick={() => setSelectedUser(user)} />
+          ))}
+        </MemberList> : ""}
+
+
+      <AddMemberButton onClick={() => setAddMemberModalOpen(true)}>
         <AddIconContainer>
           <RiAddCircleFill />
         </AddIconContainer>
         <span>Click to add new member</span>
-      </MemberContainer>
+      </AddMemberButton>
     </Wrapper>
   );
 }

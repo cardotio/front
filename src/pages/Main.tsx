@@ -17,6 +17,7 @@ import {
   settingModalOpenAtom,
   selectedTeamAtom,
   addMemberModalOpenAtom,
+  selectedUserAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -65,6 +66,8 @@ function Main() {
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
+  
+    const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
@@ -170,6 +173,7 @@ function Main() {
         </DragDropContext>
       )}
       <RightSideBar />
+      
     </Wrapper>
   );
 }

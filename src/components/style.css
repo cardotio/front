@@ -1,9 +1,12 @@
+
 .messages {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 700px;
+  height: 90%;
+  width: 400px;
   overflow-y: scroll;
+  border-top: 1px solid lightgray;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
@@ -12,17 +15,83 @@
 }
 
 .message {
-  width: 100%;
+  width: max-content;
+  display: flex;
 }
-
+.message-my {
+  flex-direction: row-reverse;
+  justify-content: right;
+  margin-left: auto;
+  margin-right: 5px;
+}
 .message-box {
-  background-color: #bfbfbf;
-  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  max-width: 320px;
+  gap: 10px;
+  padding: 10px;
+  word-break:break-all;
+  line-height: 20px;
+  width: 100%;
+  border-radius: 4px;
 }
 
 .message-box-my {
-  text-align: right;
+  background-color: #537791;
+  color: white;
+  
+  
+}
+.message-box-opponent {
+  background-color: #e7e6e1;
+  margin-left: 5px;
 }
 .created-date {
   font-size: 12px;
+  height: min-content;
+  padding: 0 5px 2px 5px;
+}
+
+.divided-date {
+  text-align: center;
+  font-size: 14px;
+  padding: 5px;
+  color: gray;
+}
+.input-form {
+  all: unset;
+  display: flex;
+  margin: 5px 0 5px 0;
+  justify-content: center;
+  border-top: 1px solid lightgray;
+}
+
+.input-form input {
+  background: #e7e6e1;
+		width: 100%;
+		margin: 5px 5px 0px;
+		border: none;
+		border-radius: 4px;
+		height: 35px;
+		padding: 5px;
+}
+
+.input-form input:focus {
+    outline: none;
+}
+.unread-number {
+  font-size: 12px;
+  height: min-content;
+  color: #537791;
+  padding: 0 5px 2px 5px;
+}
+
+.unread-number-my {
+  text-align: right;
+}
+.message-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 3px;
 }

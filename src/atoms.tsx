@@ -55,7 +55,7 @@ export const teamInfoFetchingAtom = atom({
   default: false,
 });
 
-export const messagesAtom = atom<TypeMessageInfo[]>({
+export const teamMessagesAtom = atom<TypeMessageInfo[]>({
   key: 'messages',
   default: [],
 });
