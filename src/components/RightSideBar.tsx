@@ -250,7 +250,7 @@ function RightSideBar() {
   }, [selectedUserMessages]);
 
   return (
-    <Wrapper style={{ visibility: selectedUser ? 'visible' : 'hidden' }}>
+    <Wrapper style={{ display: selectedUser ? 'flex' : 'none' }}>
       <Member
         displayname={selectedUser?.displayname}
         role={selectedUser?.role}

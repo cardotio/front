@@ -5,7 +5,6 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { addMemberModalOpenAtom, selectedTeamAtom, userInfoAtom } from 'atoms';
 import Spinner from 'react-spinner-material';
-import { useLocation } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID } from 'api';
 import { EMAIL_PUBLIC_KEY } from '../api';
@@ -144,8 +143,6 @@ function AddMemberModal({ isOpen }: IModal) {
             placeholder="Enter email"
             {...register('email', {
               required: true,
-              maxLength: 20,
-              minLength: 5,
             })}
           />
           <Btn type="submit">
@@ -157,7 +154,7 @@ function AddMemberModal({ isOpen }: IModal) {
           </Btn>
         </Form>
         {errors.email && (
-          <ErrorMessageArea>카드 이름은 5 ~ 20자 입니다.</ErrorMessageArea>
+          <ErrorMessageArea>이메일을 입력해주세요.</ErrorMessageArea>
         )}
       </Container>
     </Modal>

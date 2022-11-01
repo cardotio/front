@@ -153,11 +153,13 @@ function Login() {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
     formState: { errors: errorsLogin },
+    resetField: resetFieldLogin,
   } = useForm<TypeLoginForm>();
   const {
     register: registerSignup,
     handleSubmit: handleSubmitSignup,
     formState: { errors: errorsSignup },
+    resetField: resetFieldSignup,
   } = useForm<TypeSignupForm>();
   const [isFetching, setIsFetching] = useState(false);
   const [isAuth, setIsAuth] = useState(true);
@@ -220,6 +222,21 @@ function Login() {
       });
   };
 
+  const toggle = () => {
+    setShowLogin((prev) => !prev);
+    resetFields();
+  };
+
+  const resetFields = () => {
+    resetFieldLogin('username');
+    resetFieldLogin('password');
+    resetFieldSignup('username');
+    resetFieldSignup('password');
+    resetFieldSignup('displayname');
+    resetFieldSignup('email');
+    resetFieldSignup('role');
+  };
+
   useEffect(() => {
     if (token && token !== '') {
       if (location.state === null) navigate('/team/me');
@@ -276,8 +293,7 @@ function Login() {
                     marginTop: '10px',
                   }}
                 >
-                  Don{"'"}t have an acount?{' '}
-                  <a onClick={() => setShowLogin(false)}>Sign Up</a>
+                  Don{"'"}t have an acount? <a onClick={toggle}>Sign Up</a>
                 </Label>
                 {errorsLogin.username ? (
                   <ErrorMessageArea>Please enter username</ErrorMessageArea>
@@ -375,8 +391,7 @@ function Login() {
                     marginTop: '10px',
                   }}
                 >
-                  Already have an acount?{' '}
-                  <a onClick={() => setShowLogin(true)}>Sign In</a>
+                  Already have an acount? <a onClick={toggle}>Sign In</a>
                 </Label>
                 {errorsSignup.username ? (
                   <ErrorMessageArea>

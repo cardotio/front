@@ -30,10 +30,16 @@ function Invite() {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
+        navigate(`/team/${teamId}`);
       })
       .catch((error: AxiosError) => {
         console.log(error);
       });
+  };
+
+  const handleReject = () => {
+    alert("You've rejected the invitation");
+    navigate('/team/me');
   };
 
   useEffect(() => {
@@ -68,7 +74,7 @@ function Invite() {
             Welcome to the Team, {currentTeam?.teamname}
           </h1>
           <button onClick={handleAccept}>Accept</button>
-          <button>Reject</button>
+          <button onClick={handleReject}>Reject</button>
         </>
       ) : (
         <div style={{ color: 'white' }}>

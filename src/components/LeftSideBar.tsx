@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import Members from './Members';
 import Team from './Team';
 import Teams from './Teams';
-import { IoClose } from 'react-icons/io5';
+import { IoClose, IoAdd } from 'react-icons/io5';
 
 const Wrapper = styled.aside`
   position: relative;
@@ -49,6 +49,7 @@ const CloseContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 3px;
   cursor: pointer;
   &:hover {
     background: #eeeeee;
@@ -76,6 +77,9 @@ function LeftSideBar() {
             exit={{ scale: 0 }}
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <CloseContainer onClick={onAddTeam}>
+                <IoAdd />
+              </CloseContainer>
               <CloseContainer onClick={() => setShowDropDown(false)}>
                 <IoClose />
               </CloseContainer>
@@ -90,7 +94,6 @@ function LeftSideBar() {
       </AnimatePresence>
       <Teams />
       <Members />
-      <button onClick={onAddTeam}>+</button>
     </Wrapper>
   );
 }

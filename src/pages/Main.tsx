@@ -31,6 +31,7 @@ import { TypeCard } from 'types';
 import AddMemberModal from 'components/AddMemberModal';
 import AddDeck from 'components/AddDeck';
 import AddDeckModal from 'components/AddDeckModal';
+import Spinner from 'react-spinner-material';
 
 const Wrapper = styled.div`
   display: flex;
@@ -72,8 +73,6 @@ function Main() {
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
   const teamId = useLocation().pathname.split('/')[2];
-
-  const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
@@ -160,7 +159,7 @@ function Main() {
       <AddMemberModal isOpen={addMemberModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       {teamInfoFetching ? (
-        <div style={{ color: 'white' }}>Loading...</div>
+        <Spinner radius={20} color={'#fff'} stroke={1} visible={true} />
       ) : (
         <DragDropContext onDragEnd={OnDragEnd}>
           <Container>

@@ -86,14 +86,16 @@ function Members() {
   useEffect(() => {
     if (selectedTeam) {
       setMembers(
-        selectedTeam.users.filter((user) => user.username !== myInfo?.username),
+        selectedTeam.users?.filter(
+          (user) => user.username !== myInfo?.username,
+        ),
       );
     }
   }, [selectedTeam]);
 
   return (
     <Wrapper>
-      {members.length != 0 ? (
+      {members?.length != 0 ? (
         <MemberList>
           {members?.map((user, i) => (
             <Member
