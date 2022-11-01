@@ -56,10 +56,14 @@ export type TypeDeck = {
 };
 
 export type TypeMessageInfo = {
+  teamId: number;
+  messageId: number;
   content: string;
   sender: string;
   senderDisplayname: string;
   receiver: string;
   createdDate: string;
   type: boolean;
+  unread: number;
+  isTimestamp?: boolean;
 };

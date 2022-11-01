@@ -15,12 +15,13 @@ const Header = styled.div`
   position: relative;
   height: 84px;
   padding: 7px 10px;
-  margin-bottom: 14px;
-  border-width: 0.1px 0.1px 0px 0.1px;
-  border-style: solid;
-  border-color: #000000;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+  
+  border: 1px solid lightgray;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  
+  //box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   &:hover {
     background: #e7e7e7;

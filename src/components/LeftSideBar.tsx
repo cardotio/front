@@ -19,9 +19,7 @@ const Wrapper = styled.aside`
   min-width: 240px;
   height: 100vh;
   background: #f7f7f7;
-  padding: 15px 5px;
-  border-right: 1px solid lightgray;
-  border-radius: 0.125rem;
+  padding: 0px;
   color: ${(props) => props.theme.textColor};
 `;
 const DropDown = styled(motion.div)`

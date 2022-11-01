@@ -1,5 +1,5 @@
 import {
-  messagesAtom,
+  teamMessagesAtom,
   selectedTeamAtom,
   selectedUserAtom,
   userInfoAtom,
@@ -15,17 +15,26 @@ import { useForm } from 'react-hook-form';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { TypeMessageInfo } from 'types';
 import './style.css';
+import {
+  getOnlyDate,
+  getOnlyTime,
+  formatDateToKR,
+  splitByDate,
+  createDateTimeStamp,
+} from 'helper/dateFormatter';
+
+import './style.css';
+import MyMessageBox from './messageBox/MyMessageBox';
+import OpponentMessageBox from './messageBox/OpponentMessageBox';
+import Member from './Member';
 
 const Wrapper = styled.aside`
-  width: 10%;
-  min-width: 270px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   background: #ffffff;
-`;
-
-const Input = styled.input`
-  width: 80%;
-  margin: 10px auto;
+  justify-content: space-between;
 `;
 
 var ws = Stomp.over(function () {
@@ -39,141 +48,235 @@ function RightSideBar() {
     // formState: { errors },
   } = useForm();
   const token = useRecoilValue(userTokenAtom);
-  const INDIVISUAL = false;
+  const INDIVIDUAL = false;
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [currentUser, setCurrentUser] = useRecoilState(userInfoAtom);
 
-  const [messages, setMessages] = useRecoilState(messagesAtom);
-  const [currentMessages, setCurrentMessages] = useState<TypeMessageInfo[]>([]);
+  const [teamMessages, setTeamMessages] = useRecoilState(teamMessagesAtom);
+  const [selectedUserMessages, setSelectedUserMessages] = useState<
+    TypeMessageInfo[]
+  >([]);
 
+  const [receiveState, setReceiveState] = useState(false);
   const scrollRef = useRef<null | HTMLDivElement>(null);
 
-  const connect = () => {
+  function connect() {
     ws.connect(
       { Authorization: token },
-      () => {
-        ws.subscribe(
-          '/sub/chat/users/' + currentUser?.username,
-          (message: any) => {
-            var recv: TypeMessageInfo = JSON.parse(message.body);
-            setMessages((prev) => [...prev, recv]);
-            setCurrentMessages((prev) => [...prev, recv]);
-          },
-        );
-      },
-      function (error: any) {
-        console.log(error);
+      () => subscribeMessages(),
+      (error: any) => console.log(error),
+    );
+  }
+
+  function subscribeMessages() {
+    // 상대방이 채팅을 보낼 때마다 받아오는 메세지
+    ws.subscribe(
+      '/sub/chat/users/' + currentUser?.username,
+      (response: any) => {
+        const message: TypeMessageInfo = JSON.parse(response.body);
+        receiveMessage(message);
       },
     );
-  };
-  const disconnect = () => {};
+    // 상대방이 채팅을 읽을 때마다 받아오는 메세지
+    ws.subscribe('/sub/chat/read/' + currentUser?.username, (response: any) => {
+      setMessagesUnreadToZero();
+    });
+  }
 
-  const sendMessage = (messageData: any, e: any) => {
+  // 좀 더 효율적으로 짤 수 있으면 좋을 듯
+  function setMessagesUnreadToZero() {
+    const toReadMessages: number[] = [];
+    setSelectedUserMessages((prev) => {
+      let temp: TypeMessageInfo[] = [];
+      prev.map((message) => {
+        toReadMessages.push(message.messageId);
+        temp.push(createReadedMessage(message));
+      });
+      return temp;
+    });
+    setTeamMessages((prev) => {
+      let temp: TypeMessageInfo[] = [];
+      prev.map((message) => {
+        toReadMessages.includes(message.messageId)
+          ? temp.push(message)
+          : temp.push(createReadedMessage(message));
+      });
+      return temp;
+    });
+  }
+
+  function createReadedMessage(message: TypeMessageInfo) {
+    const resultMessage: TypeMessageInfo = {
+      messageId: message.messageId,
+      content: message.content,
+      sender: message.sender,
+      senderDisplayname: message.senderDisplayname,
+      receiver: message.receiver,
+      createdDate: message.createdDate,
+      teamId: message.teamId,
+      type: message.type,
+      unread: 0,
+      isTimestamp: message.isTimestamp,
+    };
+    return resultMessage;
+  }
+
+  function receiveMessage(message: TypeMessageInfo) {
+    setTeamMessages((prev) => {
+      const temp = [];
+      prev.map((m) => temp.push(m));
+      if (
+        getOnlyDate(message.createdDate) !==
+        getOnlyDate(prev[prev.length - 1].createdDate)
+      )
+        temp.push(createDateTimeStamp(message));
+      temp.push(message);
+      return temp;
+    });
+    setSelectedTeam((prev) => {
+      if (prev?.teamId === message.teamId) setReceiveState((prev) => !prev);
+      return prev;
+    });
+    setSelectedUserMessages((prev) => [...prev, message]);
+  }
+
+  function sendMessage(messageData: any, e: any) {
     e.target[0].value = '';
+    const messageObject = {
+      content: messageData.message,
+      receiver: selectedUser?.username,
+      type: INDIVIDUAL,
+      teamId: selectedTeam?.teamId,
+    };
 
     ws.send(
       '/pub/message',
       { Authorization: token },
-      JSON.stringify({
-        content: messageData.message,
-        receiver: selectedUser?.username,
-        type: INDIVISUAL,
-        teamId: selectedTeam?.teamId,
-      }),
+      JSON.stringify(messageObject),
     );
-  };
+    readMessages();
+  }
 
-  /** 팀이 가지고 있는 모든 메세지들을 가져옴 */
-  function loadTeamMessages() {
+  function getTeamMessages() {
     console.log(`GET MESSAGES: /teams/${selectedTeam?.teamId}/messages`);
     axios
       .get(API_URL + '/teams/' + selectedTeam?.teamId + '/messages', {
         headers: { Authorization: `${token}` },
       })
       .then((response: AxiosResponse) => {
-        console.log(response);
-        setMessages(response.data);
+        setTeamMessages(splitByDate(response.data));
       })
       .catch((error: AxiosError) => {
         console.log(error);
       });
   }
 
-  /**팀이 가지고 있는 메세지 중 현재 유저와 상대방 유저의 채팅을 filter해서 가져옴 */
-  function loadMessages(currentUsername: string, opponentUsername: string) {
-    //send receive 양방향
-    setCurrentMessages(
-      messages.filter(
-        (message) =>
-          (message.sender == currentUsername &&
-            message.receiver == opponentUsername) ||
-          (message.sender == opponentUsername &&
-            message.receiver == currentUsername),
-      ),
+  function getPersonalMessages(
+    teamMessages: TypeMessageInfo[],
+    currentUsername: string,
+    opponentUsername: string,
+  ) {
+    return teamMessages.filter(
+      (
+        message, //send receive 양방향
+      ) =>
+        (message.sender == currentUsername &&
+          message.receiver == opponentUsername) ||
+        (message.sender == opponentUsername &&
+          message.receiver == currentUsername),
     );
   }
 
-  //
-  useEffect(() => {
-    if (!currentUser || !selectedUser) return;
-    loadMessages(currentUser.username, selectedUser.username);
-  }, [currentUser, selectedUser]);
-
-  useEffect(() => {
-    selectedTeam && loadTeamMessages();
-  }, [selectedTeam]);
+  function readMessages() {
+    ws.send(
+      '/pub/message/read',
+      { Authorization: token },
+      JSON.stringify({
+        teamId: selectedTeam?.teamId,
+        sender: currentUser?.username,
+        receiver: selectedUser?.username,
+      }),
+    );
+  }
 
   useEffect(() => {
     currentUser ? connect() : null;
   }, [currentUser]);
 
   useEffect(() => {
+    if (!ws.connected || !selectedUser) return;
+    readMessages();
+  }, [receiveState]);
+
+  useEffect(() => {
+    if (!selectedUser) return;
+    readMessages();
+    setMessagesUnreadToZero();
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (!currentUser || !selectedUser) return;
+    const filteredMessages = getPersonalMessages(
+      teamMessages,
+      currentUser.username,
+      selectedUser.username,
+    );
+    setSelectedUserMessages(filteredMessages);
+
+    if (!ws.connected) return;
+  }, [currentUser, selectedUser]);
+
+  useEffect(() => {
+    setSelectedUser(null); // 팀 바뀔 때마다 선택된 유저 초기화
+    selectedTeam && getTeamMessages();
+  }, [selectedTeam]);
+
+  useEffect(() => {
+    if (!currentUser || !selectedUser) return;
+    const filteredMessages = getPersonalMessages(
+      teamMessages,
+      currentUser.username,
+      selectedUser.username,
+    );
+    setSelectedUserMessages(filteredMessages);
+  }, [teamMessages]);
+
+  useEffect(() => {
     scrollRef.current?.scroll({
       top: scrollRef.current?.scrollHeight,
       behavior: 'smooth',
     });
-  }, [currentMessages]);
+  }, [selectedUserMessages]);
+
   return (
-    <Wrapper>
-      <div>
-        <div style={{ fontWeight: '1000', fontSize: '20px' }}>
-          {selectedUser?.displayname}
-        </div>
-        <div>{selectedUser?.role}</div>
-        <div>{selectedUser?.description}</div>
-      </div>
+    <Wrapper style={{ visibility: selectedUser ? 'visible' : 'hidden' }}>
+      <Member
+        displayname={selectedUser?.displayname}
+        role={selectedUser?.role}
+        description={selectedUser?.description}
+      />
+
       <div className="messages" ref={scrollRef}>
-        {currentMessages?.map((message, i) => (
-          <div key={i}>
-            {currentUser?.username == message?.sender ? (
-              <div className="message message-my">
-                <div className="message-box message-box-my">
-                  <div>{message.content}</div>
-                  <div className="created-date">
-                    {message.createdDate.replaceAll('T', ' ')}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="message message-opponent">
-                <div className="message-sender-name">
-                  {message.senderDisplayname}
-                </div>
-                <div className="message-box message-box -opponent">
-                  <div>{message.content}</div>
-                  <div className="created-date">
-                    {message.createdDate.replaceAll('T', ' ')}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+        {selectedUserMessages?.map((message, i) =>
+          message.isTimestamp ? (
+            <div className="divided-date" key={i}>
+              {formatDateToKR(message.createdDate)}
+            </div>
+          ) : (
+            <div key={i}>
+              {currentUser?.username == message?.sender ? (
+                <MyMessageBox message={message} />
+              ) : (
+                <OpponentMessageBox message={message} />
+              )}
+            </div>
+          ),
+        )}
       </div>
 
-      <form onSubmit={handleSubmit(sendMessage)}>
-        <Input {...register('message')} />
+      <form className="input-form" onSubmit={handleSubmit(sendMessage)}>
+        <input placeholder="Write Something..." {...register('message')} />
       </form>
     </Wrapper>
   );

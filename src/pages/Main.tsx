@@ -19,6 +19,7 @@ import {
   addMemberModalOpenAtom,
   deckListAtom,
   addDeckModalOpenAtom,
+  selectedUserAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -71,6 +72,8 @@ function Main() {
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
   const teamId = useLocation().pathname.split('/')[2];
+
+  const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
 
   useEffect(() => {
     if (!token || token === '') navigate('/login');
