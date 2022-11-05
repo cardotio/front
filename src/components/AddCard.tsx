@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ index: number }>`
   justify-content: center;
   align-items: center;
   width: 150px;
-  height: 90px;
+  height: 10px;
   margin-bottom: 14px;
   padding: 20px;
   background: #d5d5d521;

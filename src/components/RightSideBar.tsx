@@ -23,19 +23,14 @@ import {
   createDateTimeStamp,
 } from 'helper/dateFormatter';
 
+
+//import { Resizable } from 'react-resizable';
 import './style.css';
 import MyMessageBox from './messageBox/MyMessageBox';
 import OpponentMessageBox from './messageBox/OpponentMessageBox';
 import Member from './Member';
-
-const Wrapper = styled.aside`
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: #ffffff;
-  justify-content: space-between;
-`;
+import { Resizable } from 're-resizable';
+import SelectedUserInfo from './SelectedUserInfo';
 
 var ws = Stomp.over(function () {
   return new SockJS(API_URL + '/chat');
@@ -61,6 +56,9 @@ function RightSideBar() {
   const [receiveState, setReceiveState] = useState(false);
   const scrollRef = useRef<null | HTMLDivElement>(null);
 
+
+  
+  
   function connect() {
     ws.connect(
       { Authorization: token },
@@ -90,8 +88,12 @@ function RightSideBar() {
     setSelectedUserMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        toReadMessages.push(message.messageId);
-        temp.push(createReadedMessage(message));
+        if(message.sender !== currentUser?.username) {
+          toReadMessages.push(message.messageId);
+          temp.push(createReadedMessage(message));
+        } else {
+          temp.push(message);
+        }
       });
       return temp;
     });
@@ -212,7 +214,7 @@ function RightSideBar() {
   useEffect(() => {
     if (!selectedUser) return;
     readMessages();
-    setMessagesUnreadToZero();
+    //setMessagesUnreadToZero();
   }, [selectedUser]);
 
   useEffect(() => {
@@ -248,14 +250,35 @@ function RightSideBar() {
       behavior: 'smooth',
     });
   }, [selectedUserMessages]);
-
+  
   return (
-    <Wrapper style={{ visibility: selectedUser ? 'visible' : 'hidden' }}>
-      <Member
+    <Resizable
+    className='wrapper'
+    style={{visibility: selectedUser ? 'visible' : 'hidden'}}
+    defaultSize={{
+      width: 300,
+      height: '100%'
+    }}
+    minWidth={300} 
+    enable={{ top:false, right:false, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
+    handleClasses={{
+      left: 'resizer'
+    }}
+    >
+      <div className='resizer' ></div>
+      <div className='header'>
+        <button className='hide-btn' onClick={() => setSelectedUser(null)}>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+          <span className="material-symbols-outlined"> keyboard_double_arrow_right</span>
+      </button>
+      <SelectedUserInfo
         displayname={selectedUser?.displayname}
         role={selectedUser?.role}
         description={selectedUser?.description}
       />
+      </div>
+      
+      
 
       <div className="messages" ref={scrollRef}>
         {selectedUserMessages?.map((message, i) =>
@@ -278,7 +301,7 @@ function RightSideBar() {
       <form className="input-form" onSubmit={handleSubmit(sendMessage)}>
         <input placeholder="Write Something..." {...register('message')} />
       </form>
-    </Wrapper>
+    </Resizable>
   );
 }
 
