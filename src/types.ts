@@ -7,7 +7,7 @@ export type TypeUserInfo = {
   username: string;
   displayname: string;
   email: string;
-  role?: string;
+  role: string;
   description?: string;
   invitations?: string[];
   teams?: TypeTeam[];
@@ -41,7 +41,11 @@ export type TypeCard = {
   cardId: number;
   content: string;
   creator: TypeMember;
-  deck: TypeDeck | null;
+  deck: {
+    deckId: number;
+    deckname: string;
+  };
+  deckId: null;
   team: {
     teamCode: string;
     teamId: string;
@@ -52,7 +56,8 @@ export type TypeCard = {
 
 export type TypeDeck = {
   deckname: string;
-  deckId: string;
+  deckId: number;
+  cards: TypeCard[];
 };
 
 export type TypeMessageInfo = {

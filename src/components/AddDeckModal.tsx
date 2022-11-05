@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
-  addCardModalOpenAtom,
   addDeckModalOpenAtom,
-  currentCardsAtom,
   deckListAtom,
   myTeamsAtom,
   userInfoAtom,
@@ -15,8 +13,7 @@ import {
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
-import { TypeCard } from 'types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
   width: 450px;
@@ -130,7 +127,9 @@ function AddDeckModal({ isOpen }: IModal) {
       .then((response: AxiosResponse) => {
         console.log(response);
         setDecks((prev) => {
-          return prev ? [...prev, response.data] : [response.data];
+          return prev
+            ? [...prev, { ...response.data, cards: [] }]
+            : [{ ...response.data, cards: [] }];
         });
       })
       .catch((error: AxiosError) => {

@@ -6,12 +6,11 @@ import { Draggable } from 'react-beautiful-dnd';
 import { isPropertySignature } from 'typescript';
 
 const Wrapper = styled(motion.div)<{ index: number }>`
-  position: absolute;
+  /* position: absolute;
   left: 10px;
-  top: ${(props) => props.index * 30 + 10 + 'px'};
+  top: ${(props) => 20 + 36 * props.index + 'px'}; */
   width: 150px;
-  height: 90px;
-  margin-bottom: 14px;
+  height: 30px;
   padding: 10px;
   background: #f7f6e7;
   border: 1px lightgray solid;
@@ -19,8 +18,9 @@ const Wrapper = styled(motion.div)<{ index: number }>`
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   /* border-radius: 10px; */
   /* transform: rotate(45deg); */
-  transition: 0.2s background, 0.4s z-index;
+  /* transition: 0.5s all; */
   cursor: pointer;
+  font-family: 'Noto Sans KR';
   &:hover {
     background: #deb887;
     z-index: 200;
@@ -34,11 +34,11 @@ interface CardProps {
 
 function Card({ index, card }: CardProps) {
   const cardClick = () => {
-    // console.log(card);
+    console.log(card);
   };
 
   return (
-    <Draggable draggableId={index + ''} index={index}>
+    <Draggable draggableId={'card' + card.cardId} index={index}>
       {(provided) => (
         <div
           ref={provided.innerRef}

@@ -1,6 +1,6 @@
-import React from "react";
-import { FcBusinessman } from "react-icons/fc";
-import styled from "styled-components";
+import React from 'react';
+import { FcBusinessman } from 'react-icons/fc';
+import styled from 'styled-components';
 
 const MemberContainer = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const MemberContainer = styled.div`
     background: #d8d8d8;
   }
   span {
-    font-family: 'IBM Plex Sans';
+    font-family: 'IBM Plex Sans', 'Noto Sans KR';
     font-style: normal;
     font-weight: 400;
     font-size: 13px;
@@ -54,13 +54,13 @@ const Header = styled.div`
   //border-bottom: 1px solid black;
 `;
 const Description = styled.div`
-  font-family: 'IBM Plex Sans';
+  font-family: 'IBM Plex Sans', 'Noto Sans KR';
   font-style: normal;
   font-weight: 400;
   font-size: 10px;
 `;
 const DisplayName = styled.div`
-  font-family: 'IBM Plex Sans';
+  font-family: 'IBM Plex Sans', 'Noto Sans KR';
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
@@ -70,7 +70,7 @@ const Role = styled.div`
   height: fit-content;
   transform: translateY(6px);
   margin-bottom: 2px;
-  font-family: 'IBM Plex Sans';
+  font-family: 'IBM Plex Sans', 'Noto Sans KR';
   font-style: normal;
   //font-weight: 700;
   font-size: 11px;
@@ -90,13 +90,12 @@ function Member({ displayname, role, description, onClick }: MemberProps) {
         <FcBusinessman />
       </ImageContainer>
       <MemberInfo>
-
         <DisplayName>{displayname}</DisplayName>
 
         <Role>{role}</Role>
       </MemberInfo>
     </MemberContainer>
-  )
+  );
 }
 
 export default React.memo(Member);

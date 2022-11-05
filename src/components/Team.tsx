@@ -1,6 +1,5 @@
 import { API_URL } from 'api';
 import {
-  currentCardsAtom,
   userTokenAtom,
   teamInfoFetchingAtom,
   selectedTeamAtom,
@@ -57,7 +56,6 @@ interface TeamProps {
 
 function Team({ team }: TeamProps) {
   const [token, setToken] = useRecoilState(userTokenAtom);
-  const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
@@ -76,7 +74,6 @@ function Team({ team }: TeamProps) {
         })
         .then((response: AxiosResponse) => {
           console.log(response);
-          setCards(response.data);
         })
         .catch((error: AxiosError) => {
           console.log(error);

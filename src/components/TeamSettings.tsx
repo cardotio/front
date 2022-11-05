@@ -1,21 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import {
-  addCardModalOpenAtom,
-  currentCardsAtom,
-  myTeamsAtom,
-  settingModalOpenAtom,
-  userInfoAtom,
-  userTokenAtom,
-} from 'atoms';
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { API_URL } from 'api';
-import Spinner from 'react-spinner-material';
-import { TypeCard } from 'types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { settingModalOpenAtom } from 'atoms';
+import { useLocation } from 'react-router-dom';
+import React from 'react';
 
 const Container = styled.div`
   width: 450px;

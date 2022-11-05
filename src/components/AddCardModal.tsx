@@ -5,16 +5,16 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
   addCardModalOpenAtom,
-  currentCardsAtom,
   myTeamsAtom,
   userInfoAtom,
   userTokenAtom,
   addCardDeckAtom,
+  deckListAtom,
 } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
-import { TypeCard } from 'types';
+import { TypeCard, TypeDeck } from 'types';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
@@ -98,10 +98,8 @@ function AddCardModal({ isOpen }: IModal) {
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
-  const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
-  const [cards, setCards] = useRecoilState(currentCardsAtom);
-  const [deck, setDeck] = useRecoilState(addCardDeckAtom);
+  const [decks, setDecks] = useRecoilState(deckListAtom);
+  const [deckToAdd, setDeckToAdd] = useRecoilState(addCardDeckAtom);
   const [isFetching, setIsFetching] = useState(false);
   const location = useLocation();
   const teamId = location.pathname.split('/')[2];
@@ -121,7 +119,7 @@ function AddCardModal({ isOpen }: IModal) {
           cardname: cardname,
           content: '',
           type: 'private',
-          deckId: deck?.deckId,
+          deckId: deckToAdd?.deckId,
         },
         {
           headers: {
@@ -131,25 +129,29 @@ function AddCardModal({ isOpen }: IModal) {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        const newCard: TypeCard = {
-          cardname,
+        const newCard: any = {
           cardId: response.data.cardId,
-          content: 'Card Created',
-          type: 'private',
-          deck: deck,
-          creator: {
-            username: response.data.creator.username,
-            displayname: response.data.creator.displayname,
-            email: response.data.creator.email,
-            role: response.data.creator.role,
-          },
-          team: {
-            teamCode: response.data.team.teamCode,
-            teamId: response.data.team.teamId,
-            teamname: response.data.team.teamname,
-          },
+          cardname,
+          content: '',
+          creator: response.data.creator,
+          deck: { deckId: deckToAdd!.deckId, deckname: deckToAdd!.deckname },
+          deckId: null,
+          team: response.data.team,
+          type: response.data.type,
         };
-        setCards((prev) => [...prev, newCard]);
+        setDecks((prev) => {
+          return (prev = [
+            ...[...prev].filter((deck) => deck.deckId !== deckToAdd?.deckId),
+            {
+              ...prev.find((deck) => deck.deckId === deckToAdd?.deckId)!,
+              cards: [
+                ...prev.find((deck) => deck.deckId === deckToAdd?.deckId)!
+                  .cards,
+                newCard,
+              ],
+            },
+          ]);
+        });
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -159,7 +161,7 @@ function AddCardModal({ isOpen }: IModal) {
       .finally(() => {
         setIsFetching(false);
         setAddCardModalOpen(false);
-        setDeck(null);
+        setDeckToAdd(null);
       });
   };
 

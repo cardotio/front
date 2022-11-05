@@ -131,28 +131,28 @@ function AddTeamModal({ isOpen }: IModal) {
               teamCode: response.data.teamCode,
               users: [
                 {
-                  displayname: myInfo?.displayname,
-                  email: myInfo?.email,
-                  role: '',
+                  displayname: myInfo!.displayname,
+                  email: myInfo!.email,
+                  role: myInfo!.role,
                   username: myInfo?.username,
                 },
               ],
             },
           ]);
         setSelectedTeam({
-          teamId: myTeams.length,
+          teamId: response.data.teamId,
           teamname,
           teamCode: response.data.teamCode,
           users: [
             {
               displayname: myInfo!.displayname,
               email: myInfo!.email,
-              role: '',
+              role: myInfo!.role,
               username: myInfo!.username,
             },
           ],
         });
-        navigate(`/team/${teamname}`);
+        navigate(`/team/${response.data.teamId}`);
       })
       .catch((error: AxiosError) => {
         console.log(error);

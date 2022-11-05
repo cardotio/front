@@ -51,12 +51,8 @@ export const showDropDownAtom = atom({
 
 export const myTeamsAtom = atom<TypeTeam[]>({ key: 'myTeams', default: [] });
 
-export const deckListAtom = atom<TypeDeck[] | null>({
+export const deckListAtom = atom<TypeDeck[]>({
   key: 'deckList',
-  default: null,
-});
-export const currentCardsAtom = atom<TypeCard[]>({
-  key: 'currentCards',
   default: [],
 });
 export const currentUsersAtom = atom<TypeMember[]>({

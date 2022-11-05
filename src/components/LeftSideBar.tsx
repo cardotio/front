@@ -73,8 +73,8 @@ function LeftSideBar() {
         {showDropDown && (
           <DropDown
             initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
+            animate={{ scale: 1, transitionDuration: '0.1s' }}
+            exit={{ scale: 0, transitionDuration: '0.1s' }}
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <CloseContainer onClick={onAddTeam}>

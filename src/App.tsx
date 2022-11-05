@@ -90,6 +90,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Gothic A1', sans-serif;
     font-family: 'Nanum Gothic Coding', monospace;
     font-family: 'Noto Sans KR', sans-serif;
+    transition: .3s all;
   }
   body {
     display: "flex"; 

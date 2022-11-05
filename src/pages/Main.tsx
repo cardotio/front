@@ -2,7 +2,7 @@ import Deck from 'components/Deck';
 import LeftSideBar from 'components/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
 import React, { useEffect, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -12,7 +12,6 @@ import {
   userInfoAtom,
   myTeamsAtom,
   addCardModalOpenAtom,
-  currentCardsAtom,
   teamInfoFetchingAtom,
   settingModalOpenAtom,
   selectedTeamAtom,
@@ -27,11 +26,12 @@ import { API_URL } from 'api';
 import AddCardModal from 'components/AddCardModal';
 import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
-import { TypeCard } from 'types';
+import { TypeCard, TypeDeck } from 'types';
 import AddMemberModal from 'components/AddMemberModal';
 import AddDeck from 'components/AddDeck';
 import AddDeckModal from 'components/AddDeckModal';
 import Spinner from 'react-spinner-material';
+import { IoFilterCircle } from 'react-icons/io5';
 
 const Wrapper = styled.div`
   display: flex;
@@ -44,11 +44,16 @@ const Wrapper = styled.div`
 const Container = styled.div`
   display: flex;
   align-content: flex-start;
-  min-width: 520px;
+  min-width: 250px;
   width: 100%;
   height: 100%;
   padding: 36px 50px;
   flex-wrap: wrap;
+  overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 function Main() {
@@ -68,7 +73,6 @@ function Main() {
   const [settomgModalOpen, setSettomgModalOpen] =
     useRecoilState(settingModalOpenAtom);
   const [decks, setDecks] = useRecoilState(deckListAtom);
-  const [cards, setCards] = useRecoilState(currentCardsAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [teamInfoFetching, setTeamInfoFetching] =
     useRecoilState(teamInfoFetchingAtom);
@@ -111,31 +115,38 @@ function Main() {
     if (selectedTeam) {
       setTeamInfoFetching(true);
       // GET DECKS INFO
-      console.log(`GET DECKS INFO: /teams/${selectedTeam.teamId}/decks`);
+      console.log(`GET DECKS INFO: /teams/${selectedTeam!.teamId}/decks`);
       axios
-        .get(API_URL + `/teams/${selectedTeam.teamId}/decks`, {
+        .get(API_URL + `/teams/${selectedTeam!.teamId}/decks`, {
           headers: {
             Authorization: `${token}`,
           },
         })
         .then((response: AxiosResponse) => {
           console.log(response);
-          setDecks(response.data);
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-        });
-
-      console.log(`GET TEAM INFO: /teams/${selectedTeam.teamId}/cards`);
-      axios
-        .get(API_URL + `/teams/${selectedTeam.teamId}/cards`, {
-          headers: {
-            Authorization: `${token}`,
-          },
-        })
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          setCards(response.data);
+          let decksData: TypeDeck[] = [];
+          response.data.map((decks: any) => {
+            decksData.push({ ...decks, cards: [] });
+          });
+          console.log(`GET CARDS INFO: /teams/${selectedTeam!.teamId}/cards`);
+          axios
+            .get(API_URL + `/teams/${selectedTeam!.teamId}/cards`, {
+              headers: {
+                Authorization: `${token}`,
+              },
+            })
+            .then((response: AxiosResponse) => {
+              console.log(response);
+              response.data.map((card: TypeCard) => {
+                decksData
+                  .find((deck) => deck.deckId === card.deck?.deckId)
+                  ?.cards.push(card);
+              });
+              setDecks(decksData);
+            })
+            .catch((error: AxiosError) => {
+              console.log(error);
+            });
         })
         .catch((error: AxiosError) => {
           console.log(error);
@@ -148,7 +159,49 @@ function Main() {
     setAddDeckModalOpen(true);
   };
 
-  const OnDragEnd = () => {};
+  const handleChange = ({ source, destination }: DropResult) => {
+    setDecks((prev) => {
+      if (!destination) return prev;
+
+      const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
+        ?.cards[source.index];
+      const srcDeckIndex = prev.findIndex(
+        (d) => d.deckId === srcCard?.deck.deckId,
+      );
+
+      prev = [
+        ...prev.slice(0, srcDeckIndex),
+        {
+          ...prev[srcDeckIndex],
+          cards: [
+            ...prev[srcDeckIndex].cards.filter(
+              (c) => c.cardId !== srcCard?.cardId,
+            ),
+          ],
+        },
+        ...prev.slice(srcDeckIndex + 1),
+      ];
+
+      const dstDeck = decks.find(
+        (deck) => deck.deckId === +destination.droppableId,
+      );
+      const dstDeckIndex = prev.findIndex((d) => d.deckId === dstDeck?.deckId);
+
+      prev = [
+        ...prev.slice(0, dstDeckIndex),
+        {
+          ...prev[dstDeckIndex],
+          cards: [
+            ...prev[dstDeckIndex].cards.slice(0, destination.index),
+            srcCard!,
+            ...prev[dstDeckIndex].cards.slice(destination.index),
+          ],
+        },
+        ...prev.slice(dstDeckIndex + 1),
+      ];
+      return prev;
+    });
+  };
 
   return (
     <Wrapper>
@@ -158,18 +211,31 @@ function Main() {
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
-      {teamInfoFetching ? (
-        <Spinner radius={20} color={'#fff'} stroke={1} visible={true} />
-      ) : (
-        <DragDropContext onDragEnd={OnDragEnd}>
-          <Container>
-            {decks?.map((deck, i) => (
-              <Deck key={i} deck={deck} />
-            ))}
-            <AddDeck onClick={handleAddDeck} />
-          </Container>
-        </DragDropContext>
-      )}
+      ``
+      <DragDropContext onDragEnd={handleChange}>
+        <Container>
+          {teamInfoFetching ? (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              <Spinner radius={50} color={'#fff'} stroke={1} visible={true} />
+            </div>
+          ) : (
+            <>
+              {decks?.map((deck, i) => (
+                <Deck key={i} deck={deck} />
+              ))}
+              <AddDeck onClick={handleAddDeck} />
+            </>
+          )}
+        </Container>
+      </DragDropContext>
       <RightSideBar />
     </Wrapper>
   );

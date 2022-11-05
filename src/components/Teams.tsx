@@ -15,12 +15,12 @@ const Header = styled.div`
   position: relative;
   height: 84px;
   padding: 7px 10px;
-  
+
   border: 1px solid lightgray;
   border-top: none;
   border-left: none;
   border-right: none;
-  
+
   //box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   &:hover {
@@ -107,8 +107,6 @@ function Teams() {
   const handleShowDropDown = (e: any) => {
     e.target.tagName !== 'A' && setShowDropDown((prev) => !prev);
   };
-
-  console.log(selectedTeam);
 
   return (
     <Header onClick={handleShowDropDown}>
