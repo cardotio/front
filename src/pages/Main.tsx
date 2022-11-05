@@ -1,7 +1,7 @@
 import Deck from 'components/Deck';
 import LeftSideBar from 'components/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
@@ -18,20 +18,17 @@ import {
   addMemberModalOpenAtom,
   deckListAtom,
   addDeckModalOpenAtom,
-  selectedUserAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import AddCardModal from 'components/AddCardModal';
-import AddCard from 'components/AddCard';
 import TeamSettings from 'components/TeamSettings';
 import { TypeCard, TypeDeck } from 'types';
 import AddMemberModal from 'components/AddMemberModal';
 import AddDeck from 'components/AddDeck';
 import AddDeckModal from 'components/AddDeckModal';
 import Spinner from 'react-spinner-material';
-import { IoFilterCircle } from 'react-icons/io5';
 
 const Wrapper = styled.div`
   display: flex;

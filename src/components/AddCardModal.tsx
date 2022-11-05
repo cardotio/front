@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
   addCardModalOpenAtom,
-  myTeamsAtom,
-  userInfoAtom,
   userTokenAtom,
   addCardDeckAtom,
   deckListAtom,
@@ -14,8 +12,7 @@ import {
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
-import { TypeCard, TypeDeck } from 'types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
   width: 450px;

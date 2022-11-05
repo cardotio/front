@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
-import { isPropertySignature } from 'typescript';
 
 const Wrapper = styled(motion.div)<{ index: number }>`
   /* position: absolute;

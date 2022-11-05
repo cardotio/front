@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Spinner from 'react-spinner-material';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { TypeLoginForm, TypeSignupForm } from 'types';
 import { ReactComponent as Logo } from '../images/logo.svg';

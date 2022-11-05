@@ -1,6 +1,5 @@
 import { atom } from 'recoil';
 import {
-  TypeCard,
   TypeDeck,
   TypeMember,
   TypeMessageInfo,
