@@ -32,6 +32,7 @@ const MemberContainer = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
+  position: relative;
   align-items: center;
   width: 45px;
   height: 45px;
@@ -76,23 +77,43 @@ const Role = styled.div`
   font-size: 11px;
   line-height: 9px;
 `;
+const UnreadCount = styled.div<{unreadCount: number}>`
+  display: ${({unreadCount}) => unreadCount>0 ? 'block' : 'none'};
+
+ 
+    position: absolute;
+    width: 18px;
+    height: 18px;
+ 
+    line-height: 18px;
+    font-size: 10px;
+    border-radius: 30px;
+    background-color: #55AC68;
+    color: #ffffff;
+    text-align: center;
+    top: -1px;
+    right: -7px;
+`
 
 interface MemberProps {
   displayname?: string;
   role?: string;
   description?: string;
   onClick?: React.MouseEventHandler<HTMLElement>;
+  unreadCount: number;
 }
-function Member({ displayname, role, description, onClick }: MemberProps) {
+function Member({ displayname, role, description, onClick, unreadCount }: MemberProps) {
   return (
     <MemberContainer onClick={onClick}>
-      <ImageContainer>
+      <ImageContainer style={{ border: unreadCount > 0 ?'1px solid #1B9927': 'none'}}>
+        <UnreadCount unreadCount={unreadCount}>+{unreadCount}</UnreadCount>
         <FcBusinessman />
       </ImageContainer>
       <MemberInfo>
         <DisplayName>{displayname}</DisplayName>
 
         <Role>{role}</Role>
+        
       </MemberInfo>
     </MemberContainer>
   );

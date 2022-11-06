@@ -34,6 +34,8 @@ export type TypeMember = {
   email: string;
   role: string;
   username: string;
+
+  unread?: number;
 };
 
 export type TypeCard = {

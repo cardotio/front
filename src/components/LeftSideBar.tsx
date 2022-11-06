@@ -4,6 +4,7 @@ import {
   selectedTeamAtom,
   selectedUserAtom,
   showDropDownAtom,
+  teamMessagesAtom,
 } from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
@@ -60,12 +61,16 @@ function LeftSideBar() {
     useRecoilState(addTeamModalOpenAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
+  
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
 
+  
+  
   const onAddTeam = () => {
     setAddTeamModalOpen(true);
   };
 
+ 
   return (
     <Resizable
       className="left-bar"
