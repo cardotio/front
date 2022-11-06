@@ -13,16 +13,13 @@ const Wrapper = styled.div`
   margin: 15px;
   width: 170px;
   height: 300px;
-  background: #9b9b9b17;
-  border-radius: 12px;
+  background: #C1C0B9;
+  border-radius: 8px;
 `;
 const Title = styled.div`
-  width: 100%;
   height: 36px;
-  border-radius: 12px;
-  background: #dbe6ff;
+  margin-left: 20px;
   color: ${(props) => props.theme.textColor};
-  text-align: center;
   font-family: 'Gothic A1', sans-serif;
   font-weight: 700;
   font-size: 0.9rem;

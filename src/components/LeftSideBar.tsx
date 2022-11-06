@@ -2,6 +2,7 @@ import {
   addTeamModalOpenAtom,
   myTeamsAtom,
   selectedTeamAtom,
+  selectedUserAtom,
   showDropDownAtom,
 } from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -13,13 +14,11 @@ import Members from './Members';
 import Team from './Team';
 import Teams from './Teams';
 import { IoClose, IoAdd } from 'react-icons/io5';
+import { Resizable } from 're-resizable';
+
+import './style.css';
 
 const Wrapper = styled.aside`
-  position: relative;
-  min-width: 240px;
-  height: 100vh;
-  background: #f7f7f7;
-  padding: 0px;
   color: ${(props) => props.theme.textColor};
 `;
 const DropDown = styled(motion.div)`
@@ -29,7 +28,6 @@ const DropDown = styled(motion.div)`
   display: flex;
   flex-direction: column;
   min-width: 220px;
-  max-width: 360px;
   min-height: 60px;
   max-height: 270px;
   padding: 10px;
@@ -62,13 +60,33 @@ function LeftSideBar() {
     useRecoilState(addTeamModalOpenAtom);
   const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
+  const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
 
   const onAddTeam = () => {
     setAddTeamModalOpen(true);
   };
 
   return (
-    <Wrapper>
+    <Resizable
+      className="left-bar"
+      defaultSize={{
+        width: 250,
+        height: '100%',
+      }}
+      minWidth={250}
+      maxWidth={700}
+      enable={{
+        top: false,
+        right: true,
+        bottom: false,
+        left: false,
+        topRight: false,
+        bottomRight: false,
+        bottomLeft: false,
+        topLeft: false,
+      }}
+      handleClasses={{ right: 'resizer right-resizer' }}
+    >
       <AnimatePresence>
         {showDropDown && (
           <DropDown
@@ -94,7 +112,8 @@ function LeftSideBar() {
       </AnimatePresence>
       <Teams />
       <Members />
-    </Wrapper>
+      <button onClick={onAddTeam}>+</button>
+    </Resizable>
   );
 }
 
