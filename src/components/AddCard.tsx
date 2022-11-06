@@ -6,9 +6,6 @@ import { useRecoilState } from 'recoil';
 import { addCardDeckAtom, addCardModalOpenAtom } from 'atoms';
 
 const Wrapper = styled.div<{ index: number }>`
-  /* position: absolute;
-  left: 10px;
-  bottom: -265px; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,7 +13,7 @@ const Wrapper = styled.div<{ index: number }>`
   height: 20px;
   margin-bottom: 14px;
   padding: 20px;
-  background: #d5d5d521;
+  background: #000000bf;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
