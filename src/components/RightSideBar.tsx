@@ -144,6 +144,7 @@ function RightSideBar() {
   }
 
   function sendMessage(messageData: any, e: any) {
+    if(messageData.message.length == 0) return;
     e.target[0].value = '';
     const messageObject = {
       content: messageData.message,
@@ -214,7 +215,7 @@ function RightSideBar() {
   useEffect(() => {
     if (!selectedUser) return;
     readMessages();
-    //setMessagesUnreadToZero();
+    
   }, [selectedUser]);
 
   useEffect(() => {
@@ -253,23 +254,21 @@ function RightSideBar() {
   
   return (
     <Resizable
-    className='wrapper'
-    style={{visibility: selectedUser ? 'visible' : 'hidden'}}
+    className='right-bar'
+    style={{display: selectedUser ? 'flex' : 'none'}}
     defaultSize={{
       width: 300,
       height: '100%'
     }}
     minWidth={300} 
+    maxWidth={700}
     enable={{ top:false, right:false, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
-    handleClasses={{
-      left: 'resizer'
-    }}
-    >
+    handleClasses={{ left: 'resizer' }}>
       <div className='resizer' ></div>
       <div className='header'>
         <button className='hide-btn' onClick={() => setSelectedUser(null)}>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-          <span className="material-symbols-outlined"> keyboard_double_arrow_right</span>
+          <span className="material-symbols-outlined double-arrow-right-icon"> keyboard_double_arrow_right</span>
       </button>
       <SelectedUserInfo
         displayname={selectedUser?.displayname}
@@ -300,6 +299,12 @@ function RightSideBar() {
 
       <form className="input-form" onSubmit={handleSubmit(sendMessage)}>
         <input placeholder="Write Something..." {...register('message')} />
+        <button className='send-message-btn'>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <span className="material-symbols-outlined send-icon">
+          send
+        </span>
+        </button>
       </form>
     </Resizable>
   );
