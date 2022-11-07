@@ -3,10 +3,7 @@ import styled from 'styled-components';
 import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
 
-const Wrapper = styled.div<{ index: number }>`
-  /* position: absolute;
-  left: 10px;
-  top: ${(props) => 20 + 36 * props.index + 'px'}; */
+const Wrapper = styled.div`
   width: 150px;
   padding: 5px;
   background: #f7f6e7;
@@ -15,6 +12,7 @@ const Wrapper = styled.div<{ index: number }>`
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   cursor: pointer;
   font-family: 'Noto Sans KR';
+
   &:hover {
     background: #deb887;
     z-index: 200;
@@ -31,17 +29,14 @@ function Card({ index, card }: CardProps) {
     console.log(card);
   };
 
-  console.log(card.cardId, card.cardname);
-
   return (
     <Draggable draggableId={'' + card.cardId} index={index}>
       {(provided) => (
         <Wrapper
-          onClick={cardClick}
-          index={index}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
           {...provided.draggableProps}
+          onClick={cardClick}
         >
           {card.cardname}
         </Wrapper>

@@ -49,7 +49,7 @@ function Deck({ deck }: DeckProps) {
             style={{ width: '100%', height: '100%' }}
           >
             <CardContainer>
-              <AddCard deck={deck} index={deck.cards.length} />
+              <AddCard deck={deck} />
               {deck.cards.map((card, i) => (
                 <Card key={card.cardId} index={i} card={card} />
               ))}

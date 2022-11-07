@@ -41,14 +41,15 @@ const Wrapper = styled.div`
 `;
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
   align-content: flex-start;
   min-width: 250px;
   width: 100%;
   height: 100%;
   padding: 36px 50px;
   flex-wrap: wrap;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-y: scroll;
+  overflow-x: auto;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -158,46 +159,47 @@ function Main() {
   };
 
   const handleChange = ({ source, destination }: DropResult) => {
-    setDecks((prev) => {
-      if (!destination) return prev;
+    if (!destination) return;
 
+    setDecks((prev) => {
+      let decksCopy = [...prev];
+
+      // Delete from src
       const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
         ?.cards[source.index];
-      const srcDeckIndex = prev.findIndex(
+      const srcDeckIndex = decksCopy.findIndex(
         (d) => d.deckId === srcCard?.deck.deckId,
       );
 
-      prev = [
-        ...prev.slice(0, srcDeckIndex),
-        {
-          ...prev[srcDeckIndex],
-          cards: [
-            ...prev[srcDeckIndex].cards.filter(
-              (c) => c.cardId !== srcCard?.cardId,
-            ),
-          ],
-        },
-        ...prev.slice(srcDeckIndex + 1),
-      ];
+      decksCopy.splice(srcDeckIndex, 1, {
+        ...decksCopy[srcDeckIndex],
+        cards: decksCopy[srcDeckIndex].cards.filter(
+          (c) => c.cardId !== srcCard?.cardId,
+        ),
+      });
 
+      // Add to dst
       const dstDeck = decks.find(
         (deck) => deck.deckId === +destination.droppableId,
       );
-      const dstDeckIndex = prev.findIndex((d) => d.deckId === dstDeck?.deckId);
+      const dstDeckIndex = decksCopy.findIndex(
+        (d) => d.deckId === dstDeck?.deckId,
+      );
+      let cardsCopy = [...decksCopy[dstDeckIndex].cards];
 
-      prev = [
-        ...prev.slice(0, dstDeckIndex),
-        {
-          ...prev[dstDeckIndex],
-          cards: [
-            ...prev[dstDeckIndex].cards.slice(0, destination.index),
-            srcCard!,
-            ...prev[dstDeckIndex].cards.slice(destination.index),
-          ],
+      cardsCopy.splice(destination.index, 0, {
+        ...srcCard!,
+        deck: {
+          deckId: dstDeck!.deckId,
+          deckname: dstDeck!.deckname,
         },
-        ...prev.slice(dstDeckIndex + 1),
-      ];
-      return prev;
+      });
+      decksCopy.splice(dstDeckIndex, 1, {
+        ...decksCopy[dstDeckIndex],
+        cards: cardsCopy,
+      });
+
+      return decksCopy;
     });
   };
 
@@ -209,7 +211,6 @@ function Main() {
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
-      ``
       <DragDropContext onDragEnd={handleChange}>
         <Container>
           {teamInfoFetching ? (
