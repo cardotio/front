@@ -103,6 +103,10 @@ function Main() {
   };
 
   useEffect(() => {
+    if (!token || token === '') navigate('/login');
+  }, [token]);
+
+  useEffect(() => {
     if (userInfoData) {
       setUserInfo(userInfoData.data);
 

@@ -1,4 +1,9 @@
-import { userInfoAtom, addTeamModalOpenAtom, showDropDownAtom } from 'atoms';
+import {
+  userInfoAtom,
+  addTeamModalOpenAtom,
+  showDropDownAtom,
+  userTokenAtom,
+} from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useRecoilState } from 'recoil';
@@ -45,6 +50,7 @@ const CloseContainer = styled.div`
 `;
 
 function LeftSideBar() {
+  const [token, setToken] = useRecoilState(userTokenAtom);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
@@ -96,6 +102,7 @@ function LeftSideBar() {
       </AnimatePresence>
       <Teams />
       <Members />
+      <button onClick={() => setToken(null)}>Log Out</button>
     </Resizable>
   );
 }
