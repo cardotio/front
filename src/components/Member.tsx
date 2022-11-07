@@ -13,6 +13,12 @@ const MemberContainer = styled.div`
   //border: 0.1px solid black;
   //box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   //border-radius: 10px;
+  border-color: #d5d5d5;
+  border-radius: 10px;
+  border-width: 0.05px;
+  border-style: solid solid none;
+  box-shadow: 0 3px 3px 0 #878787b5;
+  margin: 18px 0;
   cursor: pointer;
   box-sizing: border-box;
   &:hover {
