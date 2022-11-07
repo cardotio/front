@@ -1,6 +1,5 @@
 import {
   addMemberModalOpenAtom,
-  myTeamsAtom,
   selectedTeamAtom,
   selectedUserAtom,
   userInfoAtom,
@@ -75,7 +74,6 @@ const AddIconContainer = styled.div`
 
 function Members() {
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [members, setMembers] = useState<TypeMember[]>([]);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
@@ -87,7 +85,7 @@ function Members() {
     if (selectedTeam) {
       setMembers(
         selectedTeam.users?.filter(
-          (user) => user.username !== myInfo?.username,
+          (user) => user?.username !== myInfo?.username,
         ),
       );
     }
@@ -100,8 +98,8 @@ function Members() {
           {members?.map((user, i) => (
             <Member
               key={i}
-              displayname={user.displayname}
-              role={user.role}
+              displayname={user?.displayname}
+              role={user?.role}
               description={user?.description}
               onClick={() => setSelectedUser(user)}
             />

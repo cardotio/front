@@ -4,7 +4,6 @@ import { TypeDeck } from 'types';
 import { Droppable } from 'react-beautiful-dnd';
 import Card from './Card';
 import AddCard from './AddCard';
-import { useRecoilState } from 'recoil';
 
 const Wrapper = styled.div`
   display: flex;

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import {
   addDeckModalOpenAtom,
   deckListAtom,
-  myTeamsAtom,
   userInfoAtom,
   userTokenAtom,
 } from 'atoms';
@@ -96,8 +95,6 @@ function AddDeckModal({ isOpen }: IModal) {
   const [addDeckModalOpen, setAddDeckModalOpen] =
     useRecoilState(addDeckModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
-  const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [decks, setDecks] = useRecoilState(deckListAtom);
   const [isFetching, setIsFetching] = useState(false);
   const location = useLocation();
