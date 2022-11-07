@@ -15,6 +15,7 @@ import {
   addMemberModalOpenAtom,
   deckListAtom,
   addDeckModalOpenAtom,
+  detailCardModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import { getUserInfo } from 'api';
@@ -23,6 +24,9 @@ import TeamSettings from 'components/TeamSettings';
 import AddMemberModal from 'components/AddMemberModal';
 
 import AddDeckModal from 'components/AddDeckModal';
+import Spinner from 'react-spinner-material';
+import MaximizedCard from 'components/MaximizedCard';
+import DetailCardModal from 'components/DetailCardModal';
 import { useQuery } from 'react-query';
 import Decks from 'components/Decks';
 import Loading from 'components/Loading';
@@ -34,6 +38,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   min-height: 100vh;
+  
 `;
 
 function Main() {
@@ -48,6 +53,7 @@ function Main() {
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
   );
+  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(detailCardModalOpenAtom);
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
   const [settomgModalOpen, setSettomgModalOpen] =
@@ -109,7 +115,7 @@ function Main() {
   useEffect(() => {
     if (userInfoData) {
       setUserInfo(userInfoData.data);
-
+      const temp = userInfoData.data.teams[0];
       if (teamId === 'me') {
         setSelectedTeam(userInfoData.data.teams[0]);
         navigate(`/team/${userInfoData.data.teams[0].teamId}`);
@@ -120,7 +126,7 @@ function Main() {
         );
       }
     }
-  }, [userInfoData]);
+  }, [userInfoData]);;
 
   return (
     <Wrapper>
@@ -129,12 +135,14 @@ function Main() {
       <AddCardModal isOpen={addCardModalOpen} />
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
+      <DetailCardModal isOpen={detailCardModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Suspense fallback={<Loading />}>
           <Decks />
         </Suspense>
       </DragDropContext>
+      
       <RightSideBar />
     </Wrapper>
   );

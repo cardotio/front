@@ -20,7 +20,7 @@ const Title = styled.div`
   font-family: 'Gothic A1', sans-serif;
   font-weight: 700;
   font-size: 0.8rem;
-  text-align: center;
+  text-align: left;
   margin-bottom: 5px;
 `;
 const CardContainer = styled.div`
@@ -48,10 +48,11 @@ function Deck({ deck }: DeckProps) {
             style={{ width: '100%', height: '100%', position: 'relative' }}
           >
             <CardContainer>
-              <AddCard deck={deck} />
+              
               {deck.cards.map((card, i) => (
                 <Card key={card.cardId} index={i} card={card} />
               ))}
+              <AddCard deck={deck} />
             </CardContainer>
             {provided.placeholder}
           </div>

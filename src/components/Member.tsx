@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const MemberContainer = styled.div`
   display: flex;
   align-items: center;
+  gap: 10px;
   width: 100%;
   height: 60px;
   padding: 7px;
@@ -12,6 +13,12 @@ const MemberContainer = styled.div`
   //border: 0.1px solid black;
   //box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   //border-radius: 10px;
+  border-color: #d5d5d5;
+  border-radius: 10px;
+  border-width: 0.05px;
+  border-style: solid solid none;
+  box-shadow: 0 3px 3px 0 #878787b5;
+  margin: 18px 0;
   cursor: pointer;
   box-sizing: border-box;
   &:hover {
@@ -47,6 +54,10 @@ const ImageContainer = styled.div`
 const MemberInfo = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+   padding-bottom: 3px;
+  height: 100%;
+  gap: 5px;
   width: 100%;
 `;
 const Header = styled.div`
@@ -65,7 +76,7 @@ const DisplayName = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
-  line-height: 17px;
+  line-height: 10px;
 `;
 const Role = styled.div`
   height: fit-content;

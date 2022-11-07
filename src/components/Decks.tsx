@@ -57,6 +57,7 @@ function Decks() {
 
   return (
     <Wrapper>
+      
       {decks?.map((deck, i) => (
         <Deck key={i} deck={deck} />
       ))}
