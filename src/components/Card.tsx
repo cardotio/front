@@ -9,7 +9,6 @@ const Wrapper = styled(motion.div)<{ index: number }>`
   left: 10px;
   top: ${(props) => 20 + 36 * props.index + 'px'}; */
   width: 150px;
-  height: 30px;
   padding: 10px;
   background: #f7f6e7;
   border: 1px lightgray solid;
