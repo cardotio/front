@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const MemberContainer = styled.div`
   display: flex;
   align-items: center;
+  gap: 10px;
   width: 100%;
   height: 60px;
   padding: 7px;
@@ -47,6 +48,10 @@ const ImageContainer = styled.div`
 const MemberInfo = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+   padding-bottom: 3px;
+  height: 100%;
+  gap: 5px;
   width: 100%;
 `;
 const Header = styled.div`
@@ -65,7 +70,7 @@ const DisplayName = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
-  line-height: 17px;
+  line-height: 10px;
 `;
 const Role = styled.div`
   height: fit-content;

@@ -1,8 +1,11 @@
 import { motion, Variants } from 'framer-motion';
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { detailCardModalOpenAtom, selectedCardAtom, selectedTeamAtom } from 'atoms';
 
 const Wrapper = styled(motion.div)<{ index: number }>`
   /* position: absolute;
@@ -11,7 +14,7 @@ const Wrapper = styled(motion.div)<{ index: number }>`
   width: 150px;
   height: 100px;
   padding: 10px;
-  background: #f7f6e7;
+  background: #f7f7f7;
   border-radius: 8px;
   border: 1px lightgray solid;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
@@ -33,19 +36,27 @@ interface CardProps {
 }
 
 function Card({ index, card }: CardProps) {
-  const cardClick = () => {
-    console.log(card);
+  const navigate = useNavigate();
+  const cardRef = useRef();
+  const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
+  const [selectedCard, setSelectedCard] = useRecoilState(selectedCardAtom);
+  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(detailCardModalOpenAtom);
+  const cardClick = (e:any) => {
+    setSelectedCard(card); 
+    setDetailCardModalOpen(true);
   };
 
   return (
-    <Draggable draggableId={'card' + card.cardId} index={index}>
+    <Draggable 
+      draggableId={'card' + card.cardId} index={index}>
       {(provided) => (
         <div
           ref={provided.innerRef}
           {...provided.dragHandleProps}
           {...provided.draggableProps}
+          onClick={(e) => cardClick(e)}
         >
-          <Wrapper onClick={cardClick} index={index}>
+          <Wrapper index={index}>
             {card.cardname}
           </Wrapper>
         </div>

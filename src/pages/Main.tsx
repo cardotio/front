@@ -18,6 +18,7 @@ import {
   addMemberModalOpenAtom,
   deckListAtom,
   addDeckModalOpenAtom,
+  detailCardModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -29,6 +30,8 @@ import AddMemberModal from 'components/AddMemberModal';
 import AddDeck from 'components/AddDeck';
 import AddDeckModal from 'components/AddDeckModal';
 import Spinner from 'react-spinner-material';
+import MaximizedCard from 'components/MaximizedCard';
+import DetailCardModal from 'components/DetailCardModal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,11 +40,13 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   min-height: 100vh;
+  
 `;
 const Container = styled.div`
   display: flex;
   align-content: flex-start;
   min-width: 250px;
+  position: relative;
   width: 100%;
   height: 100%;
   padding: 36px 50px;
@@ -63,6 +68,7 @@ function Main() {
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
   );
+  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(detailCardModalOpenAtom);
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
   const [addDeckModalOpen, setAddDeckModalOpen] =
@@ -207,6 +213,7 @@ function Main() {
       <AddCardModal isOpen={addCardModalOpen} />
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
+      <DetailCardModal isOpen={detailCardModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       ``
       <DragDropContext onDragEnd={handleChange}>
@@ -231,8 +238,11 @@ function Main() {
               <AddDeck onClick={handleAddDeck} />
             </>
           )}
+          
         </Container>
+        
       </DragDropContext>
+      
       <RightSideBar />
     </Wrapper>
   );

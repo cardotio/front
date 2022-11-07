@@ -216,6 +216,10 @@ function RightSideBar() {
   }, [receiveState]);
 
   useEffect(() => {
+    if(!selectedUserMessages || !ws.connected) return;
+    readMessages();
+  }, [selectedUserMessages])
+  useEffect(() => {
     if (!ws.connected || !selectedUser) return;
     setSelectedUserMessages((prev) => {
         
