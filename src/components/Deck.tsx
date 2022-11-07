@@ -8,7 +8,6 @@ import AddCard from './AddCard';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: 15px;
   padding: 10px;
   width: 170px;
@@ -27,6 +26,7 @@ const Title = styled.div`
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 5px;
   align-items: center;
   position: relative;
   width: 100%;
@@ -45,7 +45,7 @@ function Deck({ deck }: DeckProps) {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', position: 'relative' }}
           >
             <CardContainer>
               <AddCard deck={deck} />

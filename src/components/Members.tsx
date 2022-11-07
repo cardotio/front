@@ -2,12 +2,13 @@ import {
   addMemberModalOpenAtom,
   selectedTeamAtom,
   selectedUserAtom,
+  teamMessagesAtom,
   userInfoAtom,
 } from 'atoms';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { TypeMember } from 'types';
+import { TypeMember, TypeUserInfo } from 'types';
 import { FcBusinessman } from 'react-icons/fc';
 import { RiAddCircleFill } from 'react-icons/ri';
 import Member from './Member';
@@ -81,6 +82,9 @@ function Members() {
     addMemberModalOpenAtom,
   );
 
+  const [teamMessages, setTeamMessages] = useRecoilState(teamMessagesAtom);
+  const [unreads, setUnreads] = useState<number[]>([]);
+
   useEffect(() => {
     if (selectedTeam) {
       setMembers(
@@ -91,6 +95,29 @@ function Members() {
     }
   }, [selectedTeam]);
 
+  const getUnreadMessageCount = (username: string) => {
+    let count = 0;
+    teamMessages.map((message) => {
+      if (message.unread == 0) {
+      } else if (
+        message.sender == username &&
+        message.receiver == myInfo?.username
+      ) {
+        count++;
+      }
+    });
+    return count;
+  };
+
+  useEffect(() => {
+    console.log('teammessage changed', teamMessages[teamMessages.length - 1]);
+    if (!teamMessages) return;
+    setUnreads(
+      members?.map((user) => {
+        return getUnreadMessageCount(user!.username);
+      }),
+    );
+  }, [teamMessages]);
   return (
     <Wrapper>
       {members?.length != 0 ? (
@@ -101,6 +128,7 @@ function Members() {
               displayname={user?.displayname}
               role={user?.role}
               description={user?.description}
+              unreadCount={unreads[i]}
               onClick={() => setSelectedUser(user)}
             />
           ))}

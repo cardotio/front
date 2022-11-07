@@ -34,7 +34,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   min-height: 100vh;
-  transition: 0.3s all;
 `;
 
 function Main() {

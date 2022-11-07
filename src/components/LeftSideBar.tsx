@@ -1,4 +1,4 @@
-import { addTeamModalOpenAtom, showDropDownAtom, userInfoAtom } from 'atoms';
+import { userInfoAtom, addTeamModalOpenAtom, showDropDownAtom } from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useRecoilState } from 'recoil';
@@ -50,10 +50,6 @@ function LeftSideBar() {
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
   const [userInfo] = useRecoilState(userInfoAtom);
 
-  const onAddTeam = () => {
-    setAddTeamModalOpen(true);
-  };
-
   return (
     <Resizable
       className="left-bar"
@@ -83,7 +79,7 @@ function LeftSideBar() {
             exit={{ scale: 0, transitionDuration: '0.1s' }}
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <CloseContainer onClick={onAddTeam}>
+              <CloseContainer onClick={() => setAddTeamModalOpen(true)}>
                 <IoAdd />
               </CloseContainer>
               <CloseContainer onClick={() => setShowDropDown(false)}>
