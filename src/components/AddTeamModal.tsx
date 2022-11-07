@@ -5,7 +5,6 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
   addTeamModalOpenAtom,
-  myTeamsAtom,
   userInfoAtom,
   userTokenAtom,
   selectedTeamAtom,
@@ -14,6 +13,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
 import { useNavigate } from 'react-router-dom';
+import { TypeTeam } from 'types';
 
 const Container = styled.div`
   width: 450px;
@@ -97,8 +97,7 @@ function AddTeamModal({ isOpen }: IModal) {
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [token, setToken] = useRecoilState(userTokenAtom);
-  const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
   const [isFetching, setIsFetching] = useState(false);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const {
@@ -122,33 +121,40 @@ function AddTeamModal({ isOpen }: IModal) {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        myInfo &&
-          setMyTeams((prev) => [
-            ...prev,
-            {
-              teamId: response.data.teamId,
-              teamname,
-              teamCode: response.data.teamCode,
-              users: [
-                {
-                  displayname: myInfo!.displayname,
-                  email: myInfo!.email,
-                  role: myInfo!.role,
-                  username: myInfo?.username,
-                },
-              ],
-            },
-          ]);
+        userInfo &&
+          setUserInfo((prev) => {
+            if (!prev) return prev;
+
+            let teamsCopy: TypeTeam[] = [
+              ...prev.teams,
+              {
+                teamId: response.data.teamId,
+                teamname,
+                teamCode: response.data.teamCode,
+                users: [
+                  {
+                    displayname: userInfo!.displayname,
+                    email: userInfo!.email,
+                    role: userInfo!.role,
+                    username: userInfo?.username,
+                  },
+                ],
+              },
+            ];
+            prev = { ...prev, teams: teamsCopy };
+
+            return prev;
+          });
         setSelectedTeam({
           teamId: response.data.teamId,
           teamname,
           teamCode: response.data.teamCode,
           users: [
             {
-              displayname: myInfo!.displayname,
-              email: myInfo!.email,
-              role: myInfo!.role,
-              username: myInfo!.username,
+              displayname: userInfo!.displayname,
+              email: userInfo!.email,
+              role: userInfo!.role,
+              username: userInfo!.username,
             },
           ],
         });

@@ -54,8 +54,6 @@ export const showDropDownAtom = atom({
   default: false,
 });
 
-export const myTeamsAtom = atom<TypeTeam[]>({ key: 'myTeams', default: [] });
-
 export const deckListAtom = atom<TypeDeck[]>({
   key: 'deckList',
   default: [],
@@ -63,10 +61,6 @@ export const deckListAtom = atom<TypeDeck[]>({
 export const currentUsersAtom = atom<TypeMember[]>({
   key: 'currentUsers',
   default: [],
-});
-export const teamInfoFetchingAtom = atom({
-  key: 'teamInfoFetching',
-  default: true,
 });
 
 export const teamMessagesAtom = atom<TypeMessageInfo[]>({
@@ -79,7 +73,7 @@ export const selectedTeamAtom = atom<TypeTeam | null>({
   default: null,
 });
 
-export const selectedUserAtom = atom<TypeUserInfo | null>({
+export const selectedUserAtom = atom<TypeMember | null>({
   key: 'selectedUser',
   default: null,
 });

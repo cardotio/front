@@ -7,10 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { detailCardModalOpenAtom, selectedCardAtom, selectedTeamAtom } from 'atoms';
 
-const Wrapper = styled(motion.div)<{ index: number }>`
-  /* position: absolute;
-  left: 10px;
-  top: ${(props) => 20 + 36 * props.index + 'px'}; */
+const Wrapper = styled.div`
   width: 150px;
   height: 100px;
   padding: 10px;
@@ -19,11 +16,9 @@ const Wrapper = styled(motion.div)<{ index: number }>`
   border: 1px lightgray solid;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-  /* border-radius: 10px; */
-  /* transform: rotate(45deg); */
-  /* transition: 0.5s all; */
   cursor: pointer;
   font-family: 'Noto Sans KR';
+
   &:hover {
     background: #deb887;
     z-index: 200;
@@ -50,16 +45,14 @@ function Card({ index, card }: CardProps) {
     <Draggable 
       draggableId={'card' + card.cardId} index={index}>
       {(provided) => (
-        <div
+        <Wrapper
           ref={provided.innerRef}
           {...provided.dragHandleProps}
           {...provided.draggableProps}
-          onClick={(e) => cardClick(e)}
+          onClick={cardClick}
         >
-          <Wrapper index={index}>
-            {card.cardname}
-          </Wrapper>
-        </div>
+          {card.cardname}
+        </Wrapper>
       )}
     </Draggable>
   );
