@@ -53,6 +53,7 @@ function RightSideBar() {
   >([]);
 
   const [receiveState, setReceiveState] = useState(false);
+  const [readState, setReadState] = useState(false);
   const scrollRef = useRef<null | HTMLDivElement>(null);
 
   function connect() {
@@ -74,18 +75,21 @@ function RightSideBar() {
     );
     // 상대방이 채팅을 읽을 때마다 받아오는 메세지
     ws.subscribe('/sub/chat/read/' + currentUser?.username, (response: any) => {
-      setMessagesUnreadToZero();
+      setSelectedTeam((prev) => {
+        setReadState((prev) => !prev);
+        return prev;
+      });
+      
+      
     });
   }
 
   // 좀 더 효율적으로 짤 수 있으면 좋을 듯
   function setMessagesUnreadToZero() {
-    const toReadMessages: number[] = [];
     setSelectedUserMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        if (message.sender !== currentUser?.username) {
-          toReadMessages.push(message.messageId);
+        if (message.sender == selectedUser?.username) {
           temp.push(createReadedMessage(message));
         } else {
           temp.push(message);
@@ -96,9 +100,11 @@ function RightSideBar() {
     setTeamMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        toReadMessages.includes(message.messageId)
-          ? temp.push(message)
-          : temp.push(createReadedMessage(message));
+        if (message.sender == selectedUser?.username && message.receiver == currentUser?.username) {
+          temp.push(createReadedMessage(message));
+        } else {
+          temp.push(message);
+        }
       });
       return temp;
     });
@@ -206,10 +212,39 @@ function RightSideBar() {
   useEffect(() => {
     if (!ws.connected || !selectedUser) return;
     readMessages();
+    setMessagesUnreadToZero();
   }, [receiveState]);
 
   useEffect(() => {
+    if (!ws.connected || !selectedUser) return;
+    setSelectedUserMessages((prev) => {
+        
+      let temp: TypeMessageInfo[] = [];
+      prev.map((message) => {
+        if (message.sender == currentUser?.username) {
+          temp.push(createReadedMessage(message));
+        } else {
+          temp.push(message);
+        }
+      });
+      return temp;
+    });
+    setTeamMessages((prev) => {
+      let temp: TypeMessageInfo[] = [];
+      prev.map((message) => {
+        if (message.sender == currentUser?.username && message.receiver == selectedUser?.username) {
+          temp.push(createReadedMessage(message));
+        } else {
+          temp.push(message);
+        }
+      });
+      console.log(temp);
+      return temp;
+    });
+  }, [readState])
+  useEffect(() => {
     if (!selectedUser) return;
+    setMessagesUnreadToZero();
     readMessages();
   }, [selectedUser]);
 
@@ -269,7 +304,6 @@ function RightSideBar() {
       }}
       handleClasses={{ left: 'resizer' }}
     >
-      <div className="resizer"></div>
       <div className="header">
         <button className="hide-btn" onClick={() => setSelectedUser(null)}>
           <link

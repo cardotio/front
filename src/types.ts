@@ -10,7 +10,7 @@ export type TypeUserInfo = {
   role: string;
   description?: string;
   invitations?: string[];
-  teams?: TypeTeam[];
+  teams: TypeTeam[];
 };
 
 export type TypeSignupForm = {
@@ -34,24 +34,25 @@ export type TypeMember = {
   email: string;
   role: string;
   username: string;
-};
+  unread?: number;
+} | null;
 
 export type TypeCard = {
   cardname: string;
   cardId: number;
   content: string;
+  type: 'private' | 'public';
   creator: TypeMember;
+  deckId: null;
   deck: {
     deckId: number;
     deckname: string;
-  };
-  deckId: null;
+  } | null;
   team: {
     teamCode: string;
     teamId: string;
     teamname: string;
   };
-  type: 'private' | 'public';
 };
 
 export type TypeDeck = {

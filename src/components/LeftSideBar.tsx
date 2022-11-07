@@ -1,13 +1,6 @@
-import {
-  addTeamModalOpenAtom,
-  myTeamsAtom,
-  selectedTeamAtom,
-  selectedUserAtom,
-  showDropDownAtom,
-} from 'atoms';
+import { userInfoAtom, addTeamModalOpenAtom, showDropDownAtom } from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import Members from './Members';
@@ -18,9 +11,6 @@ import { Resizable } from 're-resizable';
 
 import './style.css';
 
-const Wrapper = styled.aside`
-  color: ${(props) => props.theme.textColor};
-`;
 const DropDown = styled(motion.div)`
   position: absolute;
   top: 15px;
@@ -55,16 +45,10 @@ const CloseContainer = styled.div`
 `;
 
 function LeftSideBar() {
-  const teamname = useLocation().pathname.split('/')[2];
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
-  const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
-
-  const onAddTeam = () => {
-    setAddTeamModalOpen(true);
-  };
+  const [userInfo] = useRecoilState(userInfoAtom);
 
   return (
     <Resizable
@@ -95,7 +79,7 @@ function LeftSideBar() {
             exit={{ scale: 0, transitionDuration: '0.1s' }}
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <CloseContainer onClick={onAddTeam}>
+              <CloseContainer onClick={() => setAddTeamModalOpen(true)}>
                 <IoAdd />
               </CloseContainer>
               <CloseContainer onClick={() => setShowDropDown(false)}>
@@ -103,7 +87,7 @@ function LeftSideBar() {
               </CloseContainer>
             </div>
             <div>
-              {myTeams.map((team, i) => (
+              {userInfo?.teams?.map((team, i) => (
                 <Team key={i} team={team} />
               ))}
             </div>
@@ -112,7 +96,6 @@ function LeftSideBar() {
       </AnimatePresence>
       <Teams />
       <Members />
-      <button onClick={onAddTeam}>+</button>
     </Resizable>
   );
 }

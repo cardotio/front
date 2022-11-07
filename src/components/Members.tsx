@@ -1,14 +1,14 @@
 import {
   addMemberModalOpenAtom,
-  myTeamsAtom,
   selectedTeamAtom,
   selectedUserAtom,
+  teamMessagesAtom,
   userInfoAtom,
 } from 'atoms';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { TypeMember } from 'types';
+import { TypeMember, TypeUserInfo } from 'types';
 import { FcBusinessman } from 'react-icons/fc';
 import { RiAddCircleFill } from 'react-icons/ri';
 import Member from './Member';
@@ -75,7 +75,6 @@ const AddIconContainer = styled.div`
 
 function Members() {
   const [myInfo, setMyInfo] = useRecoilState(userInfoAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
   const [members, setMembers] = useState<TypeMember[]>([]);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [selectedUser, setSelectedUser] = useRecoilState(selectedUserAtom);
@@ -83,16 +82,42 @@ function Members() {
     addMemberModalOpenAtom,
   );
 
+  const [teamMessages, setTeamMessages] = useRecoilState(teamMessagesAtom);
+  const [unreads, setUnreads] = useState<number[]>([]);
+
   useEffect(() => {
     if (selectedTeam) {
       setMembers(
         selectedTeam.users?.filter(
-          (user) => user.username !== myInfo?.username,
+          (user) => user?.username !== myInfo?.username,
         ),
       );
     }
   }, [selectedTeam]);
 
+  const getUnreadMessageCount = (username: string) => {
+    let count = 0;
+    teamMessages.map((message) => {
+      if (message.unread == 0) {
+      } else if (
+        message.sender == username &&
+        message.receiver == myInfo?.username
+      ) {
+        count++;
+      }
+    });
+    return count;
+  };
+
+  useEffect(() => {
+    console.log('teammessage changed', teamMessages[teamMessages.length - 1]);
+    if (!teamMessages) return;
+    setUnreads(
+      members?.map((user) => {
+        return getUnreadMessageCount(user!.username);
+      }),
+    );
+  }, [teamMessages]);
   return (
     <Wrapper>
       {members?.length != 0 ? (
@@ -100,9 +125,10 @@ function Members() {
           {members?.map((user, i) => (
             <Member
               key={i}
-              displayname={user.displayname}
-              role={user.role}
+              displayname={user?.displayname}
+              role={user?.role}
               description={user?.description}
+              unreadCount={unreads[i]}
               onClick={() => setSelectedUser(user)}
             />
           ))}

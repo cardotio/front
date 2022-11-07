@@ -1,10 +1,5 @@
 import { API_URL } from 'api';
-import {
-  userTokenAtom,
-  teamInfoFetchingAtom,
-  selectedTeamAtom,
-  showDropDownAtom,
-} from 'atoms';
+import { userTokenAtom, selectedTeamAtom, showDropDownAtom } from 'atoms';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -55,35 +50,17 @@ interface TeamProps {
 }
 
 function Team({ team }: TeamProps) {
-  const [token, setToken] = useRecoilState(userTokenAtom);
-  const [teamInfoFetching, setTeamInfoFetching] =
-    useRecoilState(teamInfoFetchingAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const navigate = useNavigate();
 
   const handleSelectTeam = (e: any) => {
-    function fetchData() {
-      console.log(`GET TEAM INFO: /teams/${team.teamId}/cards`);
-      setTeamInfoFetching(true);
-      axios
-        .get(API_URL + `/teams/${team.teamId}/cards`, {
-          headers: {
-            Authorization: `${token}`,
-          },
-        })
-        .then((response: AxiosResponse) => {
-          console.log(response);
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-        })
-        .finally(() => setTeamInfoFetching(false));
-      navigate(`/team/${team.teamId}`);
-    }
+    navigate(`/team/${team.teamId}`);
     setSelectedTeam(team);
     setShowDropDown(false);
-    e.target.tagName !== 'svg' && e.target.tagName !== 'path' && fetchData();
+    e.target.tagName !== 'svg' &&
+      e.target.tagName !== 'path' &&
+      navigate(`/team/${team.teamId}`);
   };
 
   return (

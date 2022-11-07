@@ -1,7 +1,6 @@
-import Deck from 'components/Deck';
 import LeftSideBar from 'components/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
@@ -10,9 +9,7 @@ import {
   userTokenAtom,
   addTeamModalOpenAtom,
   userInfoAtom,
-  myTeamsAtom,
   addCardModalOpenAtom,
-  teamInfoFetchingAtom,
   settingModalOpenAtom,
   selectedTeamAtom,
   addMemberModalOpenAtom,
@@ -20,15 +17,15 @@ import {
   addDeckModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/AddTeamModal';
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { API_URL } from 'api';
+import { getUserInfo } from 'api';
 import AddCardModal from 'components/AddCardModal';
 import TeamSettings from 'components/TeamSettings';
-import { TypeCard, TypeDeck } from 'types';
 import AddMemberModal from 'components/AddMemberModal';
-import AddDeck from 'components/AddDeck';
+
 import AddDeckModal from 'components/AddDeckModal';
-import Spinner from 'react-spinner-material';
+import { useQuery } from 'react-query';
+import Decks from 'components/Decks';
+import Loading from 'components/Loading';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,21 +34,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   min-height: 100vh;
-  transition: 0.3s all;
-`;
-const Container = styled.div`
-  display: flex;
-  align-content: flex-start;
-  min-width: 250px;
-  width: 100%;
-  height: 100%;
-  padding: 36px 50px;
-  flex-wrap: wrap;
-  overflow-y: auto;
-  overflow-x: hidden;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 function Main() {
@@ -61,145 +43,80 @@ function Main() {
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
+  const [addDeckModalOpen, setAddDeckModalOpen] =
+    useRecoilState(addDeckModalOpenAtom);
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
   );
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
-  const [addDeckModalOpen, setAddDeckModalOpen] =
-    useRecoilState(addDeckModalOpenAtom);
   const [settomgModalOpen, setSettomgModalOpen] =
     useRecoilState(settingModalOpenAtom);
   const [decks, setDecks] = useRecoilState(deckListAtom);
-  const [myTeams, setMyTeams] = useRecoilState(myTeamsAtom);
-  const [teamInfoFetching, setTeamInfoFetching] =
-    useRecoilState(teamInfoFetchingAtom);
   const teamId = useLocation().pathname.split('/')[2];
 
-  useEffect(() => {
-    if (!token || token === '') navigate('/login');
+  const { data: userInfoData } = useQuery(['user'], () => getUserInfo(token));
 
-    // GET USER INFO BY TOKEN
-    setTeamInfoFetching(true);
-    console.log('GET MY INFO: /users/me');
-    axios
-      .get(API_URL + '/users/me', {
-        headers: {
-          Authorization: `${token}`,
-        },
-      })
-      .then((response: AxiosResponse) => {
-        console.log(response);
-        setUserInfo(response.data);
-        setMyTeams(response.data.teams);
-        response.data.teams.length === 0 && setAddTeamModalOpen(true);
-        if (teamId === 'me') {
-          setSelectedTeam(response.data.teams[0]);
-          navigate(`/team/${response.data.teams[0].teamId}`);
-        } else {
-          setSelectedTeam(
-            response.data.teams.filter(
-              (team: any) => team.teamId + '' === teamId,
-            )[0],
-          );
-        }
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-      });
-  }, []);
+  const onDragEnd = ({ source, destination }: DropResult) => {
+    if (!destination) return;
 
-  useEffect(() => {
-    if (selectedTeam) {
-      setTeamInfoFetching(true);
-      // GET DECKS INFO
-      console.log(`GET DECKS INFO: /teams/${selectedTeam!.teamId}/decks`);
-      axios
-        .get(API_URL + `/teams/${selectedTeam!.teamId}/decks`, {
-          headers: {
-            Authorization: `${token}`,
-          },
-        })
-        .then((response: AxiosResponse) => {
-          console.log(response);
-          let decksData: TypeDeck[] = [];
-          response.data.map((decks: any) => {
-            decksData.push({ ...decks, cards: [] });
-          });
-          console.log(`GET CARDS INFO: /teams/${selectedTeam!.teamId}/cards`);
-          axios
-            .get(API_URL + `/teams/${selectedTeam!.teamId}/cards`, {
-              headers: {
-                Authorization: `${token}`,
-              },
-            })
-            .then((response: AxiosResponse) => {
-              console.log(response);
-              response.data.map((card: TypeCard) => {
-                decksData
-                  .find((deck) => deck.deckId === card.deck?.deckId)
-                  ?.cards.push(card);
-              });
-              setDecks(decksData);
-            })
-            .catch((error: AxiosError) => {
-              console.log(error);
-            });
-        })
-        .catch((error: AxiosError) => {
-          console.log(error);
-        })
-        .finally(() => setTeamInfoFetching(false));
-    }
-  }, [selectedTeam]);
-
-  const handleAddDeck = () => {
-    setAddDeckModalOpen(true);
-  };
-
-  const handleChange = ({ source, destination }: DropResult) => {
     setDecks((prev) => {
-      if (!destination) return prev;
+      let decksCopy = [...prev];
 
+      // Delete from src
       const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
         ?.cards[source.index];
-      const srcDeckIndex = prev.findIndex(
-        (d) => d.deckId === srcCard?.deck.deckId,
+      const srcDeckIndex = decksCopy.findIndex(
+        (d) => d.deckId === srcCard?.deck?.deckId,
       );
 
-      prev = [
-        ...prev.slice(0, srcDeckIndex),
-        {
-          ...prev[srcDeckIndex],
-          cards: [
-            ...prev[srcDeckIndex].cards.filter(
-              (c) => c.cardId !== srcCard?.cardId,
-            ),
-          ],
-        },
-        ...prev.slice(srcDeckIndex + 1),
-      ];
+      decksCopy.splice(srcDeckIndex, 1, {
+        ...decksCopy[srcDeckIndex],
+        cards: decksCopy[srcDeckIndex].cards.filter(
+          (c) => c.cardId !== srcCard?.cardId,
+        ),
+      });
 
+      // Add to dst
       const dstDeck = decks.find(
         (deck) => deck.deckId === +destination.droppableId,
       );
-      const dstDeckIndex = prev.findIndex((d) => d.deckId === dstDeck?.deckId);
+      const dstDeckIndex = decksCopy.findIndex(
+        (d) => d.deckId === dstDeck?.deckId,
+      );
+      let cardsCopy = [...decksCopy[dstDeckIndex].cards];
 
-      prev = [
-        ...prev.slice(0, dstDeckIndex),
-        {
-          ...prev[dstDeckIndex],
-          cards: [
-            ...prev[dstDeckIndex].cards.slice(0, destination.index),
-            srcCard!,
-            ...prev[dstDeckIndex].cards.slice(destination.index),
-          ],
+      cardsCopy.splice(destination.index, 0, {
+        ...srcCard!,
+        deck: {
+          deckId: dstDeck!.deckId,
+          deckname: dstDeck!.deckname,
         },
-        ...prev.slice(dstDeckIndex + 1),
-      ];
-      return prev;
+      });
+      decksCopy.splice(dstDeckIndex, 1, {
+        ...decksCopy[dstDeckIndex],
+        cards: cardsCopy,
+      });
+
+      return decksCopy;
     });
   };
+
+  useEffect(() => {
+    if (userInfoData) {
+      setUserInfo(userInfoData.data);
+
+      if (teamId === 'me') {
+        setSelectedTeam(userInfoData.data.teams[0]);
+        navigate(`/team/${userInfoData.data.teams[0].teamId}`);
+      } else {
+        // console.log(userInfoData.data.teams.find((t) => t.teamId === +teamId));
+        setSelectedTeam(
+          userInfoData.data.teams.find((t) => t.teamId === +teamId)!,
+        );
+      }
+    }
+  }, [userInfoData]);
 
   return (
     <Wrapper>
@@ -209,30 +126,10 @@ function Main() {
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
-      ``
-      <DragDropContext onDragEnd={handleChange}>
-        <Container>
-          {teamInfoFetching ? (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <Spinner radius={50} color={'#fff'} stroke={1} visible={true} />
-            </div>
-          ) : (
-            <>
-              {decks?.map((deck, i) => (
-                <Deck key={i} deck={deck} />
-              ))}
-              <AddDeck onClick={handleAddDeck} />
-            </>
-          )}
-        </Container>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Suspense fallback={<Loading />}>
+          <Decks />
+        </Suspense>
       </DragDropContext>
       <RightSideBar />
     </Wrapper>

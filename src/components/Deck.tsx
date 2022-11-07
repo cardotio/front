@@ -4,30 +4,29 @@ import { TypeDeck } from 'types';
 import { Droppable } from 'react-beautiful-dnd';
 import Card from './Card';
 import AddCard from './AddCard';
-import { useRecoilState } from 'recoil';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: 15px;
+  padding: 10px;
   width: 170px;
-  height: 300px;
-  background: #C1C0B9;
+  height: min-content;
+  background: #c1c0b9;
   border-radius: 8px;
 `;
 const Title = styled.div`
-  height: 36px;
-  margin-left: 20px;
   color: ${(props) => props.theme.textColor};
   font-family: 'Gothic A1', sans-serif;
   font-weight: 700;
-  font-size: 0.9rem;
-  line-height: 36px;
+  font-size: 0.8rem;
+  text-align: center;
+  margin-bottom: 5px;
 `;
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 5px;
   align-items: center;
   position: relative;
   width: 100%;
@@ -46,10 +45,10 @@ function Deck({ deck }: DeckProps) {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', position: 'relative' }}
           >
             <CardContainer>
-              <AddCard deck={deck} index={deck.cards.length} />
+              <AddCard deck={deck} />
               {deck.cards.map((card, i) => (
                 <Card key={card.cardId} index={i} card={card} />
               ))}
