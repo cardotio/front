@@ -41,6 +41,7 @@ const IconContainer = styled.div`
   right: 2px;
   border-radius: 10px;
   transition: 0.1s all;
+  cursor: pointer;
 
   svg {
     fill: #a5a5a5;

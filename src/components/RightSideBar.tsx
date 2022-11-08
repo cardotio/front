@@ -79,8 +79,6 @@ function RightSideBar() {
         setReadState((prev) => !prev);
         return prev;
       });
-      
-      
     });
   }
 
@@ -100,7 +98,10 @@ function RightSideBar() {
     setTeamMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        if (message.sender == selectedUser?.username && message.receiver == currentUser?.username) {
+        if (
+          message.sender == selectedUser?.username &&
+          message.receiver == currentUser?.username
+        ) {
           temp.push(createReadedMessage(message));
         } else {
           temp.push(message);
@@ -216,13 +217,12 @@ function RightSideBar() {
   }, [receiveState]);
 
   useEffect(() => {
-    if(!selectedUserMessages || !ws.connected) return;
+    if (!selectedUserMessages || !ws.connected) return;
     readMessages();
-  }, [selectedUserMessages])
+  }, [selectedUserMessages]);
   useEffect(() => {
     if (!ws.connected || !selectedUser) return;
     setSelectedUserMessages((prev) => {
-        
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
         if (message.sender == currentUser?.username) {
@@ -236,7 +236,10 @@ function RightSideBar() {
     setTeamMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        if (message.sender == currentUser?.username && message.receiver == selectedUser?.username) {
+        if (
+          message.sender == currentUser?.username &&
+          message.receiver == selectedUser?.username
+        ) {
           temp.push(createReadedMessage(message));
         } else {
           temp.push(message);
@@ -245,7 +248,7 @@ function RightSideBar() {
       console.log(temp);
       return temp;
     });
-  }, [readState])
+  }, [readState]);
   useEffect(() => {
     if (!selectedUser) return;
     setMessagesUnreadToZero();

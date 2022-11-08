@@ -37,7 +37,7 @@ export const addCardDeckAtom = atom<TypeDeck | null>({
   default: null,
 });
 export const detailCardModalOpenAtom = atom({
-  key: 'addCardDeck',
+  key: 'detailCardModalOpen',
   default: false,
 });
 
@@ -78,7 +78,7 @@ export const selectedUserAtom = atom<TypeMember | null>({
   default: null,
 });
 
-export const selectedCardAtom = atom<TypeCard | null> ({
+export const selectedCardAtom = atom<TypeCard | null>({
   key: 'maximazeCard',
   default: null,
-})
+});

@@ -45,20 +45,7 @@ const AddMemberButton = styled.div`
 
 const MemberList = styled.div`
   border-bottom: 1px solid lightgray;
-`;
-const ImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 45px;
-  height: 45px;
-  margin-right: 5px;
-  border-radius: 45px;
-  border: 1px solid black;
-  svg {
-    width: 45px;
-    height: 45px;
-  }
+  padding: 0 5px;
 `;
 
 const AddIconContainer = styled.div`

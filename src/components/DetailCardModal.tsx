@@ -4,7 +4,6 @@ import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
-  addCardModalOpenAtom,
   userTokenAtom,
   addCardDeckAtom,
   deckListAtom,
@@ -15,8 +14,9 @@ import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
 import { useLocation } from 'react-router-dom';
 import { detailCardModalOpenAtom } from '../atoms';
+import { motion } from 'framer-motion';
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   width: 70vw;
   height: 80vh;
   padding: 20px 32px;
@@ -95,7 +95,9 @@ interface IModal {
 }
 
 function AddCardModal({ isOpen }: IModal) {
-  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(detailCardModalOpenAtom);
+  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(
+    detailCardModalOpenAtom,
+  );
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [decks, setDecks] = useRecoilState(deckListAtom);
   const [deckToAdd, setDeckToAdd] = useRecoilState(addCardDeckAtom);
@@ -175,7 +177,10 @@ function AddCardModal({ isOpen }: IModal) {
       onBackgroundClick={handleClose}
       onEscapeKeydown={handleClose}
     >
-      <Container>
+      <Container
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1, transition: { duration: 0.1 } }}
+      >
         <Header>{selectedCard?.cardname}</Header>
       </Container>
     </Modal>
