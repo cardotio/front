@@ -1,4 +1,4 @@
-import LeftSideBar from 'components/LeftSideBar';
+import LeftSideBar from 'components/leftsidebar/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
 import React, { Suspense, useEffect } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
@@ -17,16 +17,16 @@ import {
   addDeckModalOpenAtom,
   detailCardModalOpenAtom,
 } from 'atoms';
-import AddTeamModal from 'components/AddTeamModal';
+import AddTeamModal from 'components/modals/AddTeamModal';
 import { getUserInfo } from 'api';
-import AddCardModal from 'components/AddCardModal';
-import TeamSettings from 'components/TeamSettings';
-import AddMemberModal from 'components/AddMemberModal';
+import AddCardModal from 'components/modals/AddCardModal';
+import TeamSettings from 'components/leftsidebar/TeamSettings';
+import AddMemberModal from 'components/modals/AddMemberModal';
 
-import AddDeckModal from 'components/AddDeckModal';
+import AddDeckModal from 'components/modals/AddDeckModal';
 import Spinner from 'react-spinner-material';
 import MaximizedCard from 'components/MaximizedCard';
-import DetailCardModal from 'components/DetailCardModal';
+import DetailCardModal from 'components/modals/DetailCardModal';
 import { useQuery } from 'react-query';
 import Decks from 'components/Decks';
 import Loading from 'components/Loading';
@@ -38,7 +38,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
   min-height: 100vh;
-  
 `;
 
 function Main() {
@@ -53,7 +52,9 @@ function Main() {
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
   );
-  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(detailCardModalOpenAtom);
+  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(
+    detailCardModalOpenAtom,
+  );
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
   const [settomgModalOpen, setSettomgModalOpen] =
@@ -126,7 +127,7 @@ function Main() {
         );
       }
     }
-  }, [userInfoData]);;
+  }, [userInfoData]);
 
   return (
     <Wrapper>
@@ -142,7 +143,7 @@ function Main() {
           <Decks />
         </Suspense>
       </DragDropContext>
-      
+
       <RightSideBar />
     </Wrapper>
   );

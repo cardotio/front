@@ -8,7 +8,6 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { API_URL } from 'api';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import styled from 'styled-components';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { useForm } from 'react-hook-form';
@@ -17,7 +16,6 @@ import { TypeMessageInfo } from 'types';
 import './style.css';
 import {
   getOnlyDate,
-  getOnlyTime,
   formatDateToKR,
   splitByDate,
   createDateTimeStamp,
@@ -27,7 +25,6 @@ import {
 import './style.css';
 import MyMessageBox from './messageBox/MyMessageBox';
 import OpponentMessageBox from './messageBox/OpponentMessageBox';
-import Member from './Member';
 import { Resizable } from 're-resizable';
 import SelectedUserInfo from './SelectedUserInfo';
 

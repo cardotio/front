@@ -14,7 +14,7 @@ import Teams from './Teams';
 import { IoClose, IoAdd, IoLogOutOutline } from 'react-icons/io5';
 import { Resizable } from 're-resizable';
 
-import './style.css';
+import '../style.css';
 
 const DropDown = styled(motion.div)`
   position: absolute;

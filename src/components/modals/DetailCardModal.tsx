@@ -13,7 +13,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'api';
 import Spinner from 'react-spinner-material';
 import { useLocation } from 'react-router-dom';
-import { detailCardModalOpenAtom } from '../atoms';
+import { detailCardModalOpenAtom } from '../../atoms';
 import { motion } from 'framer-motion';
 
 const Container = styled(motion.div)`
