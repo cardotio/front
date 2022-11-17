@@ -1,4 +1,9 @@
-import { userInfoAtom, addTeamModalOpenAtom, showDropDownAtom } from 'atoms';
+import {
+  userInfoAtom,
+  addTeamModalOpenAtom,
+  showDropDownAtom,
+  userTokenAtom,
+} from 'atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { useRecoilState } from 'recoil';
@@ -6,10 +11,10 @@ import styled from 'styled-components';
 import Members from './Members';
 import Team from './Team';
 import Teams from './Teams';
-import { IoClose, IoAdd } from 'react-icons/io5';
+import { IoClose, IoAdd, IoLogOutOutline } from 'react-icons/io5';
 import { Resizable } from 're-resizable';
 
-import './style.css';
+import '../style.css';
 
 const DropDown = styled(motion.div)`
   position: absolute;
@@ -44,7 +49,38 @@ const CloseContainer = styled.div`
   }
 `;
 
+const LogoutBtn = styled.button`
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  background: transparent;
+  border: 1px solid lightgray;
+  outline: 0;
+  cursor: pointer;
+
+  span {
+    margin-right: 5px;
+  }
+  svg {
+    width: 20px;
+    height: 20px;
+    transform: translateY(1px);
+  }
+
+  &:hover {
+    background: #e7e7e7;
+  }
+  &:active {
+    background: #d8d8d8;
+  }
+`;
+
 function LeftSideBar() {
+  const [token, setToken] = useRecoilState(userTokenAtom);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
   const [showDropDown, setShowDropDown] = useRecoilState(showDropDownAtom);
@@ -96,6 +132,10 @@ function LeftSideBar() {
       </AnimatePresence>
       <Teams />
       <Members />
+      <LogoutBtn onClick={() => setToken(null)}>
+        <span>Log Out</span>
+        <IoLogOutOutline />
+      </LogoutBtn>
     </Resizable>
   );
 }

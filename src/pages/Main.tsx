@@ -1,4 +1,4 @@
-import LeftSideBar from 'components/LeftSideBar';
+import LeftSideBar from 'components/leftsidebar/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
 import React, { Suspense, useEffect } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
@@ -15,14 +15,18 @@ import {
   addMemberModalOpenAtom,
   deckListAtom,
   addDeckModalOpenAtom,
+  detailCardModalOpenAtom,
 } from 'atoms';
-import AddTeamModal from 'components/AddTeamModal';
+import AddTeamModal from 'components/modals/AddTeamModal';
 import { getUserInfo } from 'api';
-import AddCardModal from 'components/AddCardModal';
-import TeamSettings from 'components/TeamSettings';
-import AddMemberModal from 'components/AddMemberModal';
+import AddCardModal from 'components/modals/AddCardModal';
+import TeamSettings from 'components/leftsidebar/TeamSettings';
+import AddMemberModal from 'components/modals/AddMemberModal';
 
-import AddDeckModal from 'components/AddDeckModal';
+import AddDeckModal from 'components/modals/AddDeckModal';
+import Spinner from 'react-spinner-material';
+import MaximizedCard from 'components/MaximizedCard';
+import DetailCardModal from 'components/modals/DetailCardModal';
 import { useQuery } from 'react-query';
 import Decks from 'components/Decks';
 import Loading from 'components/Loading';
@@ -47,6 +51,9 @@ function Main() {
     useRecoilState(addDeckModalOpenAtom);
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
+  );
+  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(
+    detailCardModalOpenAtom,
   );
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
@@ -103,9 +110,13 @@ function Main() {
   };
 
   useEffect(() => {
+    if (!token || token === '') navigate('/login');
+  }, [token]);
+
+  useEffect(() => {
     if (userInfoData) {
       setUserInfo(userInfoData.data);
-
+      const temp = userInfoData.data.teams[0];
       if (teamId === 'me') {
         setSelectedTeam(userInfoData.data.teams[0]);
         navigate(`/team/${userInfoData.data.teams[0].teamId}`);
@@ -125,12 +136,14 @@ function Main() {
       <AddCardModal isOpen={addCardModalOpen} />
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
+      <DetailCardModal isOpen={detailCardModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       <DragDropContext onDragEnd={onDragEnd}>
         <Suspense fallback={<Loading />}>
           <Decks />
         </Suspense>
       </DragDropContext>
+
       <RightSideBar />
     </Wrapper>
   );

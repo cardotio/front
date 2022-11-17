@@ -43,23 +43,6 @@ const RightItems = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const RightItem = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 30px;
-  margin-left: 10px;
-  cursor: pointer;
-  svg {
-    fill: ${(props) => props.theme.textColor};
-    fill-opacity: 0.8;
-  }
-  &:hover {
-    background: ${(props) => props.theme.navBarBtnhoverColor};
-  }
-`;
 
 function Navbar() {
   const isDark = useRecoilValue(isDarkAtom);

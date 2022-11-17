@@ -7,7 +7,7 @@ import { addMemberModalOpenAtom, selectedTeamAtom, userInfoAtom } from 'atoms';
 import Spinner from 'react-spinner-material';
 import emailjs from '@emailjs/browser';
 import { EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID } from 'api';
-import { EMAIL_PUBLIC_KEY } from '../api';
+import { EMAIL_PUBLIC_KEY } from '../../api';
 
 const Container = styled.div`
   width: 450px;

@@ -8,7 +8,6 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { API_URL } from 'api';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import styled from 'styled-components';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { useForm } from 'react-hook-form';
@@ -17,7 +16,6 @@ import { TypeMessageInfo } from 'types';
 import './style.css';
 import {
   getOnlyDate,
-  getOnlyTime,
   formatDateToKR,
   splitByDate,
   createDateTimeStamp,
@@ -27,7 +25,6 @@ import {
 import './style.css';
 import MyMessageBox from './messageBox/MyMessageBox';
 import OpponentMessageBox from './messageBox/OpponentMessageBox';
-import Member from './Member';
 import { Resizable } from 're-resizable';
 import SelectedUserInfo from './SelectedUserInfo';
 
@@ -79,8 +76,6 @@ function RightSideBar() {
         setReadState((prev) => !prev);
         return prev;
       });
-      
-      
     });
   }
 
@@ -100,7 +95,10 @@ function RightSideBar() {
     setTeamMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        if (message.sender == selectedUser?.username && message.receiver == currentUser?.username) {
+        if (
+          message.sender == selectedUser?.username &&
+          message.receiver == currentUser?.username
+        ) {
           temp.push(createReadedMessage(message));
         } else {
           temp.push(message);
@@ -216,9 +214,12 @@ function RightSideBar() {
   }, [receiveState]);
 
   useEffect(() => {
+    if (!selectedUserMessages || !ws.connected) return;
+    readMessages();
+  }, [selectedUserMessages]);
+  useEffect(() => {
     if (!ws.connected || !selectedUser) return;
     setSelectedUserMessages((prev) => {
-        
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
         if (message.sender == currentUser?.username) {
@@ -232,7 +233,10 @@ function RightSideBar() {
     setTeamMessages((prev) => {
       let temp: TypeMessageInfo[] = [];
       prev.map((message) => {
-        if (message.sender == currentUser?.username && message.receiver == selectedUser?.username) {
+        if (
+          message.sender == currentUser?.username &&
+          message.receiver == selectedUser?.username
+        ) {
           temp.push(createReadedMessage(message));
         } else {
           temp.push(message);
@@ -241,7 +245,7 @@ function RightSideBar() {
       console.log(temp);
       return temp;
     });
-  }, [readState])
+  }, [readState]);
   useEffect(() => {
     if (!selectedUser) return;
     setMessagesUnreadToZero();

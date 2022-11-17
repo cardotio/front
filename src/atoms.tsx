@@ -1,5 +1,6 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 import {
+  TypeCard,
   TypeDeck,
   TypeMember,
   TypeMessageInfo,
@@ -35,6 +36,11 @@ export const addCardDeckAtom = atom<TypeDeck | null>({
   key: 'addCardDeck',
   default: null,
 });
+export const detailCardModalOpenAtom = atom({
+  key: 'detailCardModalOpen',
+  default: false,
+});
+
 export const addCardModalOpenAtom = atom({
   key: 'addCardModalOpen',
   default: false,
@@ -69,5 +75,10 @@ export const selectedTeamAtom = atom<TypeTeam | null>({
 
 export const selectedUserAtom = atom<TypeMember | null>({
   key: 'selectedUser',
+  default: null,
+});
+
+export const selectedCardAtom = atom<TypeCard | null>({
+  key: 'maximazeCard',
   default: null,
 });

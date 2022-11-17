@@ -7,11 +7,13 @@ const MemberContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 60px;
+  margin: 5px 0;
   padding: 7px;
-  //background: #ffffff;
-  //border: 0.1px solid black;
-  //box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  //border-radius: 10px;
+  border-color: #d5d5d5;
+  border-radius: 10px;
+  border-width: 0.05px;
+  border-style: solid solid none;
+  box-shadow: 0 3px 3px 0 #878787b5;
   cursor: pointer;
   box-sizing: border-box;
   &:hover {
@@ -47,6 +49,10 @@ const ImageContainer = styled.div`
 const MemberInfo = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  padding-bottom: 3px;
+  height: 100%;
+  gap: 5px;
   width: 100%;
 `;
 const Header = styled.div`
@@ -65,7 +71,7 @@ const DisplayName = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
-  line-height: 17px;
+  line-height: 10px;
 `;
 const Role = styled.div`
   height: fit-content;
@@ -77,23 +83,22 @@ const Role = styled.div`
   font-size: 11px;
   line-height: 9px;
 `;
-const UnreadCount = styled.div<{unreadCount: number}>`
-  display: ${({unreadCount}) => unreadCount>0 ? 'block' : 'none'};
+const UnreadCount = styled.div<{ unreadCount: number }>`
+  display: ${({ unreadCount }) => (unreadCount > 0 ? 'block' : 'none')};
 
- 
-    position: absolute;
-    width: 18px;
-    height: 18px;
- 
-    line-height: 18px;
-    font-size: 10px;
-    border-radius: 30px;
-    background-color: #55AC68;
-    color: #ffffff;
-    text-align: center;
-    top: -1px;
-    right: -7px;
-`
+  position: absolute;
+  width: 18px;
+  height: 18px;
+
+  line-height: 18px;
+  font-size: 10px;
+  border-radius: 30px;
+  background-color: #55ac68;
+  color: #ffffff;
+  text-align: center;
+  top: -1px;
+  right: -7px;
+`;
 
 interface MemberProps {
   displayname?: string;
@@ -102,10 +107,18 @@ interface MemberProps {
   onClick?: React.MouseEventHandler<HTMLElement>;
   unreadCount: number;
 }
-function Member({ displayname, role, description, onClick, unreadCount }: MemberProps) {
+function Member({
+  displayname,
+  role,
+  description,
+  onClick,
+  unreadCount,
+}: MemberProps) {
   return (
     <MemberContainer onClick={onClick}>
-      <ImageContainer style={{ border: unreadCount > 0 ?'1px solid #1B9927': 'none'}}>
+      <ImageContainer
+        style={{ border: unreadCount > 0 ? '1px solid #1B9927' : 'none' }}
+      >
         <UnreadCount unreadCount={unreadCount}>+{unreadCount}</UnreadCount>
         <FcBusinessman />
       </ImageContainer>
@@ -113,7 +126,6 @@ function Member({ displayname, role, description, onClick, unreadCount }: Member
         <DisplayName>{displayname}</DisplayName>
 
         <Role>{role}</Role>
-        
       </MemberInfo>
     </MemberContainer>
   );

@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   align-items: center;
   width: 150px;
   height: 30px;
-  margin-bottom: 5px;
+  //
   background: #ffffff91;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,

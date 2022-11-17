@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { TypeDeck } from 'types';
 import AddCard from './AddCard';
 import AddDeck from './AddDeck';
-import Card from './Card';
+import Card from './CardPreview';
 import Deck from './Deck';
 
 const Wrapper = styled.div`
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
   height: 100%;
   padding: 36px 50px;
   flex-wrap: wrap;
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: auto;
   &::-webkit-scrollbar {
     display: none;
