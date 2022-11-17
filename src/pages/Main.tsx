@@ -1,7 +1,7 @@
 import LeftSideBar from 'components/leftsidebar/LeftSideBar';
 import RightSideBar from 'components/RightSideBar';
 import React, { Suspense, useEffect } from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -40,6 +40,15 @@ const Wrapper = styled.div`
   min-height: 100vh;
 `;
 
+const DeckContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  gap: 5px;
+`;
+
 function Main() {
   const navigate = useNavigate();
   const [token, setToken] = useRecoilState(userTokenAtom);
@@ -64,8 +73,12 @@ function Main() {
 
   const { data: userInfoData } = useQuery(['user'], () => getUserInfo(token));
 
-  const onDragEnd = ({ source, destination }: DropResult) => {
+  const onDragEnd = ({ source, destination, type }: DropResult) => {
     if (!destination) return;
+
+    if (type == 'deck') (
+      console.log("deck")
+    );
 
     setDecks((prev) => {
       let decksCopy = [...prev];
@@ -139,9 +152,16 @@ function Main() {
       <DetailCardModal isOpen={detailCardModalOpen} />
       <TeamSettings isOpen={settomgModalOpen} />
       <DragDropContext onDragEnd={onDragEnd}>
-        <Suspense fallback={<Loading />}>
-          <Decks />
-        </Suspense>
+        <Droppable droppableId='decks' type="deck">
+          {(provided) => (
+            <Suspense fallback={<Loading />}>
+              <DeckContainer ref={provided.innerRef} {...provided.droppableProps}>
+                <Decks />
+                {provided.placeholder}
+              </DeckContainer>
+            </Suspense>
+          )}
+        </Droppable>
       </DragDropContext>
 
       <RightSideBar />

@@ -13,7 +13,7 @@ import Deck from './Deck';
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  // flex-direction: column;
   align-content: flex-start;
   min-width: 250px;
   width: 100%;
@@ -58,7 +58,7 @@ function Decks() {
   return (
     <Wrapper>
       {decks?.map((deck, i) => (
-        <Deck key={i} deck={deck} />
+        <Deck key={i} deck={deck} index={i}/>
       ))}
       <AddDeck onClick={() => setAddDeckModalOpen(true)} />
     </Wrapper>

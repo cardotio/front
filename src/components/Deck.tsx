@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { TypeDeck } from 'types';
-import { Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import Card from './CardPreview';
 import AddCard from './AddCard';
 import { useForm } from 'react-hook-form';
@@ -62,10 +62,11 @@ const CardContainer = styled.div`
 `;
 
 interface DeckProps {
+  index:number;
   deck: TypeDeck;
 }
 
-function Deck({ deck }: DeckProps) {
+function Deck({ index, deck }: DeckProps) {
   const { register, handleSubmit, formState, resetField } = useForm();
 
   const onSubmit = ({ deckname }: any) => {
@@ -73,24 +74,32 @@ function Deck({ deck }: DeckProps) {
   };
 
   return (
-    <Wrapper>
-      <DecknameForm onSubmit={handleSubmit(onSubmit)}>
-        <DecknameInput {...register('deckname')} defaultValue={deck.deckname} />
-      </DecknameForm>
-      <Droppable droppableId={'' + deck.deckId}>
-        {(provided) => (
-          <DropArea ref={provided.innerRef} {...provided.droppableProps}>
-            <CardContainer>
-              {deck.cards.map((card, i) => (
-                <Card key={card.cardId} index={i} card={card} />
-              ))}
-              <AddCard deck={deck} />
-            </CardContainer>
-            {provided.placeholder}
-          </DropArea>
-        )}
-      </Droppable>
-    </Wrapper>
+    <Draggable draggableId={'deck' + deck.deckId} index={index}>
+      {(provided) => (
+        <Wrapper
+          ref={provided.innerRef}
+          {...provided.dragHandleProps}
+          {...provided.draggableProps}
+        >
+          <DecknameForm onSubmit={handleSubmit(onSubmit)}>
+            <DecknameInput {...register('deckname')} defaultValue={deck.deckname} />
+          </DecknameForm>
+          <Droppable droppableId={'' + deck.deckId}>
+            {(provided) => (
+              <DropArea ref={provided.innerRef} {...provided.droppableProps}>
+                <CardContainer>
+                  {deck.cards.map((card, i) => (
+                    <Card key={card.cardId} index={i} card={card} />
+                  ))}
+                  <AddCard deck={deck} />
+                </CardContainer>
+                {provided.placeholder}
+              </DropArea>
+            )}
+          </Droppable>
+        </Wrapper>
+      )}
+    </Draggable>
   );
 }
 
