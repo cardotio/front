@@ -4,7 +4,7 @@ import React, { Suspense, useEffect } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   userTokenAtom,
   addTeamModalOpenAtom,
@@ -24,12 +24,11 @@ import TeamSettings from 'components/leftsidebar/TeamSettings';
 import AddMemberModal from 'components/modals/AddMemberModal';
 
 import AddDeckModal from 'components/modals/AddDeckModal';
-import Spinner from 'react-spinner-material';
-import MaximizedCard from 'components/MaximizedCard';
 import DetailCardModal from 'components/modals/DetailCardModal';
 import { useQuery } from 'react-query';
 import Decks from 'components/Decks';
 import Loading from 'components/Loading';
+import MaximizedCard from 'components/card/MaximizedCard';
 
 const Wrapper = styled.div`
   display: flex;
@@ -41,6 +40,7 @@ const Wrapper = styled.div`
 `;
 
 function Main() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [token, setToken] = useRecoilState(userTokenAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
@@ -57,10 +57,10 @@ function Main() {
   );
   const [addCardModalOpen, setAddCardModalOpen] =
     useRecoilState(addCardModalOpenAtom);
-  const [settomgModalOpen, setSettomgModalOpen] =
+  const [settimgModalOpen, setSettimgModalOpen] =
     useRecoilState(settingModalOpenAtom);
   const [decks, setDecks] = useRecoilState(deckListAtom);
-  const teamId = useLocation().pathname.split('/')[2];
+  const { teamid } = useParams();
 
   const { data: userInfoData } = useQuery(['user'], () => getUserInfo(token));
 
@@ -117,13 +117,13 @@ function Main() {
     if (userInfoData) {
       setUserInfo(userInfoData.data);
       const temp = userInfoData.data.teams[0];
-      if (teamId === 'me') {
+      if (teamid === 'me') {
         setSelectedTeam(userInfoData.data.teams[0]);
         navigate(`/team/${userInfoData.data.teams[0].teamId}`);
       } else {
         // console.log(userInfoData.data.teams.find((t) => t.teamId === +teamId));
         setSelectedTeam(
-          userInfoData.data.teams.find((t) => t.teamId === +teamId)!,
+          userInfoData.data.teams.find((t) => t.teamId === +teamid!)!,
         );
       }
     }
@@ -137,12 +137,16 @@ function Main() {
       <AddDeckModal isOpen={addDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
       <DetailCardModal isOpen={detailCardModalOpen} />
-      <TeamSettings isOpen={settomgModalOpen} />
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Suspense fallback={<Loading />}>
-          <Decks />
-        </Suspense>
-      </DragDropContext>
+      <TeamSettings isOpen={settimgModalOpen} />
+      {searchParams.get('card') ? (
+        <MaximizedCard />
+      ) : (
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Suspense fallback={<Loading />}>
+            <Decks />
+          </Suspense>
+        </DragDropContext>
+      )}
 
       <RightSideBar />
     </Wrapper>

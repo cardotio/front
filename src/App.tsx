@@ -92,6 +92,9 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Noto Sans KR', sans-serif;
     transition: .3s all;
   }
+  *::selection {
+    background: rgba(35, 131, 226, 0.28);
+}
   body {
     display: "flex"; 
     flex-direction: "column";

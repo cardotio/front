@@ -1,13 +1,10 @@
-import { motion, Variants } from 'framer-motion';
-import React, { SyntheticEvent, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
-import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import {
   deckListAtom,
-  detailCardModalOpenAtom,
   selectedCardAtom,
   selectedTeamAtom,
   userTokenAtom,
@@ -15,6 +12,7 @@ import {
 import { IoClose } from 'react-icons/io5';
 import axios from 'axios';
 import { API_URL } from 'api';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
   position: relative;
@@ -62,17 +60,16 @@ interface CardProps {
 }
 
 function CardPreview({ index, card }: CardProps) {
+  let [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [decks, setDecks] = useRecoilState(deckListAtom);
   const [selectedCard, setSelectedCard] = useRecoilState(selectedCardAtom);
-  const [detailCardModalOpen, setDetailCardModalOpen] = useRecoilState(
-    detailCardModalOpenAtom,
-  );
   const [token, setToken] = useRecoilState(userTokenAtom);
 
   const cardClick = (e: any) => {
     setSelectedCard(card);
-    setDetailCardModalOpen(true);
+    setSearchParams({ card: card.cardId + '' });
   };
 
   const deleteCard = (e: any) => {
