@@ -4,8 +4,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { IoCaretBackOutline } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IoAddOutline } from 'react-icons/io5';
-import { TbDragDrop2 } from 'react-icons/tb';
+import Block from './Block';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -50,43 +49,6 @@ const Title = styled.input`
   }
 `;
 const BodyWrapper = styled.div``;
-const Block = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  caret-color: rgb(55, 53, 47);
-  padding: 3px 2px;
-  min-height: 1em;
-  color: rgb(122 121 118);
-
-  svg {
-    opacity: 0;
-    stroke: rgba(0, 0, 0, 0.5);
-  }
-
-  input {
-    width: 100%;
-    background: transparent;
-    outline: none;
-    border: none;
-    font-size: 16px;
-    line-height: 1.5;
-  }
-  input::placeholder {
-    color: transparent;
-  }
-  input:focus::placeholder {
-    color: rgba(55, 53, 47, 0.5);
-  }
-
-  &:hover {
-    svg {
-      opacity: 1;
-    }
-  }
-`;
 
 const initState = {
   pages: [
@@ -136,15 +98,7 @@ function MaximizedCard() {
           <Title placeholder="제목 없음" defaultValue={card?.cardname} />
         </TitleWrapper>
         <BodyWrapper>
-          <Block>
-            <IconContainer>
-              <IoAddOutline />
-            </IconContainer>
-            <IconContainer>
-              <TbDragDrop2 />
-            </IconContainer>
-            <input placeholder='명령어 사용 시 "/"를 입력하세요' />
-          </Block>
+          <Block />
         </BodyWrapper>
       </Main>
     </Wrapper>
