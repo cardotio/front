@@ -82,3 +82,13 @@ export const selectedCardAtom = atom<TypeCard | null>({
   key: 'maximazeCard',
   default: null,
 });
+
+// Maximized Card Detail
+export const contentsAtom = atom<{ type: string; text: string }[]>({
+  key: 'contents',
+  default: [],
+});
+export const currentLineAtom = atom({
+  key: 'currentLine',
+  default: 0,
+});

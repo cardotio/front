@@ -1,5 +1,5 @@
-import { selectedCardAtom } from 'atoms';
-import React from 'react';
+import { contentsAtom, selectedCardAtom } from 'atoms';
+import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { IoCaretBackOutline } from 'react-icons/io5';
@@ -50,41 +50,34 @@ const Title = styled.input`
 `;
 const BodyWrapper = styled.div``;
 
-const initState = {
-  pages: [
-    {
-      idx: 1,
-      title: '기본페이지',
-    },
-    {
-      idx: 2,
-      title: 'page1',
-    },
-  ],
-  views: {
-    '1': [
-      {
-        type: 'title',
-        text: '기본페이지',
-      },
-      {
-        type: 'h1',
-        text: '안녕하세요.',
-      },
-    ],
-    '2': [
-      {
-        type: 'title',
-        text: 'page1',
-      },
-    ],
+const initContents = [
+  {
+    type: 'title',
+    text: '기본페이지',
   },
-};
+  {
+    type: 'empty',
+    text: '',
+  },
+  {
+    type: 'h1',
+    text: '안녕하세요.',
+  },
+  {
+    type: 'empty',
+    text: '',
+  },
+];
 
 function MaximizedCard() {
   const navigate = useNavigate();
   const { teamid } = useParams();
   const [card, setCard] = useRecoilState(selectedCardAtom);
+  const [contents, setContents] = useRecoilState(contentsAtom);
+
+  useEffect(() => {
+    setContents(initContents);
+  }, []);
 
   return (
     <Wrapper>
@@ -98,7 +91,9 @@ function MaximizedCard() {
           <Title placeholder="제목 없음" defaultValue={card?.cardname} />
         </TitleWrapper>
         <BodyWrapper>
-          <Block />
+          {contents.map((content, i) => (
+            <Block key={i} index={i} type={content.type} text={content.text} />
+          ))}
         </BodyWrapper>
       </Main>
     </Wrapper>

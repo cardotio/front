@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { IoAddOutline } from 'react-icons/io5';
 import { TbDragDrop2 } from 'react-icons/tb';
+import { useRecoilState } from 'recoil';
+import { contentsAtom, currentLineAtom } from 'atoms';
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,8 +27,9 @@ const Wrapper = styled.div`
   }
 `;
 
-const TextArea = styled.input`
+const Input = styled.input`
   width: 100%;
+  margin-left: 5px;
   background: transparent;
   outline: none;
   border: none;
@@ -47,7 +50,36 @@ const IconContainer = styled.div`
   cursor: pointer;
 `;
 
-function Block() {
+interface BlockProps {
+  index: number;
+  type?: string;
+  text?: string;
+}
+
+function Block({ index, type, text }: BlockProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [contents, setContents] = useRecoilState(contentsAtom);
+  const [currentLine, setCurrentLine] = useRecoilState(currentLineAtom);
+
+  const handleOnChange = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      setCurrentLine(index + 1);
+      if (index + 1 === contents.length) {
+        setContents((prev) => [
+          ...prev,
+          {
+            type: 'empty',
+            text: '',
+          },
+        ]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    index === currentLine && inputRef.current?.focus();
+  }, [currentLine]);
+
   return (
     <Wrapper>
       <IconContainer>
@@ -56,7 +88,12 @@ function Block() {
       <IconContainer>
         <TbDragDrop2 />
       </IconContainer>
-      <TextArea placeholder='명령어 사용 시 "/"를 입력하세요' />
+      <Input
+        ref={inputRef}
+        placeholder='명령어 사용 시 "/"를 입력하세요'
+        defaultValue={text}
+        onKeyDown={handleOnChange}
+      />
     </Wrapper>
   );
 }
