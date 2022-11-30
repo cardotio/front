@@ -105,6 +105,12 @@ function Main() {
         cards: cardsCopy,
       });
 
+      // decksCopy.splice(dstDeckIndex, 1, {
+      //   deckId: decksCopy[dstDeckIndex].deckId,
+      //   deckname: decksCopy[dstDeckIndex].deckname,
+      //   cards: decksCopy[dstDeckIndex].cards.splice(0,destination.index),
+      // });
+
       return decksCopy;
     });
   };

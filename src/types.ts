@@ -73,3 +73,9 @@ export type TypeMessageInfo = {
   unread: number;
   isTimestamp?: boolean;
 };
+
+export type TypeBlock = {
+  type: 'none' |  'br' | 'h1' | 'h2' | 'h3';
+  color: string;
+  text: string;
+};

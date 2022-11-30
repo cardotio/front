@@ -1,5 +1,6 @@
 import { atom, selector } from 'recoil';
 import {
+  TypeBlock,
   TypeCard,
   TypeDeck,
   TypeMember,
@@ -84,7 +85,7 @@ export const selectedCardAtom = atom<TypeCard | null>({
 });
 
 // Maximized Card Detail
-export const contentsAtom = atom<{ type: string; text: string }[]>({
+export const contentsAtom = atom<TypeBlock[]>({
   key: 'contents',
   default: [],
 });

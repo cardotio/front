@@ -1,12 +1,15 @@
-import { contentsAtom, selectedCardAtom } from 'atoms';
+import { contentsAtom, currentLineAtom, selectedCardAtom } from 'atoms';
 import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { IoCaretBackOutline } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
 import Block from './Block';
+import { TypeBlock } from 'types';
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   background-color: #f7f7f7;
@@ -23,7 +26,10 @@ const Header = styled.div`
   border-bottom: 1px solid lightgray;
 `;
 const Main = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 20px;
+  height: 100%;
 `;
 const TitleWrapper = styled.div`
   width: 100%;
@@ -48,23 +54,44 @@ const Title = styled.input`
     color: rgba(58, 56, 50, 0.15);
   }
 `;
-const BodyWrapper = styled.div``;
+const BodyWrapper = styled.div`
+  height: 100%;
+`;
 
-const initContents = [
+const initContents: TypeBlock[] = [
   {
-    type: 'title',
-    text: '기본페이지',
+    type: 'none',
+    color: '#000000',
+    text: 'abc',
   },
   {
-    type: 'empty',
+    type: 'none',
+    color: '#000000',
+    text: '',
+  },
+  {
+    type: 'br',
+    color: '#000000',
     text: '',
   },
   {
     type: 'h1',
+    color: '#ad0a0a',
     text: '안녕하세요.',
   },
   {
-    type: 'empty',
+    type: 'h2',
+    color: '#3b0aad',
+    text: '안녕히계세요.',
+  },
+  {
+    type: 'h3',
+    color: '#28aa5e',
+    text: '안녕히 가세요.',
+  },
+  {
+    type: 'none',
+    color: '#000000',
     text: '',
   },
 ];
@@ -74,6 +101,11 @@ function MaximizedCard() {
   const { teamid } = useParams();
   const [card, setCard] = useRecoilState(selectedCardAtom);
   const [contents, setContents] = useRecoilState(contentsAtom);
+  const [currentLine, setCurrentLine] = useRecoilState(currentLineAtom);
+
+  const handleWrapperClick = (e: any) => {
+    if (e.target.type != 'text') setCurrentLine(contents.length - 1);
+  };
 
   useEffect(() => {
     setContents(initContents);
@@ -90,9 +122,9 @@ function MaximizedCard() {
         <TitleWrapper>
           <Title placeholder="제목 없음" defaultValue={card?.cardname} />
         </TitleWrapper>
-        <BodyWrapper>
+        <BodyWrapper onClick={handleWrapperClick}>
           {contents.map((content, i) => (
-            <Block key={i} index={i} type={content.type} text={content.text} />
+            <Block key={i} index={i} content={content} />
           ))}
         </BodyWrapper>
       </Main>
