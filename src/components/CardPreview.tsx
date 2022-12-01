@@ -15,9 +15,9 @@ import { API_URL } from 'api';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
-  position: relative;
-  width: 150px;
-  height: 100px;
+  width: 200px;
+  height: 130px;
+  margin-bottom: 5px;
   padding: 8px 15px 8px 8px;
   background: #f7f7f7;
   border-radius: 8px;
@@ -26,17 +26,13 @@ const Wrapper = styled.div`
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   cursor: pointer;
   font-family: 'Noto Sans KR';
-
-  &:hover {
-    background: #d7d7d7;
-    z-index: 200;
-  }
+  position: relative;
 `;
 
 const IconContainer = styled.div`
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: 3px;
+  right: 3px;
   border-radius: 10px;
   transition: 0.1s all;
   cursor: pointer;
@@ -76,11 +72,14 @@ function CardPreview({ index, card }: CardProps) {
     e.stopPropagation();
 
     axios.delete(
-      API_URL + `/teams/${selectedTeam?.teamId}/cards/${card.cardId}`,
+      API_URL + `/teams/${selectedTeam?.teamId}/cards`,
       {
         headers: {
           Authorization: `${token}`,
         },
+        data: {
+          cardId: card.cardId
+        }
       },
     );
 

@@ -59,60 +59,64 @@ function Main() {
     useRecoilState(addCardModalOpenAtom);
   const [settimgModalOpen, setSettimgModalOpen] =
     useRecoilState(settingModalOpenAtom);
+
   const [decks, setDecks] = useRecoilState(deckListAtom);
   const { teamid } = useParams();
 
   const { data: userInfoData } = useQuery(['user'], () => getUserInfo(token));
 
+  
   const onDragEnd = ({ source, destination }: DropResult) => {
     if (!destination) return;
 
-    setDecks((prev) => {
-      let decksCopy = [...prev];
+    let decksCopy = [...decks];
 
-      // Delete from src
-      const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
-        ?.cards[source.index];
-      const srcDeckIndex = decksCopy.findIndex(
-        (d) => d.deckId === srcCard?.deck?.deckId,
-      );
+    // Delete from src
+    const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
+      ?.cards[source.index];
 
-      decksCopy.splice(srcDeckIndex, 1, {
-        ...decksCopy[srcDeckIndex],
-        cards: decksCopy[srcDeckIndex].cards.filter(
-          (c) => c.cardId !== srcCard?.cardId,
-        ),
-      });
+    const srcDeckIndex = decksCopy.findIndex(
+      (d) => d.deckId === srcCard?.deck?.deckId,
+    );
 
-      // Add to dst
-      const dstDeck = decks.find(
-        (deck) => deck.deckId === +destination.droppableId,
-      );
-      const dstDeckIndex = decksCopy.findIndex(
-        (d) => d.deckId === dstDeck?.deckId,
-      );
-      let cardsCopy = [...decksCopy[dstDeckIndex].cards];
-
-      cardsCopy.splice(destination.index, 0, {
-        ...srcCard!,
-        deck: {
-          deckId: dstDeck!.deckId,
-          deckname: dstDeck!.deckname,
-        },
-      });
-      decksCopy.splice(dstDeckIndex, 1, {
-        ...decksCopy[dstDeckIndex],
-        cards: cardsCopy,
-      });
-
-      // decksCopy.splice(dstDeckIndex, 1, {
-      //   deckId: decksCopy[dstDeckIndex].deckId,
-      //   deckname: decksCopy[dstDeckIndex].deckname,
-      //   cards: decksCopy[dstDeckIndex].cards.splice(0,destination.index),
-      // });
-
-      return decksCopy;
+    decksCopy.splice(srcDeckIndex, 1, {
+      ...decksCopy[srcDeckIndex],
+      cards: decksCopy[srcDeckIndex].cards.filter(
+        (c) => c.cardId !== srcCard?.cardId,
+      ),
     });
+
+    // Add to dst
+    const dstDeck = decks.find(
+      (deck) => deck.deckId === +destination.droppableId,
+    );
+    const dstDeckIndex = decksCopy.findIndex(
+      (d) => d.deckId === dstDeck?.deckId,
+    );
+    const cardsCopy = Array.from(decksCopy[dstDeckIndex].cards);
+
+    cardsCopy.splice(destination.index, 0, {
+      ...srcCard!,
+      deck: {
+        deckId: dstDeck!.deckId,
+        deckname: dstDeck!.deckname,
+      },
+    });
+
+    
+    decksCopy.splice(dstDeckIndex, 1, {
+      ...decksCopy[dstDeckIndex],
+      cards: cardsCopy,
+    });
+
+    // decksCopy.splice(dstDeckIndex, 1, {
+    //   deckId: decksCopy[dstDeckIndex].deckId,
+    //   deckname: decksCopy[dstDeckIndex].deckname,
+    //   cards: decksCopy[dstDeckIndex].cards.splice(0,destination.index),
+    // });
+
+    setDecks(decksCopy);
+    console.log(decks)
   };
 
   useEffect(() => {
@@ -147,7 +151,7 @@ function Main() {
       {searchParams.get('card') ? (
         <MaximizedCard />
       ) : (
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext onDragEnd={onDragEnd} >
           <Suspense fallback={<Loading />}>
             <Decks />
           </Suspense>

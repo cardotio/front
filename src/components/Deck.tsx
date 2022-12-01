@@ -11,11 +11,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   margin: 15px;
   padding: 10px;
-  width: 170px;
+  width: 220px;
   max-height: 100%;
   height: min-content;
   background: #c1c0b9;
   border-radius: 8px;
+  transition: 0.3s all;
 `;
 const DecknameForm = styled.form``;
 const DecknameInput = styled.input`
@@ -44,23 +45,20 @@ const DecknameInput = styled.input`
 const DropArea = styled.div`
   width: 100%;
   height: 100%;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
   &::-webkit-scrollbar {
     display: none;
   }
 `;
 
 const CardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  position: relative;
   width: 100%;
-  gap: 5px;
 `;
 
+const DeckHeader = styled.div`
+  display: flex;
+  margin-bottom: 5px;
+`
 interface DeckProps {
   deck: TypeDeck;
 }
@@ -74,17 +72,21 @@ function Deck({ deck }: DeckProps) {
 
   return (
     <Wrapper>
-      <DecknameForm onSubmit={handleSubmit(onSubmit)}>
-        <DecknameInput {...register('deckname')} defaultValue={deck.deckname} />
-      </DecknameForm>
+      <DeckHeader>
+        <DecknameForm onSubmit={handleSubmit(onSubmit)}>
+          <DecknameInput {...register('deckname')} defaultValue={deck.deckname} />
+        </DecknameForm>
+        <AddCard deck={deck} />
+      </DeckHeader>
+      
       <Droppable droppableId={'' + deck.deckId}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <DropArea ref={provided.innerRef} {...provided.droppableProps}>
             <CardContainer>
               {deck.cards.map((card, i) => (
                 <Card key={card.cardId} index={i} card={card} />
               ))}
-              <AddCard deck={deck} />
+
             </CardContainer>
             {provided.placeholder}
           </DropArea>
