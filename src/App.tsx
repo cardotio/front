@@ -35,6 +35,14 @@ function App() {
 }
 
 const GlobalStyle = createGlobalStyle`
+@font-face {
+  font-family: 'Noto Sans KR';
+  font-style: normal;
+  font-weight: normal;
+  src: url("fonts/NotoSansKR-Regular.woff2") format('woff2'),
+  url("fonts/NotoSansKR-Regular.woff") format('woff'),
+  url("fonts/NotoSansKR-Regular.otf") format('truetype')
+}
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
@@ -85,12 +93,8 @@ const GlobalStyle = createGlobalStyle`
   * {
     user-select: none;
     box-sizing: border-box;
-    font-family: "Noto Sans KR",sans-serif;
+    font-family: "Noto Sans KR",sans-serif !important;
     letter-spacing: 0.3px;
-    font-family: 'Gothic A1', sans-serif;
-    font-family: 'Nanum Gothic Coding', monospace;
-    font-family: 'Noto Sans KR', sans-serif;
-
   }
   *::selection {
     background: rgba(35, 131, 226, 0.28);

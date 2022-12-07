@@ -5,6 +5,8 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+
+import axios from 'axios';
 import {
   userTokenAtom,
   addTeamModalOpenAtom,
@@ -16,6 +18,7 @@ import {
   deckListAtom,
   addDeckModalOpenAtom,
   detailCardModalOpenAtom,
+  deleteDeckModalOpenAtom,
 } from 'atoms';
 import AddTeamModal from 'components/modals/AddTeamModal';
 import { getUserInfo } from 'api';
@@ -26,9 +29,13 @@ import AddMemberModal from 'components/modals/AddMemberModal';
 import AddDeckModal from 'components/modals/AddDeckModal';
 import DetailCardModal from 'components/modals/DetailCardModal';
 import { useQuery } from 'react-query';
-import Decks from 'components/Decks';
+import Decks from 'components/deck/Decks';
 import Loading from 'components/Loading';
 import MaximizedCard from 'components/card/MaximizedCard';
+import { AxiosError, AxiosResponse } from 'axios';
+
+import { API_URL } from 'api';
+import DeleteDeckModal from 'components/modals/DeleteDeckModal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,8 +54,12 @@ function Main() {
   const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
   const [addTeamModalOpen, setAddTeamModalOpen] =
     useRecoilState(addTeamModalOpenAtom);
+
   const [addDeckModalOpen, setAddDeckModalOpen] =
     useRecoilState(addDeckModalOpenAtom);
+
+  const [deleteDeckModalOpen, setDeleteDeckModalOpen] =
+    useRecoilState(deleteDeckModalOpenAtom);
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
   );
@@ -61,6 +72,7 @@ function Main() {
     useRecoilState(settingModalOpenAtom);
 
   const [decks, setDecks] = useRecoilState(deckListAtom);
+
   const { teamid } = useParams();
 
   const { data: userInfoData } = useQuery(['user'], () => getUserInfo(token));
@@ -74,6 +86,8 @@ function Main() {
     // Delete from src
     const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
       ?.cards[source.index];
+
+    
 
     const srcDeckIndex = decksCopy.findIndex(
       (d) => d.deckId === srcCard?.deck?.deckId,
@@ -90,9 +104,13 @@ function Main() {
     const dstDeck = decks.find(
       (deck) => deck.deckId === +destination.droppableId,
     );
+
+    
     const dstDeckIndex = decksCopy.findIndex(
       (d) => d.deckId === dstDeck?.deckId,
     );
+
+    console.log(dstDeck?.deckId);
     const cardsCopy = Array.from(decksCopy[dstDeckIndex].cards);
 
     cardsCopy.splice(destination.index, 0, {
@@ -108,15 +126,32 @@ function Main() {
       ...decksCopy[dstDeckIndex],
       cards: cardsCopy,
     });
-
-    // decksCopy.splice(dstDeckIndex, 1, {
-    //   deckId: decksCopy[dstDeckIndex].deckId,
-    //   deckname: decksCopy[dstDeckIndex].deckname,
-    //   cards: decksCopy[dstDeckIndex].cards.splice(0,destination.index),
-    // });
-
     setDecks(decksCopy);
-    console.log(decks)
+
+    axios
+      .put(
+        API_URL + `/teams/${teamid}/cards/decks`,
+        {
+          cardId: srcCard?.cardId,
+          deckId: dstDeck?.deckId
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
+      )
+      .then((response: AxiosResponse) => {
+        console.log(response);
+        
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+        // // Unauthorized
+        // error.request.status === 401 && setIsAuth(false);
+      })
+      .finally(() => {
+      });
   };
 
   useEffect(() => {
@@ -145,6 +180,7 @@ function Main() {
       <AddTeamModal isOpen={addTeamModalOpen} />
       <AddCardModal isOpen={addCardModalOpen} />
       <AddDeckModal isOpen={addDeckModalOpen} />
+      <DeleteDeckModal isOpen={deleteDeckModalOpen} />
       <AddMemberModal isOpen={addMemberModalOpen} />
       <DetailCardModal isOpen={detailCardModalOpen} />
       <TeamSettings isOpen={settimgModalOpen} />

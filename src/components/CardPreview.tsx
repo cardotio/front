@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FcBusinessman } from 'react-icons/fc';
 import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
 import { useRecoilState } from 'recoil';
+import moment from "moment";
+import 'moment/locale/ko';
 import {
   deckListAtom,
   selectedCardAtom,
@@ -15,18 +18,25 @@ import { API_URL } from 'api';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
-  width: 200px;
-  height: 130px;
-  margin-bottom: 5px;
-  padding: 8px 15px 8px 8px;
-  background: #f7f7f7;
-  border-radius: 8px;
-  border: 1px lightgray solid;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  width: 190px;
+  height: 120px;
+  margin-bottom: 6px;
+  padding: 4px 8px;
+  line-height: 25px;
+  background: #fff;
+  border-radius: 4px;
+  box-sizing: border-box;
+  box-shadow: rgb(67 71 85 / 27%) 0px 0px 0.1em, rgb(90 125 188 / 5%) 0px 0.1em 1em;
   cursor: pointer;
-  font-family: 'Noto Sans KR';
+  
+  font-family: "Noto Sans KR",sans-serif !important;
+
   position: relative;
+  
+
+  &:hover {
+    background: #e8e8e8b3;
+  }
 `;
 
 const IconContainer = styled.div`
@@ -50,6 +60,42 @@ const IconContainer = styled.div`
   }
 `;
 
+const Preview = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px;
+  box-sizing: border-box;
+  height: 100%;
+`;
+
+const Cardname = styled.div``;
+const Creator = styled.div`
+  display: flex;
+`;
+const CreatorImage = styled.div`
+  display: flex;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`
+const Creatorname = styled.div`
+  color: #5e6c84;
+  font-size: 12px;
+  line-height: 19px;
+`;
+
+const CreatedDate = styled.div`
+  color: #5e6c84;
+  font-size: 12px;
+  line-height: 19px;
+`
+
+const Sub = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 interface CardProps {
   index: number;
   card: TypeCard;
@@ -71,17 +117,14 @@ function CardPreview({ index, card }: CardProps) {
   const deleteCard = (e: any) => {
     e.stopPropagation();
 
-    axios.delete(
-      API_URL + `/teams/${selectedTeam?.teamId}/cards`,
-      {
-        headers: {
-          Authorization: `${token}`,
-        },
-        data: {
-          cardId: card.cardId
-        }
+    axios.delete(API_URL + `/teams/${selectedTeam?.teamId}/cards`, {
+      headers: {
+        Authorization: `${token}`,
       },
-    );
+      data: {
+        cardId: card.cardId,
+      },
+    });
 
     setDecks((prev) => {
       let decksCopy = [...prev];
@@ -108,7 +151,19 @@ function CardPreview({ index, card }: CardProps) {
           <IconContainer onClick={deleteCard}>
             <IoClose />
           </IconContainer>
-          {card.cardname}
+          <Preview>
+            <Cardname>{card.cardname}</Cardname>
+            <Sub>
+              <Creator>
+              <CreatorImage>
+                <FcBusinessman />
+              </CreatorImage>
+              <Creatorname>{card.creator?.displayname}</Creatorname>
+              </Creator>
+              
+              <CreatedDate>{moment(card.createdDate).fromNow()}</CreatedDate>
+            </Sub>
+          </Preview>
         </Wrapper>
       )}
     </Draggable>

@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { TypeMessageInfo } from 'types';
 import './style.css';
+import { HiChevronDoubleRight } from "react-icons/hi";
 import {
   getOnlyDate,
   formatDateToKR,
@@ -27,6 +28,7 @@ import MyMessageBox from './messageBox/MyMessageBox';
 import OpponentMessageBox from './messageBox/OpponentMessageBox';
 import { Resizable } from 're-resizable';
 import SelectedUserInfo from './SelectedUserInfo';
+import { IoSend } from 'react-icons/io5';
 
 var ws = Stomp.over(function () {
   return new SockJS(API_URL + '/chat');
@@ -217,6 +219,7 @@ function RightSideBar() {
     if (!selectedUserMessages || !ws.connected) return;
     readMessages();
   }, [selectedUserMessages]);
+
   useEffect(() => {
     if (!ws.connected || !selectedUser) return;
     setSelectedUserMessages((prev) => {
@@ -246,6 +249,7 @@ function RightSideBar() {
       return temp;
     });
   }, [readState]);
+
   useEffect(() => {
     if (!selectedUser) return;
     setMessagesUnreadToZero();
@@ -310,14 +314,7 @@ function RightSideBar() {
     >
       <div className="header">
         <button className="hide-btn" onClick={() => setSelectedUser(null)}>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-          />
-          <span className="material-symbols-outlined double-arrow-right-icon">
-            {' '}
-            keyboard_double_arrow_right
-          </span>
+          <HiChevronDoubleRight />
         </button>
         <SelectedUserInfo
           displayname={selectedUser?.displayname}
@@ -347,11 +344,7 @@ function RightSideBar() {
       <form className="input-form" onSubmit={handleSubmit(sendMessage)}>
         <input placeholder="Write Something..." {...register('message')} />
         <button className="send-message-btn">
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-          />
-          <span className="material-symbols-outlined send-icon">send</span>
+          <IoSend />
         </button>
       </form>
     </Resizable>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from 'styled-react-modal';
 import { useRecoilState } from 'recoil';
@@ -136,19 +136,35 @@ function AddCardModal({ isOpen }: IModal) {
           team: response.data.team,
           type: response.data.type,
         };
-        setDecks((prev) => {
-          return (prev = [
-            ...[...prev].filter((deck) => deck.deckId !== deckToAdd?.deckId),
-            {
-              ...prev.find((deck) => deck.deckId === deckToAdd?.deckId)!,
-              cards: [
-                ...prev.find((deck) => deck.deckId === deckToAdd?.deckId)!
-                  .cards,
-                newCard,
-              ],
-            },
-          ]);
-        });
+
+
+        const changeDecks = [...decks];
+        
+        const changeDeckIndex = changeDecks.indexOf(changeDecks.filter((deck, index) => deck.deckId === deckToAdd?.deckId)[0]);
+        const changeDeck = Object.assign({}, changeDecks.filter((deck, index) => deck.deckId === deckToAdd?.deckId)[0]);
+  
+        const changeCards = [...changeDeck.cards, newCard];
+        changeDeck.cards = changeCards;
+
+        console.log(changeDeckIndex);
+        changeDecks.splice(changeDeckIndex, 1, changeDeck);
+
+        setDecks(changeDecks);
+
+        
+        // setDecks((prev) => {
+        //   return (prev = [
+        //     ...[...prev].,
+        //     {
+        //       ...prev.find((deck) => deck.deckId === deckToAdd?.deckId)!,
+        //       cards: [
+        //         ...prev.find((deck) => deck.deckId === deckToAdd?.deckId)!
+        //           .cards,
+        //         newCard,
+        //       ],
+        //     },
+        //   ]);
+        // });
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -166,6 +182,9 @@ function AddCardModal({ isOpen }: IModal) {
     setAddCardModalOpen(false);
   };
 
+  useEffect(() => {
+    console.log(decks);
+  }, [decks])
   return (
     <Modal
       isOpen={isOpen}

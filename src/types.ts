@@ -43,6 +43,7 @@ export type TypeCard = {
   content: string;
   type: 'private' | 'public';
   creator: TypeMember;
+  createdDate: Date;
   deckId: null;
   deck: {
     deckId: number;

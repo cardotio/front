@@ -7,14 +7,14 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 170px;
-  height: 300px;
+  height: 200px;
   margin-bottom: 14px;
-  margin: 15px;
+  margin: 8px;
   background: #d5d5d521;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
     rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-  border-radius: 10px;
+  border-radius: 4px;
   transition: 0.2s background, 0.4s z-index;
   cursor: pointer;
   &:hover {

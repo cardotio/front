@@ -33,6 +33,12 @@ export const addDeckModalOpenAtom = atom({
   key: 'addDeckModalOpen',
   default: false,
 });
+
+export const deleteDeckModalOpenAtom = atom({
+  key: 'deleteDeckModalOpen',
+  default: false,
+});
+
 export const addCardDeckAtom = atom<TypeDeck | null>({
   key: 'addCardDeck',
   default: null,
@@ -93,3 +99,9 @@ export const currentLineAtom = atom({
   key: 'currentLine',
   default: 0,
 });
+
+
+export const selectedDeckAtom = atom<TypeDeck | null>({
+  key: 'selectedDeck',
+  default: null
+})
