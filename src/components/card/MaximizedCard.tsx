@@ -171,13 +171,13 @@ function MaximizedCard() {
       });
 
     return () => {
-      setContents([
-        {
-          type: 'none',
-          color: '#000000',
-          text: '',
-        },
-      ]);
+      // setContents([
+      //   {
+      //     type: 'none',
+      //     color: '#000000',
+      //     text: '',
+      //   },
+      // ]);
     };
   }, []);
 
