@@ -174,7 +174,7 @@ function Login() {
     console.log('LOGIN: /auth');
     setIsFetching(true);
     setIsAuth(false);
-
+    
     axios
       .post(API_URL + '/auth', { ...loginData })
       .then((response: AxiosResponse) => {

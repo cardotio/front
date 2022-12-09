@@ -58,8 +58,9 @@ function Main() {
   const [addDeckModalOpen, setAddDeckModalOpen] =
     useRecoilState(addDeckModalOpenAtom);
 
-  const [deleteDeckModalOpen, setDeleteDeckModalOpen] =
-    useRecoilState(deleteDeckModalOpenAtom);
+  const [deleteDeckModalOpen, setDeleteDeckModalOpen] = useRecoilState(
+    deleteDeckModalOpenAtom,
+  );
   const [addMemberModalOpen, setAddMemberModalOpen] = useRecoilState(
     addMemberModalOpenAtom,
   );
@@ -77,7 +78,6 @@ function Main() {
 
   const { data: userInfoData } = useQuery(['user'], () => getUserInfo(token));
 
-  
   const onDragEnd = ({ source, destination }: DropResult) => {
     if (!destination) return;
 
@@ -86,8 +86,6 @@ function Main() {
     // Delete from src
     const srcCard = decks.find((deck) => deck.deckId === +source.droppableId)
       ?.cards[source.index];
-
-    
 
     const srcDeckIndex = decksCopy.findIndex(
       (d) => d.deckId === srcCard?.deck?.deckId,
@@ -105,7 +103,6 @@ function Main() {
       (deck) => deck.deckId === +destination.droppableId,
     );
 
-    
     const dstDeckIndex = decksCopy.findIndex(
       (d) => d.deckId === dstDeck?.deckId,
     );
@@ -121,7 +118,6 @@ function Main() {
       },
     });
 
-    
     decksCopy.splice(dstDeckIndex, 1, {
       ...decksCopy[dstDeckIndex],
       cards: cardsCopy,
@@ -133,7 +129,7 @@ function Main() {
         API_URL + `/teams/${teamid}/cards/decks`,
         {
           cardId: srcCard?.cardId,
-          deckId: dstDeck?.deckId
+          deckId: dstDeck?.deckId,
         },
         {
           headers: {
@@ -143,15 +139,13 @@ function Main() {
       )
       .then((response: AxiosResponse) => {
         console.log(response);
-        
       })
       .catch((error: AxiosError) => {
         console.log(error);
         // // Unauthorized
         // error.request.status === 401 && setIsAuth(false);
       })
-      .finally(() => {
-      });
+      .finally(() => {});
   };
 
   useEffect(() => {
@@ -161,7 +155,9 @@ function Main() {
   useEffect(() => {
     if (userInfoData) {
       setUserInfo(userInfoData.data);
-      const temp = userInfoData.data.teams[0];
+      if (userInfoData.data.teams.length === 0) {
+        setAddCardModalOpen(true);
+      }
       if (teamid === 'me') {
         setSelectedTeam(userInfoData.data.teams[0]);
         navigate(`/team/${userInfoData.data.teams[0].teamId}`);
@@ -187,7 +183,7 @@ function Main() {
       {searchParams.get('card') ? (
         <MaximizedCard />
       ) : (
-        <DragDropContext onDragEnd={onDragEnd} >
+        <DragDropContext onDragEnd={onDragEnd}>
           <Suspense fallback={<Loading />}>
             <Decks />
           </Suspense>
@@ -200,3 +196,14 @@ function Main() {
 }
 
 export default React.memo(Main);
+
+
+
+const userDB = [
+  {
+    id: "beons",
+    password: "kjasdkja"
+  },
+  {},
+  {}
+]

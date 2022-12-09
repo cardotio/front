@@ -4,7 +4,7 @@ import { FcBusinessman } from 'react-icons/fc';
 import { TypeCard } from 'types';
 import { Draggable } from 'react-beautiful-dnd';
 import { useRecoilState } from 'recoil';
-import moment from "moment";
+import moment from 'moment';
 import 'moment/locale/ko';
 import {
   deckListAtom,
@@ -18,6 +18,7 @@ import { API_URL } from 'api';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Wrapper = styled.div`
+  position: relative;
   width: 190px;
   height: 120px;
   margin-bottom: 6px;
@@ -26,13 +27,10 @@ const Wrapper = styled.div`
   background: #fff;
   border-radius: 4px;
   box-sizing: border-box;
-  box-shadow: rgb(67 71 85 / 27%) 0px 0px 0.1em, rgb(90 125 188 / 5%) 0px 0.1em 1em;
+  box-shadow: rgb(67 71 85 / 27%) 0px 0px 0.1em,
+    rgb(90 125 188 / 5%) 0px 0.1em 1em;
+  font-family: 'Noto Sans KR', sans-serif !important;
   cursor: pointer;
-  
-  font-family: "Noto Sans KR",sans-serif !important;
-
-  position: relative;
-  
 
   &:hover {
     background: #e8e8e8b3;
@@ -67,6 +65,7 @@ const Preview = styled.div`
   padding: 5px;
   box-sizing: border-box;
   height: 100%;
+  cursor: pointer;
 `;
 
 const Cardname = styled.div``;
@@ -79,7 +78,7 @@ const CreatorImage = styled.div`
     width: 20px;
     height: 20px;
   }
-`
+`;
 const Creatorname = styled.div`
   color: #5e6c84;
   font-size: 12px;
@@ -90,12 +89,12 @@ const CreatedDate = styled.div`
   color: #5e6c84;
   font-size: 12px;
   line-height: 19px;
-`
+`;
 
 const Sub = styled.div`
   display: flex;
   justify-content: space-between;
-`
+`;
 interface CardProps {
   index: number;
   card: TypeCard;
@@ -155,12 +154,12 @@ function CardPreview({ index, card }: CardProps) {
             <Cardname>{card.cardname}</Cardname>
             <Sub>
               <Creator>
-              <CreatorImage>
-                <FcBusinessman />
-              </CreatorImage>
-              <Creatorname>{card.creator?.displayname}</Creatorname>
+                <CreatorImage>
+                  <FcBusinessman />
+                </CreatorImage>
+                <Creatorname>{card.creator?.displayname}</Creatorname>
               </Creator>
-              
+
               <CreatedDate>{moment(card.createdDate).fromNow()}</CreatedDate>
             </Sub>
           </Preview>

@@ -1,11 +1,25 @@
-import { contentsAtom, currentLineAtom, selectedCardAtom } from 'atoms';
+import {
+  contentsAtom,
+  currentLineAtom,
+  deckListAtom,
+  selectedCardAtom,
+  userTokenAtom,
+} from 'atoms';
 import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { IoCaretBackOutline } from 'react-icons/io5';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import Block from './Block';
-import { TypeBlock } from 'types';
+import { TypeBlock, TypeCard } from 'types';
+import axios from 'axios';
+import { API_URL } from 'api';
+import { RepeatOneSharp } from '@mui/icons-material';
 
 const Wrapper = styled.div`
   display: flex;
@@ -98,17 +112,73 @@ const initContents: TypeBlock[] = [
 
 function MaximizedCard() {
   const navigate = useNavigate();
+  const [token, setToken] = useRecoilState(userTokenAtom);
   const { teamid } = useParams();
   const [card, setCard] = useRecoilState(selectedCardAtom);
   const [contents, setContents] = useRecoilState(contentsAtom);
   const [currentLine, setCurrentLine] = useRecoilState(currentLineAtom);
+  const [searchParams] = useSearchParams();
+  const cid = searchParams.get('card');
 
   const handleWrapperClick = (e: any) => {
     if (e.target.type != 'text') setCurrentLine(contents.length - 1);
   };
 
+  const handleSave = () => {
+    axios
+      .put(
+        API_URL + `/teams/${teamid}/cards`,
+        {
+          cardId: 1,
+          cardname: card?.cardname,
+          content: JSON.stringify(contents),
+          type: 'public',
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        },
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
-    setContents(initContents);
+    axios
+      .get(API_URL + `/teams/${teamid}/cards`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+      .then((response) => {
+        setCard(
+          response.data.find((card: TypeCard) => card.cardId + '' === cid),
+        );
+        setContents(
+          JSON.parse(
+            response.data.find((card: TypeCard) => card.cardId + '' === cid)
+              .content,
+          ),
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    return () => {
+      setContents([
+        {
+          type: 'none',
+          color: '#000000',
+          text: '',
+        },
+      ]);
+    };
   }, []);
 
   return (
@@ -126,6 +196,7 @@ function MaximizedCard() {
           {contents.map((content, i) => (
             <Block key={i} index={i} content={content} />
           ))}
+          <button onClick={handleSave}>Save</button>
         </BodyWrapper>
       </Main>
     </Wrapper>

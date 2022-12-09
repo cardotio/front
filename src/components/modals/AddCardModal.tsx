@@ -137,12 +137,20 @@ function AddCardModal({ isOpen }: IModal) {
           type: response.data.type,
         };
 
-
         const changeDecks = [...decks];
-        
-        const changeDeckIndex = changeDecks.indexOf(changeDecks.filter((deck, index) => deck.deckId === deckToAdd?.deckId)[0]);
-        const changeDeck = Object.assign({}, changeDecks.filter((deck, index) => deck.deckId === deckToAdd?.deckId)[0]);
-  
+
+        const changeDeckIndex = changeDecks.indexOf(
+          changeDecks.filter(
+            (deck, index) => deck.deckId === deckToAdd?.deckId,
+          )[0],
+        );
+        const changeDeck = Object.assign(
+          {},
+          changeDecks.filter(
+            (deck, index) => deck.deckId === deckToAdd?.deckId,
+          )[0],
+        );
+
         const changeCards = [...changeDeck.cards, newCard];
         changeDeck.cards = changeCards;
 
@@ -151,7 +159,6 @@ function AddCardModal({ isOpen }: IModal) {
 
         setDecks(changeDecks);
 
-        
         // setDecks((prev) => {
         //   return (prev = [
         //     ...[...prev].,
@@ -181,10 +188,6 @@ function AddCardModal({ isOpen }: IModal) {
   const handleClose = () => {
     setAddCardModalOpen(false);
   };
-
-  useEffect(() => {
-    console.log(decks);
-  }, [decks])
   return (
     <Modal
       isOpen={isOpen}

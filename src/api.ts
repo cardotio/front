@@ -1,7 +1,8 @@
 import { TypeUserInfo, TypeDeck, TypeCard } from './types';
 import axios from 'axios';
 
-export const API_URL = 'https://cardio-api.run.goorm.io';
+// export const API_URL = 'https://cardio-api.run.goorm.io';
+export const API_URL = 'https://cardio-server.run.goorm.io';
 
 export const EMAIL_SERVICE_ID = 'service_782ia3c';
 

@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const Input = styled.div`
+const Input = styled.input`
   width: 100%;
   margin-left: 5px;
   background: transparent;
@@ -74,6 +74,55 @@ const TextMenuWrapper = styled.div`
   pointer-events: auto;
 `;
 
+const TypeDropdown = styled.ul`
+  position: absolute;
+  top: 35px;
+  left: 40px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  width: 324px;
+  min-width: 180px;
+  max-width: calc(100vw - 24px);
+  height: 275px;
+  background: white;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.2;
+  border-radius: 5px;
+  box-shadow: rgb(15 15 15 / 5%) 0px 0px 0px 1px,
+    rgb(15 15 15 / 10%) 0px 3px 6px, rgb(15 15 15 / 20%) 0px 9px 24px;
+  pointer-events: auto;
+`;
+
+const ItemContainer = styled.li`
+  width: 100%;
+  height: 55px;
+`;
+
+const styles = {
+  none: {},
+  br: {
+    width: '100%',
+    height: '1px',
+    background: 'rgba(55, 53, 47, 0.16)',
+  },
+  h1: {
+    fontWeight: 600,
+    fontSize: '1.875em',
+    lineHeight: 1.3,
+  },
+  h2: {
+    fontWeight: 600,
+    fontSize: '1.5em',
+    lineHeight: 1.3,
+  },
+  h3: {
+    fontWeight: 600,
+    fontSize: '1.25em',
+    lineHeight: 1.3,
+  },
+};
 interface BlockProps {
   index: number;
   content: TypeBlock;
@@ -81,14 +130,16 @@ interface BlockProps {
 
 function Block({ index, content }: BlockProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [contents, setContents] = useRecoilState(contentsAtom);
   const [currentLine, setCurrentLine] = useRecoilState(currentLineAtom);
   const [showTextMenu, setShowTextMenu] = useState(false);
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+  const [newType, setNewType] = useState(content.type);
+  const [newText, setNewText] = useState(content.text);
+  const [newColor, setNewColor] = useState(content.color);
 
-  const handleOnChange = (e: any) => {
-    console.log(e.key, index);
-
+  const handleOnKeydown = (e: any) => {
     if (e.key === 'ArrowDown' && !e.shiftKey) {
       e.preventDefault();
       contents[index + 1]?.type === 'br'
@@ -119,6 +170,15 @@ function Block({ index, content }: BlockProps) {
           return copy;
         });
       }
+      setContents((prev) => {
+        let copy = [...prev];
+        copy.splice(index, 1, {
+          type: newType,
+          text: inputRef.current!.value,
+          color: newColor,
+        });
+        return copy;
+      });
     }
 
     if (e.key === 'Backspace' && !e.shiftKey) {
@@ -134,9 +194,6 @@ function Block({ index, content }: BlockProps) {
         e.preventDefault();
       }
     }
-
-    if (e.key === '/') {
-    }
   };
 
   const handleOnSelect = (e: any) => {
@@ -144,12 +201,23 @@ function Block({ index, content }: BlockProps) {
       e.target.selectionStart,
       e.target.selectionEnd,
     );
-    console.log(selection);
-    if (selection !== '') setShowTextMenu(true);
+    // console.log(selection);
+    // if (selection !== '') setShowTextMenu(true);
   };
 
   const handleOnBlur = () => {
-    setShowTextMenu(false);
+    // setShowTextMenu(false);
+  };
+
+  const handleOnInput = (e: any) => {
+    setShowTypeDropdown(e.target.value === '/');
+  };
+
+  const handleSelectType = (type: 'none' | 'h1' | 'h2' | 'h3' | 'br') => {
+    setNewType(type);
+    inputRef.current!.value = '';
+    inputRef.current!.focus();
+    setShowTypeDropdown(false);
   };
 
   useEffect(() => {
@@ -164,18 +232,40 @@ function Block({ index, content }: BlockProps) {
       <IconContainer>
         <TbDragDrop2 />
       </IconContainer>
-      <Input
-        ref={inputRef}
-        placeholder='명령어 사용 시 "/"를 입력하세요'
-        onKeyDown={handleOnChange}
-        onFocus={() => setCurrentLine(index)}
-        onSelect={handleOnSelect}
-        onBlur={handleOnBlur}
-        style={{ color: content.color, fontWeight: 'normal' }}
-        contentEditable
-      >
-        <i>{content.text}</i>
-      </Input>
+      {content.type === 'br' ? (
+        <div style={styles[content.type]} />
+      ) : (
+        <Input
+          ref={inputRef}
+          placeholder='명령어 사용 시 "/"를 입력하세요'
+          onKeyDown={handleOnKeydown}
+          onInput={handleOnInput}
+          onFocus={() => setCurrentLine(index)}
+          onSelect={handleOnSelect}
+          onBlur={handleOnBlur}
+          style={{ ...styles[newType], color: newType }}
+          defaultValue={content.text}
+        />
+      )}
+      {showTypeDropdown && (
+        <TypeDropdown>
+          <ItemContainer>
+            <button onClick={() => handleSelectType('none')}>텍스트</button>
+          </ItemContainer>
+          <ItemContainer>
+            <button onClick={() => handleSelectType('h1')}>제목1</button>
+          </ItemContainer>
+          <ItemContainer>
+            <button onClick={() => handleSelectType('h2')}>제목2</button>
+          </ItemContainer>
+          <ItemContainer>
+            <button onClick={() => handleSelectType('h3')}>제목3</button>
+          </ItemContainer>
+          <ItemContainer>
+            <button onClick={() => handleSelectType('br')}>구분선</button>
+          </ItemContainer>
+        </TypeDropdown>
+      )}
       {showTextMenu && <TextMenuWrapper />}
     </Wrapper>
   );

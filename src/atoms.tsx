@@ -93,15 +93,20 @@ export const selectedCardAtom = atom<TypeCard | null>({
 // Maximized Card Detail
 export const contentsAtom = atom<TypeBlock[]>({
   key: 'contents',
-  default: [],
+  default: [
+    {
+      type: 'none',
+      color: '#000000',
+      text: '',
+    },
+  ],
 });
 export const currentLineAtom = atom({
   key: 'currentLine',
   default: 0,
 });
 
-
 export const selectedDeckAtom = atom<TypeDeck | null>({
   key: 'selectedDeck',
-  default: null
-})
+  default: null,
+});
